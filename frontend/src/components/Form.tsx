@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { loginSchema, registerSchema } from "@/lib/loginRegisterSchema";
-import { loginRegisterFields } from "@/lib/loginRegisterFields";
+import { loginSchema, registerSchema } from "@/lib/Form/loginRegisterSchema";
+import { loginRegisterFields } from "@/lib/Form/loginRegisterFields";
 import {
   Card,
   CardContent,

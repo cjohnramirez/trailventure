@@ -1,13 +1,76 @@
-import { ModeToggle } from "../components/mode-toggle";
-import { Button } from "../components/ui/button";
+import { useEffect, useState } from "react";
+import api from "@/api";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
+
+interface UserRegisterInformation {
+  email: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+}
+
+interface UserProfile {
+  date_of_birth: string;
+  phone_number: string;
+  user: UserRegisterInformation;
+}
 
 function Home() {
+  const [userData, setUserData] = useState<UserProfile[]>([]);
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  const getUserData = () => {
+    api
+      .get("/api/profile/")
+      .then((res) => res.data)
+      .then((data) => {
+        setUserData(data);
+      })
+      .catch((err) => alert(err));
+  };
+
+  const UserDataArray: Array<keyof UserRegisterInformation> = ["email", "first_name", "last_name", "username"];
+
   return (
     <div className="w-full flex h-screen justify-center items-center gap-2">
-      <Button variant="outline">Wawww nakasulod cya</Button>
-      <ModeToggle />
+      <Card>
+        <CardHeader>
+          <CardTitle>User Information</CardTitle>
+          <CardDescription>
+            Here are some information about the user
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {userData.length > 0 &&
+            UserDataArray.map((userDataText, index) => (
+              <div key={index} className="my-2 border p-3 border-black-800 rounded-lg">
+                <p className="text-sm font-semibold">
+                {userDataText.replace("_", " ").toUpperCase()}
+                </p>
+                <p className="text-sm">{userData[0]["user"][userDataText]}</p>
+              </div>
+            ))}
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full">
+            <Check /> Noiceee
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
-  )
+  );
 }
 
 export default Home;

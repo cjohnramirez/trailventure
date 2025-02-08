@@ -16,7 +16,7 @@ class UserProfileCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return UserProfile.objects.filter(user=user)
+        return UserProfile.objects.filter(user=user.id)
     
     def perform_create(self, serializer):
         if UserProfile.objects.filter(user=self.request.user).exists():
