@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 interface UserRegisterInformation {
   email: string;
@@ -41,10 +42,15 @@ function Home() {
       .catch((err) => alert(err));
   };
 
-  const UserDataArray: Array<keyof UserRegisterInformation> = ["email", "first_name", "last_name", "username"];
+  const UserDataArray: Array<keyof UserRegisterInformation> = [
+    "email",
+    "first_name",
+    "last_name",
+    "username",
+  ];
 
   return (
-    <div className="w-full flex h-screen justify-center items-center gap-2">
+    <div className="flex h-screen w-full items-center justify-center gap-2">
       <Card>
         <CardHeader>
           <CardTitle>User Information</CardTitle>
@@ -53,11 +59,15 @@ function Home() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <ModeToggle />
           {userData.length > 0 &&
             UserDataArray.map((userDataText, index) => (
-              <div key={index} className="my-2 border p-3 border-black-800 rounded-lg">
+              <div
+                key={index}
+                className="border-black-800 my-2 rounded-lg border p-3"
+              >
                 <p className="text-sm font-semibold">
-                {userDataText.replace("_", " ").toUpperCase()}
+                  {userDataText.replace("_", " ").toUpperCase()}
                 </p>
                 <p className="text-sm">{userData[0]["user"][userDataText]}</p>
               </div>

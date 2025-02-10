@@ -75,7 +75,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
         route,
         isLogin
           ? { username: values.username, password: values.password }
-          : values
+          : values,
       );
       if (isLogin) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
@@ -98,16 +98,16 @@ function HomeForm({ route, method }: { route: string; method: string }) {
     : loginRegisterFields.register;
 
   return (
-    <div className="flex h-screen items-center justify-center w-full p-4">
-      <Card className="flex h-full items-center p-4">
-        <div className="h-full w-1/2 p-4">
+    <div className="flex items-center justify-center p-4 sm:h-screen">
+      <Card className="w-full max-w-[800px] items-center p-4 md:flex md:max-h-[900px]">
+        <div className="hidden md:block p-4 md:h-full md:w-1/2">
           <img
             src={LoginPageImage}
-            className="h-full rounded-xl object-cover"
+            className="h-full w-full rounded-xl object-cover"
           />
         </div>
-        <div className="grid h-full grid-rows-[1fr_80%_1fr] py-4 pr-4 w-1/2">
-          <div className="flex justify-end">
+        <div className="grid h-1/2 py-4 pr-4 md:h-full md:w-1/2 md:grid-rows-[1fr_90%_1fr]">
+          <div className="flex justify-start pl-5 md:justify-end">
             <ModeToggle />
           </div>
           <div className="flex h-full flex-col justify-center">
@@ -133,7 +133,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
                 )}
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col gap-y-2">
+            <CardContent className="scrollbar flex flex-col gap-y-2 md:overflow-auto">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit, (errors) => {
