@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Backpack,
   BedDouble,
   Calendar as CalendarIcon,
   Menu,
@@ -25,7 +24,7 @@ import { Popover, PopoverTrigger } from "@radix-ui/react-popover";
 import { PopoverContent } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { ModeToggle } from "../mode-toggle";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function NavBar() {
   const [firstDate, setFirstDate] = useState<Date | undefined>(new Date());
