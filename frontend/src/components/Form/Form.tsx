@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import api from "../api";
+import api from "../../api";
 import { Link, useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -26,8 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import LoginPageImage from "../assets/LoginPage.jpg";
-import { ModeToggle } from "./mode-toggle";
+import LoginPageImage from "../../assets/LoginPage.jpg";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
   const [_loading, setLoading] = useState<boolean>(false);
@@ -68,8 +67,6 @@ function HomeForm({ route, method }: { route: string; method: string }) {
       values = { ...filteredValues };
     }
 
-    console.log({ values });
-
     try {
       const res = await api.post(
         route,
@@ -98,20 +95,17 @@ function HomeForm({ route, method }: { route: string; method: string }) {
     : loginRegisterFields.register;
 
   return (
-    <div className="flex items-center justify-center p-4 sm:h-screen">
-      <Card className="w-full max-w-[800px] items-center p-4 md:flex md:max-h-[900px]">
-        <div className="hidden md:block p-4 md:h-full md:w-1/2">
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <Card className="w-full md:h-screen max-w-[800px] items-center p-4 md:flex md:max-h-[700px]">
+        <div className="hidden md:block h-full w-1/2">
           <img
             src={LoginPageImage}
-            className="h-full w-full rounded-xl object-cover"
+            className="h-full w-full rounded-lg object-cover"
           />
         </div>
-        <div className="grid h-1/2 py-4 pr-4 md:h-full md:w-1/2 md:grid-rows-[1fr_90%_1fr]">
-          <div className="flex justify-start pl-5 md:justify-end">
-            <ModeToggle />
-          </div>
+        <div className="md:w-1/2">
           <div className="flex h-full flex-col justify-center">
-            <CardHeader>
+            <CardHeader className="px-8">
               <CardTitle>
                 {isLogin ? "Login to Proceed" : "Create an Account"}
               </CardTitle>
@@ -133,7 +127,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
                 )}
               </CardDescription>
             </CardHeader>
-            <CardContent className="scrollbar flex flex-col gap-y-2 md:overflow-auto">
+            <CardContent className="scrollbar flex flex-col gap-y-2 md:overflow-auto px-8">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit, (errors) => {

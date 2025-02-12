@@ -65,27 +65,31 @@
     @apply bg-background text-foreground;
   }
 }
-@layer utilities {
-  .scrollbar::-webkit-scrollbar {
-    width: 10px;
-    height: 5px;
-  }
-  .scrollbar::-webkit-scrollbar-track,
-  .scrollbar::-webkit-scrollbar-corner {
-    background: none;
-    border-radius: 100vh;
-  }
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: #f5f1f1;
-    border-radius: 100vh;
-  }
-  .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #eee5ec;
-  }
-  .dark .scrollbar::-webkit-scrollbar-thumb {
-    background: #181818;
-  }
-  .dark .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #1f1f1f;
+
+::-webkit-scrollbar {
+  scrollbar-gutter: stable;
+  width: 10px;
+  height: 5px;
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: none;
+}
+::-webkit-scrollbar-thumb {
+  background: #f5f1f1;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #dbd5da;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #181818;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #1f1f1f;
+}
+
+@layer base {
+  body {
+    @apply font-sans;
   }
 }
