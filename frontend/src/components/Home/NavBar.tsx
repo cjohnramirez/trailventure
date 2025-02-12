@@ -30,12 +30,12 @@ function NavBar() {
   const [firstDate, setFirstDate] = useState<Date | undefined>(new Date());
   const [secondDate, setSecondDate] = useState<Date | undefined>(new Date());
 
-  const roomOptions: string[] = ["rooms", "adults", "children"];
+  const roomOptions: string[] = ["Rooms", "Adults", "Children"];
 
   const [roomOptionState, setRoomOptionState] = useState({
-    rooms: 1,
-    adults: 1,
-    children: 1,
+    Rooms: 1,
+    Adults: 1,
+    Children: 1,
   });
 
   return (
@@ -122,9 +122,9 @@ function NavBar() {
               <Popover>
                 <PopoverTrigger asChild>
                   <div className="flex items-center gap-2">
-                    {roomOptionState.rooms}
+                    {roomOptionState.Rooms}
                     <BedDouble />
-                    {roomOptionState.adults + roomOptionState.children}
+                    {roomOptionState.Adults + roomOptionState.Children}
                     <Users />
                   </div>
                 </PopoverTrigger>
@@ -140,8 +140,7 @@ function NavBar() {
                         className="flex items-center justify-between gap-2 pb-4"
                       >
                         <p className="text-sm">
-                          {option.substring(0, 1).toLocaleUpperCase() +
-                            option.substring(1)}
+                          {option}
                         </p>
                         <div className="flex items-center justify-end gap-2">
                           <Button
@@ -169,16 +168,7 @@ function NavBar() {
                             onClick={() => {
                               setRoomOptionState((prevState) => ({
                                 ...prevState,
-
-                                [option]:
-                                  prevState[option as keyof typeof prevState] >
-                                  1
-                                    ? prevState[
-                                        option as keyof typeof prevState
-                                      ] - 1
-                                    : prevState[
-                                        option as keyof typeof prevState
-                                      ],
+                                [option]: Math.max(prevState[option as keyof typeof prevState] - 1, 1),
                               }));
                             }}
                           >
