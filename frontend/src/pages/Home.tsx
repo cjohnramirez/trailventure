@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
 import api from "@/api";
+import { Search } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import SearchPopCalendar from "../components/Home/SearchPopCalendar";
+import SearchPopGuests from "../components/Home/SearchPopGuests";
 import NavBar from "@/components/Home/NavBar";
-import Banaue from "../assets/Banaue.jpg";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 function Home() {
   const [userData, setUserData] = useState([]);
+
+  const [firstDate, setFirstDate] = useState<Date | null>(new Date());
+  const [secondDate, setSecondDate] = useState<Date | null>(new Date());
+
+  const [roomOptionState, setRoomOptionState] = useState({
+    Rooms: 1,
+    Adults: 1,
+    Children: 1,
+  });
 
   useEffect(() => {
     getUserData();
@@ -22,30 +34,41 @@ function Home() {
   };
 
   return (
-    <div>
-      <div className="sticky top-0">
+    <div className="bg-homepage h-full w-full bg-opacity-0 bg-cover bg-center p-8">
+      <div className="sticky top-10">
         <NavBar />
       </div>
-      <div className="p-4">
-        <Card className="pt-6 md:flex">
-          <CardContent className="md:w-1/2 lg:w-2/3">
-            <img
-              src={Banaue}
-              className="w-full rounded-lg object-cover md:h-full md:max-h-[500px]"
-            />
-          </CardContent>
-          <CardFooter className="flex-col gap-y-6 text-left md:w-1/2 md:justify-center md:py-20 lg:w-1/3">
-            <p className="w-full text-[50px] leading-none">EXPLORE THE UNEXPLORED.</p>
-            <p className="text-sm">
-              We invite you to venture beyond the familiar and discover new
-              possibilities. It challenges you to step outside your comfort
-              zone, embracing the unknown with curiosity and courage. Whether
-              it's uncharted places, fresh ideas, or hidden potentials, there's
-              always something waiting to be uncovered. Dare to go beyond
-              boundaries and redefine what's possible.
+      <div className="flex h-screen flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center justify-center">
+          <div className="text-center">
+            <p className="text-[120px] font-semibold text-[#f4f4f5] dark:text-[#09090b]">
+              EXPLORE
             </p>
-          </CardFooter>
-        </Card>
+          </div>
+          <div className="flex items-center gap-4 rounded-full border-[1px] bg-[#f4f4f5] px-4 py-2 dark:bg-[#09090b] sm:w-full md:w-[850px]">
+            <div className="flex gap-4 pr-4">
+              <SearchPopCalendar
+                setFirstDate={setFirstDate}
+                setSecondDate={setSecondDate}
+                firstDate={firstDate}
+                secondDate={secondDate}
+              />
+              <Button variant="outline" className="w-30 rounded-full">
+                <SearchPopGuests
+                  setRoomOptionState={setRoomOptionState}
+                  roomOptionState={roomOptionState}
+                />
+              </Button>
+            </div>
+            <Input
+              className="h-[50px] rounded-full border-none bg-sky-500 px-4 text-white placeholder-white dark:text-black dark:placeholder-black"
+              placeholder="Search"
+            ></Input>
+            <Button className="w-10 rounded-full" variant="outline">
+              <Search />
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
