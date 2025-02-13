@@ -14,11 +14,12 @@ function NavBarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">
+        <Button variant="outline" className="rounded-full">
           <Menu />
+          Menu
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="mr-9 w-56">
+      <DropdownMenuContent className="w-40 p-2">
         <DropdownMenuGroup>
           <DropdownMenuItem>Messages</DropdownMenuItem>
           <DropdownMenuItem>Notifications</DropdownMenuItem>
