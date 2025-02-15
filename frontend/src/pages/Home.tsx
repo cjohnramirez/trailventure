@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "@/api";
+import api from "@/apps";
 import { Search } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -8,7 +8,7 @@ import SearchPopGuests from "../components/Home/SearchPopGuests";
 import NavBar from "@/components/Home/NavBar";
 
 function Home() {
-  const [userData, setUserData] = useState([]);
+  const [_userData, setUserData] = useState([]);
 
   const [firstDate, setFirstDate] = useState<Date | null>(new Date());
   const [secondDate, setSecondDate] = useState<Date | null>(new Date());
@@ -25,7 +25,7 @@ function Home() {
 
   const getUserData = () => {
     api
-      .get("/api/profile/")
+      .get("/apps/profile/")
       .then((res) => res.data)
       .then((data) => {
         setUserData(data);
@@ -34,11 +34,11 @@ function Home() {
   };
 
   return (
-    <div className="bg-homepage h-full w-full bg-opacity-0 bg-cover bg-center p-8">
-      <div className="sticky top-10">
+    <div className="flex flex-col h-screen w-full p-8">
+      <div className="sticky top-0">
         <NavBar />
       </div>
-      <div className="flex h-screen flex-col items-center justify-center p-4">
+      <div className="flex flex-col items-center justify-center rounded-2xl bg-opacity-0 bg-homepage bg-cover bg-center p-4 h-full">
         <div className="flex flex-col items-center justify-center">
           <div className="text-center">
             <p className="text-[120px] font-semibold text-[#f4f4f5] dark:text-[#09090b]">

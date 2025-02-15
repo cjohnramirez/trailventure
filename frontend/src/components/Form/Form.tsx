@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import api from "../../api";
+import api from "../../apps";
 import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
@@ -59,7 +59,6 @@ function HomeForm({ route, method }: { route: string; method: string }) {
       });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("handleSubmit triggered");
     setLoading(true);
 
     if ("passwordConfirm" in values) {
