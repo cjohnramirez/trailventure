@@ -54,6 +54,9 @@ module.exports = {
 			fontFamily: {
         sans: ["DM Sans", "sans-serif"],
       },
+			backgroundImage: {
+				'homepage': "url('./src/assets/HomePage.png')",
+			}
   	}
   },
   plugins: [require("tailwindcss-animate")],
