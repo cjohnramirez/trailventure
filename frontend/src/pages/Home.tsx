@@ -1,74 +1,64 @@
 import { useEffect, useState } from "react";
 import api from "@/apps";
-import { Search } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import SearchPopCalendar from "../components/Home/SearchPopCalendar";
-import SearchPopGuests from "../components/Home/SearchPopGuests";
+import Search from "../components/Home/Search";
 import NavBar from "@/components/Home/NavBar";
+import DiscoverSection from "@/components/Home/DiscoverSection";
 
 function Home() {
   const [_userData, setUserData] = useState([]);
+  const [showNavbar, setShowNavbar] = useState(false);
 
-  const [firstDate, setFirstDate] = useState<Date | null>(new Date());
-  const [secondDate, setSecondDate] = useState<Date | null>(new Date());
-
-  const [roomOptionState, setRoomOptionState] = useState({
-    Rooms: 1,
-    Adults: 1,
-    Children: 1,
-  });
-
+  // Fetch user data on component mount
   useEffect(() => {
     getUserData();
   }, []);
 
-  const getUserData = () => {
-    api
-      .get("/apps/profile/")
-      .then((res) => res.data)
-      .then((data) => {
-        setUserData(data);
-      })
-      .catch((err) => alert(err));
+  const getUserData = async () => {
+    try {
+      const response = await api.get("/apps/profile/");
+      setUserData(response.data);
+    } catch (err) {
+      alert(err);
+    }
   };
 
+  const checkSectionInView = () => {
+    const section = document.getElementById('section');
+    if (!section) return;
+
+    const { top, bottom } = section.getBoundingClientRect();
+    console.log("top: " + top, "bottom: " + bottom);
+    console.log(showNavbar);
+    const viewportHeight = window.innerHeight;
+  
+    setShowNavbar(top < viewportHeight && bottom > 0);
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', checkSectionInView);
+
+    return () => window.removeEventListener('scroll', checkSectionInView);
+  }, []);
+
   return (
-    <div className="flex flex-col h-screen w-full p-8">
-      <div className="sticky top-0">
-        <NavBar />
+    <div>
+      <div className="sticky top-0 bg-[#ffffff] py-4 dark:bg-[#09090b] z-20 px-8">
+        <NavBar change={showNavbar} />
       </div>
-      <div className="flex flex-col items-center justify-center rounded-2xl bg-opacity-0 bg-homepage bg-cover bg-center p-4 h-full">
-        <div className="flex flex-col items-center justify-center">
-          <div className="text-center">
-            <p className="text-[120px] font-semibold text-[#f4f4f5] dark:text-[#09090b]">
-              EXPLORE
-            </p>
-          </div>
-          <div className="flex items-center gap-4 rounded-full border-[1px] bg-[#f4f4f5] px-4 py-2 dark:bg-[#09090b] sm:w-full md:w-[850px]">
-            <div className="flex gap-4 pr-4">
-              <SearchPopCalendar
-                setFirstDate={setFirstDate}
-                setSecondDate={setSecondDate}
-                firstDate={firstDate}
-                secondDate={secondDate}
-              />
-              <Button variant="outline" className="w-30 rounded-full">
-                <SearchPopGuests
-                  setRoomOptionState={setRoomOptionState}
-                  roomOptionState={roomOptionState}
-                />
-              </Button>
+      <div className="flex h-screen w-full flex-col pb-[100px] px-8">
+        <div className="mb-4 flex h-full flex-col items-center justify-center rounded-2xl bg-opacity-0 bg-homepage bg-cover bg-center">
+          <div className="flex flex-col items-center justify-center">
+            <div className="text-center">
+              <p className="title m-[-40px] text-[200px] font-semibold text-[#f4f4f5] dark:text-[#09090b]">
+                EXPLORE
+              </p>
             </div>
-            <Input
-              className="h-[50px] rounded-full border-none bg-sky-500 px-4 text-white placeholder-white dark:text-black dark:placeholder-black"
-              placeholder="Search"
-            ></Input>
-            <Button className="w-10 rounded-full" variant="outline">
-              <Search />
-            </Button>
+            <Search navBar={!showNavbar} />
           </div>
         </div>
+      </div>
+      <div className="mt-[-100px] px-8" id="section">
+        <DiscoverSection />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import Register from "./pages/Register.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Home from "./pages/Home.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import AboutUs from "./pages/AboutUs.tsx";
 
 function Logout() {
   localStorage.clear();
@@ -21,6 +22,14 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route
+          path="/about-us"
+          element={
+            <ProtectedRoute>
+              <AboutUs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/"
           element={
             <ProtectedRoute>
@@ -30,8 +39,8 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<RegisterAndLogout />}/>
-        <Route path="*" element={<NotFound />}/>
+        <Route path="/register" element={<RegisterAndLogout />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

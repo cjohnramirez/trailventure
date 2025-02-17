@@ -14,7 +14,7 @@ function NavBarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="rounded-full">
+        <Button variant="outline">
           <Menu />
           Menu
         </Button>
@@ -28,7 +28,9 @@ function NavBarDropdown() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>About Us</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to="/about-us">About Us</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem>
             <Link to="/logout">Logout</Link>
           </DropdownMenuItem>

@@ -53,6 +53,7 @@ module.exports = {
   		},
 			fontFamily: {
         sans: ["DM Sans", "sans-serif"],
+      	titleSans: ["Alumni Sans", "sans-serif"],
       },
 			backgroundImage: {
 				'homepage': "url('./src/assets/HomePage.png')",
