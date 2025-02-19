@@ -26,7 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import LoginPageImage from "../../assets/LoginPage.jpg";
+import LoginPageImage from "../../assets/Form/LoginPage.jpg";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
   const [_loading, setLoading] = useState<boolean>(false);
@@ -95,8 +95,8 @@ function HomeForm({ route, method }: { route: string; method: string }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full md:h-screen max-w-[800px] items-center p-4 md:flex md:max-h-[700px]">
-        <div className="hidden md:block h-full w-1/2">
+      <Card className="w-full max-w-[800px] items-center p-4 md:flex md:h-screen md:max-h-[700px]">
+        <div className="hidden h-full w-1/2 md:block">
           <img
             src={LoginPageImage}
             className="h-full w-full rounded-lg object-cover"
@@ -126,7 +126,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
                 )}
               </CardDescription>
             </CardHeader>
-            <CardContent className="scrollbar flex flex-col gap-y-2 md:overflow-auto px-8">
+            <CardContent className="scrollbar mb-10 flex flex-col gap-y-2 px-8 md:overflow-auto pb-10">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit, (errors) => {
@@ -171,7 +171,9 @@ function HomeForm({ route, method }: { route: string; method: string }) {
                       />
                     );
                   })}
-                  <Button type="submit">Submit</Button>
+                  <div className="absolute">
+                    <Button type="submit">Submit</Button>
+                  </div>
                 </form>
               </Form>
             </CardContent>

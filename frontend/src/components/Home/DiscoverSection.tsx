@@ -1,10 +1,10 @@
 import { Card } from "../ui/card";
-import TokyoImage from "../../assets/cities/tokyo.jpg";
-import ManilaImage from "../../assets/cities/manila.jpg";
-import ParisImage from "../../assets/cities/paris.jpeg";
-import NewYorkImage from "../../assets/cities/new york.jpg";
-import DubaiImage from "../../assets/cities/dubai.png";
-import BangkokImage from "../../assets/cities/bangkok.png";
+import TokyoImage from "../../assets/Home/tokyo.jpg";
+import ManilaImage from "../../assets/Home/manila.jpg";
+import ParisImage from "../../assets/Home/paris.jpeg";
+import NewYorkImage from "../../assets/Home/new york.jpg";
+import DubaiImage from "../../assets/Home/dubai.png";
+import BangkokImage from "../../assets/Home/bangkok.png";
 import { MapPin } from "lucide-react";
 
 interface Location {
