@@ -92,4 +92,7 @@
   body {
     @apply font-sans;
   }
+  .title {
+    @apply font-titleSans;
+  }
 }
