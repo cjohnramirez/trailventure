@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Lock, Search, Settings, Sparkles } from "lucide-react";
-import { GlowingEffect } from "@/components/ui/glowing-effect";
+import { GlowingEffect } from "@/components/UI/glowing-effect";
 
 export default function GlowingEffectDemo() {
   return (

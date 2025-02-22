@@ -6,7 +6,7 @@ import HotelImage from "../assets/AboutUs/hotel.png";
 import JCR from "../assets/AboutUs/jcr.jpg";
 import Gerlie from "../assets/AboutUs/gerlie.jpg";
 import Kathy from "../assets/AboutUs/kathy.jpg";
-import { GlowingEffect } from "@/components/ui/glowing-effect";
+import { GlowingEffect } from "@/components/UI/glowing-effect";
 
 interface TeamInformationObject {
   name: string;

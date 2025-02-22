@@ -5,14 +5,14 @@ import {
   Search as SearchIcon,
   MapPinned,
 } from "lucide-react";
-import { Button } from "../ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { PopoverContent } from "@/components/ui/popover";
+import { Button } from "../UI/button";
+import { Calendar } from "@/components/UI/calendar";
+import { Popover, PopoverTrigger } from "@/components/UI/popover";
+import { PopoverContent } from "@/components/UI/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Slider } from "../ui/slider";
-import { Input } from "../ui/input";
+import { DropdownMenuSeparator } from "@/components/UI/dropdown-menu";
+import { Slider } from "../UI/slider";
+import { Input } from "../UI/input";
 import { Link } from "react-router-dom";
 
 interface forNavBar {
@@ -73,8 +73,8 @@ function Search({ navBar }: forNavBar) {
   const [firstDate, setFirstDate] = useState<Date>(new Date());
   const [secondDate, setSecondDate] = useState<Date>(new Date());
 
-  const [minimum, setMinimum] = useState<number[] | null>([580]);
-  const [maximum, setMaximum] = useState<number[] | null>([12000]);
+  const [minimumPrice, setMinimumPrice] = useState<number[] | null>([580]);
+  const [maximumPrice, setMaximumPrice] = useState<number[] | null>([12000]);
 
   const [searchItem, setSearchItem] = useState<string>("");
   const [selectedLocation, setSelectedLocation] = useState<string | null>();
@@ -91,8 +91,8 @@ function Search({ navBar }: forNavBar) {
   saveToStorage({ name: "Location", variable: selectedLocation });
   saveToStorage({ name: "FirstDate", variable: firstDate });
   saveToStorage({ name: "LastDate", variable: secondDate });
-  saveToStorage({ name: "Minimum", variable: minimum });
-  saveToStorage({ name: "Maximum", variable: maximum });
+  saveToStorage({ name: "Minimum", variable: minimumPrice });
+  saveToStorage({ name: "Maximum", variable: maximumPrice });
 
   const loadStorage = () => {
     const location = localStorage.getItem("Location");
@@ -104,11 +104,11 @@ function Search({ navBar }: forNavBar) {
     const lastDate = localStorage.getItem("LastDate");
     if (lastDate) setSecondDate(new Date(lastDate));
 
-    const minimum = localStorage.getItem("Minimum");
-    if (minimum) setMinimum([Number(minimum)]);
+    const minimumPrice = localStorage.getItem("Minimum");
+    if (minimumPrice) setMinimumPrice([Number(minimumPrice)]);
 
-    const maximum = localStorage.getItem("Maximum");
-    if (maximum) setMaximum([Number(maximum)]);
+    const maximumPrice = localStorage.getItem("Maximum");
+    if (maximumPrice) setMaximumPrice([Number(maximumPrice)]);
   };
 
   useEffect(() => {
@@ -262,22 +262,26 @@ function Search({ navBar }: forNavBar) {
                   <div>
                     <p className="text-md font-bold">Price</p>
                     <p className="text-xs">
-                      {minimum &&
-                      minimum[0] === 580 &&
-                      maximum &&
-                      maximum[0] === 12000
+                      {minimumPrice &&
+                      minimumPrice[0] === 580 &&
+                      maximumPrice &&
+                      maximumPrice[0] === 12000
                         ? "Enter your budget"
-                        : "PHP " + minimum + " to " + "PHP " + maximum}
+                        : "PHP " +
+                          minimumPrice +
+                          " to " +
+                          "PHP " +
+                          maximumPrice}
                     </p>
                   </div>
                 ) : (
                   <p className="text-md font-bold">
-                    {minimum &&
-                    minimum[0] === 580 &&
-                    maximum &&
-                    maximum[0] === 12000
+                    {minimumPrice &&
+                    minimumPrice[0] === 580 &&
+                    maximumPrice &&
+                    maximumPrice[0] === 12000
                       ? "Price"
-                      : "PHP " + minimum + " to " + "PHP " + maximum}
+                      : "PHP " + minimumPrice + " to " + "PHP " + maximumPrice}
                   </p>
                 )}
               </div>
@@ -294,23 +298,23 @@ function Search({ navBar }: forNavBar) {
                 <Slider
                   defaultValue={[580]}
                   max={12000}
-                  step={1}
+                  step={100}
                   min={580}
                   onValueChange={(e) => {
-                    if (e[0] <= maximum![0]) {
-                      setMinimum(e);
+                    if (e[0] <= maximumPrice![0]) {
+                      setMinimumPrice(e);
                     }
                   }}
-                  value={minimum!}
+                  value={minimumPrice!}
                 />
                 <Input
                   className="w-1/3"
                   onChange={(e) => {
-                    if (Number(e.target.value) <= maximum![0]) {
-                      setMinimum([Number(e.target.value)]);
+                    if (Number(e.target.value) <= maximumPrice![0]) {
+                      setMinimumPrice([Number(e.target.value)]);
                     }
                   }}
-                  value={minimum![0]}
+                  value={minimumPrice![0]}
                 ></Input>
               </div>
               <div className="flex items-center gap-4">
@@ -318,23 +322,23 @@ function Search({ navBar }: forNavBar) {
                 <Slider
                   defaultValue={[50]}
                   max={12000}
-                  step={1}
+                  step={100}
                   min={580}
                   onValueChange={(e) => {
-                    if (e[0] >= minimum![0]) {
-                      setMaximum(e);
+                    if (e[0] >= minimumPrice![0]) {
+                      setMaximumPrice(e);
                     }
                   }}
-                  value={maximum!}
+                  value={maximumPrice!}
                 />
                 <Input
                   className="w-1/3"
                   onChange={(e) => {
-                    if (Number(e.target.value) >= minimum![0]) {
-                      setMaximum([Number(e.target.value)]);
+                    if (Number(e.target.value) >= minimumPrice![0]) {
+                      setMaximumPrice([Number(e.target.value)]);
                     }
                   }}
-                  value={maximum![0]}
+                  value={maximumPrice![0]}
                 ></Input>
               </div>
             </div>
@@ -344,7 +348,9 @@ function Search({ navBar }: forNavBar) {
           variant="outline"
           className="h-full bg-teal-500 text-white dark:text-[#09090b]"
         >
-          <Link to="/search">
+          <Link
+            to={`/search/${selectedLocation}/${firstDate.toLocaleDateString().replace(/\//g, "-")}/${secondDate.toLocaleDateString().replace(/\//g, "-")}/${minimumPrice}/${maximumPrice}`}
+          >
             {!navBar ? (
               <p className="text-md px-2 py-2">Find My Trailventure</p>
             ) : (

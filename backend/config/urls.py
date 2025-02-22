@@ -9,5 +9,6 @@ urlpatterns = [
     path("apps/token/", TokenObtainPairView.as_view(), name="access_token"),
     path("apps/token/refresh/", TokenRefreshView.as_view(), name="refresh_token"),
     path("admin-auth/", include("rest_framework.urls")),
-    path("apps/", include("apps.users.urls")),
+    path("apps/users/", include("apps.users.urls")),
+    path("apps/property/", include("apps.properties.urls")),
 ]

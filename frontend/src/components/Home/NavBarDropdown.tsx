@@ -5,20 +5,14 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/UI/dropdown-menu";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../UI/button";
 import { useTheme } from "@/components/theme-provider";
-import { useState, useEffect } from "react";
 
 function NavBarDropdown() {
-  const [darkMode, setDarkMode] = useState<boolean>(true);
-  const { setTheme } = useTheme();
-
-  useEffect(() => {
-    setTheme("system")
-  }, [])
+  const {theme, setTheme} = useTheme();
 
   return (
     <DropdownMenu>
@@ -39,11 +33,10 @@ function NavBarDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <div>
-              {darkMode ? (
+              {theme === "dark" ? (
                 <button
                   onClick={() => {
                     setTheme("light");
-                    setDarkMode(false);
                   }}
                 >
                   Light Mode
@@ -52,7 +45,6 @@ function NavBarDropdown() {
                 <button
                   onClick={() => {
                     setTheme("dark");
-                    setDarkMode(true);
                   }}
                 >
                   Dark Mode

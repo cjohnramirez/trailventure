@@ -1,4 +1,4 @@
-import { Card } from "../ui/card";
+import { Card } from "../UI/card";
 import TokyoImage from "../../assets/Home/tokyo.jpg";
 import ManilaImage from "../../assets/Home/manila.jpg";
 import ParisImage from "../../assets/Home/paris.jpeg";

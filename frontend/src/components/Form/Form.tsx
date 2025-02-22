@@ -14,9 +14,9 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from "@/components/UI/form";
+import { Input } from "@/components/UI/input";
+import { Button } from "@/components/UI/button";
 import { loginSchema, registerSchema } from "@/lib/Form/loginRegisterSchema";
 import { loginRegisterFields } from "@/lib/Form/loginRegisterFields";
 import {
@@ -25,7 +25,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/UI/card";
 import LoginPageImage from "../../assets/Form/LoginPage.jpg";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
@@ -61,10 +61,23 @@ function HomeForm({ route, method }: { route: string; method: string }) {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
 
+    console.log(values);
     if ("passwordConfirm" in values) {
-      const { passwordConfirm, ...filteredValues } = values;
+      const { passwordConfirm, ...filteredValues } = values as {
+        username: string;
+        first_name: string;
+        last_name: string;
+        email: string;
+        password: string;
+        passwordConfirm: string;
+        role?: string;
+      };
+      filteredValues.role = "guest";
+
       values = { ...filteredValues };
     }
+
+
 
     try {
       const res = await api.post(
@@ -126,7 +139,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
                 )}
               </CardDescription>
             </CardHeader>
-            <CardContent className="scrollbar mb-10 flex flex-col gap-y-2 px-8 md:overflow-auto pb-10">
+            <CardContent className="scrollbar mb-10 flex flex-col gap-y-2 px-8 pb-10 md:overflow-auto">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(handleSubmit, (errors) => {
