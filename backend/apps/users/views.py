@@ -4,6 +4,7 @@ from rest_framework import generics
 from .serializers import UserSerializer, UserProfileSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import ValidationError
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import UserProfile
 
 class CreateUserView(generics.CreateAPIView):
@@ -14,6 +15,7 @@ class CreateUserView(generics.CreateAPIView):
 class UserProfileCreate(generics.ListCreateAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         user = self.request.user

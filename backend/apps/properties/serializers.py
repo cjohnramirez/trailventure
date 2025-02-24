@@ -1,23 +1,20 @@
 from rest_framework import serializers
-from apps.properties.models import Property, PropertyType
+from apps.properties.models import *
 
+class PropertyReviewSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = PropertyReview
+    fields = "__all__"
+  
+class PropertyImageSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = PropertyImage
+    fields = "__all__"
+  
 class PropertySerializer(serializers.ModelSerializer):
+  images = PropertyImageSerializer(many=True, read_only=True)
+
   class Meta:
     model = Property
     fields = "__all__"
     read_only_fields = ['id', 'user']
-
-  def create(self, data):
-    print(data)
-    property = Property.objects.create(**data)
-    return property
-  
-class PropertyTypeSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = PropertyType
-    fields = "__all__"
-
-  def create(self, data):
-    print(data)
-    propertyType = PropertyType.objects.create(**data)
-    return propertyType

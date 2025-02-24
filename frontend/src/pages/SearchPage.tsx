@@ -14,15 +14,7 @@ function SearchPage() {
   return (
     <>
       <div>
-        <p>
-          {searchQuery.map((query, index) =>{
-            return (
-              <>
-                <p key={index}>{query}</p>
-              </>
-            )
-          })}
-        </p>
+        
       </div>
     </>
   );

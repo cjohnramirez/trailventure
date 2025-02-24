@@ -25,11 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-0n_uj=^&dw6lwc)4#0r%227^m49k&c6dlvk68^sppwf6(q5y5#"
+STRIPE_PUBLISHABLE_KEY = "pk_test_51QvhbiKODu0UvT2EWdRAcVNEDgQcwlUIeWUjYJ7HfZeihmckqzQ7dFxIEEbO75JdSwbWX09FBe9LJQul6RFWeaNL00JYIn2R6q"
+STRIPE_SECRET_KEY = "sk_test_51QvhbiKODu0UvT2EA22xFbHY02oI26TylA0CiGet0wsOTqV5WUsap7ksWZn0sPbxqLmYsBy4jSYlv2Mw63Ow7dPF00RqgR9F6Z"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
+
+MEDIA_URL = "/media/"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -59,8 +65,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_extensions",
     "apps.categories",
-    "apps.locations",
-    "apps.neighborhoods",
+    "apps.destinations",
     "apps.properties",
     "apps.transactions",
     "apps.users",
