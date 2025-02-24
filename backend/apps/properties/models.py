@@ -21,8 +21,15 @@ class PropertyAmenity(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"http://localhost:8000/"
+        return f"Property Amenity: {self.name}"
+    
+class PropertyImage(models.Model):
+    image = models.ImageField(upload_to="property_images/")
+    created = models.DateTimeField(auto_now_add=True)
 
+    #return image url in the future
+    def __str__(self):
+        return f"Property Image for Property: {self.property.name}"
 
 class Property(models.Model):
     name = models.CharField(max_length=255, unique=True, blank=False, null=False)
