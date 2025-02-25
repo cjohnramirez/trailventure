@@ -12,7 +12,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=15, choices=ROLE_CHOICES, default="guest")
 
     def get_user_reviews(self, user):
-        from apps.properties.models import PropertyReview
+        from apps.packages.models import PropertyReview
 
         return PropertyReview.objects.filter(review_by_user=user)
 

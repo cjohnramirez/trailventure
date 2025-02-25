@@ -23,4 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
+#contains API keys
+backend/config/settings.py
+
 venv/

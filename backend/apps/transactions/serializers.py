@@ -6,11 +6,6 @@ class AdditionalFeesSerializer(serializers.ModelSerializer):
     model = AdditionalFees
     fields = "__all__"
 
-class CurrenciesSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Currencies
-    fields = "__all__"
-
 class TransactionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Transaction
@@ -19,6 +14,11 @@ class TransactionSerializer(serializers.ModelSerializer):
 class BookingSerializer(serializers.ModelSerializer):
   class Meta:
     model = Booking
+    fields = "__all__"
+  
+class PackageReviewSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = PackageReview
     fields = "__all__"
 
 

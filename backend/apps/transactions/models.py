@@ -1,12 +1,18 @@
-import stripe
 from django.db import models
-from apps.properties.models import Property
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
+from rest_framework.exceptions import ValidationError
+from apps.packages.models import PackageType
 
 User = get_user_model()
 
+
+
 class AdditionalFees(models.Model):
+    class Meta:
+        verbose_name_plural = "additional fees"
+
     tax_paid_percent = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00
     )
@@ -16,37 +22,17 @@ class AdditionalFees(models.Model):
         return f"Tax: {self.tax_paid_percent}%, Site Fees: {self.site_fees}"
 
 
-class Currencies(models.Model):
-    name = models.CharField(max_length=255, blank=False, null=False)
-    code = models.CharField(max_length=255, blank=False, null=False)
-    icon_image = models.CharField(max_length=255)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-    STATUS_CHOICES = [
-        (1, "Active"),
-        (0, "Inactive"),
-    ]
-    status = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"Currency: {self.name}"
-
-
 class Booking(models.Model):
-    property = models.OneToOneField(
-        Property, on_delete=models.CASCADE, related_name="booking", null=True
+    package_type = models.ForeignKey(
+        PackageType, on_delete=models.CASCADE, related_name="booking", null=True
     )
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="booking", null=True
     )
-    check_in_date = models.DateTimeField(null=False, blank=False)
-    check_out_date = models.DateTimeField(null=False, blank=False)
-    price_per_day = models.DecimalField(max_digits=10, decimal_places=2)
+    num_of_person = models.PositiveIntegerField()
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
-    is_refund = models.BooleanField(default=False, blank=True)
     is_confirmed = models.BooleanField(default=False, blank=True)
     cancel_date = models.DateTimeField(null=True)
-    refund_paid = models.DecimalField(max_digits=10, default=0.00, decimal_places=2)
     booking_date = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -66,18 +52,10 @@ class Transaction(models.Model):
         related_name="transaction",
         null=True,
     )
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="transaction", null=True
-    )
     booking = models.ForeignKey(
         Booking, on_delete=models.CASCADE, related_name="transaction", null=True
     )
-    currency = models.ForeignKey(
-        Currencies, 
-        on_delete=models.CASCADE,
-        related_name="transaction",
-        null=True
-    )
+    currency = models.CharField(max_length=3, blank=True, null=True)
     status_choices = [
         ("pending", "Pending"),
         ("completed", "Completed"),
@@ -95,3 +73,35 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"Transaction id: {self.id}"
+
+class PackageReview(models.Model):
+    class Meta:
+        verbose_name_plural = "package reviews"
+
+    review_by_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="package_review", null=True
+    )
+    transaction = models.ForeignKey(
+        Transaction, on_delete=models.CASCADE, related_name="package_review", null=True
+    )
+    comment = models.TextField()
+    rating = models.DecimalField(
+        max_digits=2,
+        decimal_places=1,
+        blank=False,
+        null=False,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if not Booking.objects.filter(
+            user=self.review_by_user, Package=self.Package
+        ).exists():
+            raise ValidationError(
+                "User must have booked this Package before reviewing."
+            )
+
+    def __str__(self):
+        return f"Package: {self.Package.name}, User: {self.review_by_user.username}"

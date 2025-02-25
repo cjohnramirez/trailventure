@@ -33,7 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'backend/media')
 
 MEDIA_URL = "/media/"
 
@@ -64,9 +64,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "django_extensions",
-    "apps.categories",
     "apps.destinations",
-    "apps.properties",
+    "apps.packages",
     "apps.transactions",
     "apps.users",
 ]

@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from apps.destinations.models import *
 
+class DestinationTypeSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = DestinationType
+    fields = "__all__"
+
 class DestinationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Destination
@@ -9,11 +14,6 @@ class DestinationSerializer(serializers.ModelSerializer):
 class CountrySerializer(serializers.ModelSerializer):
   class Meta:
     model = Country
-    fields = "__all__"
-
-class ProvinceSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Province
     fields = "__all__"
 
 class CitySerializer(serializers.ModelSerializer):
