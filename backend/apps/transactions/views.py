@@ -1,6 +1,7 @@
 import stripe
 from rest_framework import generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
+from apps.users.permissions import IsCustomer
 from apps.transactions.serializers import *
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
@@ -10,6 +11,8 @@ from django.http import JsonResponse
 
 # USER
 class CreateCheckoutSessionView(View):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         transaction_id = self.kwargs["pk"]
         transaction = Transaction.objects.get(id=transaction_id)
@@ -84,7 +87,7 @@ class TransactionModifyView(generics.RetrieveUpdateDestroyAPIView):
 
 class PackageReviewCreateView(generics.ListCreateAPIView):
     serializer_class = PackageReviewSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsCustomer]
 
     def get_queryset(self):
         return PackageReview.objects.filter(review_by_user=self.request.user)
@@ -97,7 +100,7 @@ class PackageReviewCreateView(generics.ListCreateAPIView):
 
 class PackageReviewModifyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackageReviewSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsCustomer]
 
     def get_queryset(self):
         return PackageReview.objects.filter(review_by_user=self.request.user)

@@ -39,14 +39,13 @@ class City(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name}, {self.province.name if self.province else 'Unknown Province'}"
+        return f"City: {self.name}"
 
 
 class Destination(models.Model):
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to="destination_images/")
-    added_by_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     destination_type = models.ForeignKey(
         DestinationType,
         on_delete=models.CASCADE,
@@ -57,5 +56,9 @@ class Destination(models.Model):
     country = models.ForeignKey(
         Country, on_delete=models.CASCADE, null=True, related_name="destinations"
     )
+    location = models.CharField(max_length=255, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}"

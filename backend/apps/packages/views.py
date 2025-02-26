@@ -1,8 +1,8 @@
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from apps.packages.serializers import *
+from apps.users.permissions import IsCustomer, IsHost
 from apps.packages.models import *
-from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
@@ -14,7 +14,7 @@ class PackageListView(generics.ListAPIView):
 
 class PackageCreateView(generics.CreateAPIView):
     serializer_class = PackageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -22,7 +22,7 @@ class PackageCreateView(generics.CreateAPIView):
 
 class PackageModifyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
 
     def get_queryset(self):
         return Package.objects.filter(user=self.request.user)
@@ -36,12 +36,12 @@ class PackageTypeListView(generics.ListAPIView):
 
 class PackageTypeCreateView(generics.CreateAPIView):
     serializer_class = PackageTypeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
 
 
 class PackageTypeModifyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackageTypeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
 
 
 class PackageAmenityListView(generics.ListAPIView):
@@ -52,12 +52,12 @@ class PackageAmenityListView(generics.ListAPIView):
 
 class PackageAmenityCreateView(generics.CreateAPIView):
     serializer_class = PackageAmenitySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
 
 
 class PackageAmenityModifyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackageAmenitySerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
 
 
 class PackageImageListView(generics.ListAPIView):
@@ -69,13 +69,13 @@ class PackageImageListView(generics.ListAPIView):
 
 class PackageImageCreateView(generics.CreateAPIView):
     serializer_class = PackageImageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
     queryset = PackageImage.objects.all()
     parser_classes = (MultiPartParser, FormParser)
 
 
 class PackageImageModifyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackageImageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsHost]
     queryset = PackageImage.objects.all()
     parser_classes = (MultiPartParser, FormParser)
