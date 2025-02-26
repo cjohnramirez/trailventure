@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/UI/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "../UI/button";

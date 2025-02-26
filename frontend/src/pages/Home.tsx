@@ -7,24 +7,6 @@ import DiscoverSection from "@/components/Home/DiscoverSection";
 function Home() {
   const [forNavBar, setforNavBar] = useState(true);
 
-  // DO NOT DELETE THIS!
-  /*
-  const [_userData, setUserData] = useState([]);
-  useEffect(() => {
-    getUserData();
-  }, []);
-
-  
-  const getUserData = async () => {
-    try {
-      const response = await api.get("apps/users/profile/");
-      setUserData(response.data);
-    } catch (err) {
-      alert(err);
-    }
-  };
-  */
-
   const checkSectionInView = () => {
     const section = document.getElementById("section1");
     if (!section) return;

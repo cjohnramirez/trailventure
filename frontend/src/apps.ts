@@ -1,11 +1,11 @@
 import axios from "axios";
 import { ACCESS_TOKEN } from "./constants";
 
-const apps = axios.create({
+const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-apps.interceptors.request.use(
+api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(ACCESS_TOKEN)
     if (token) {
@@ -18,4 +18,4 @@ apps.interceptors.request.use(
   }
 )
 
-export default apps
+export default api

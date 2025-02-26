@@ -6,69 +6,44 @@ import {
   MapPinned,
 } from "lucide-react";
 import { Button } from "../UI/button";
-import { Calendar } from "@/components/UI/calendar";
-import { Popover, PopoverTrigger } from "@/components/UI/popover";
-import { PopoverContent } from "@/components/UI/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import { PopoverContent } from "@/components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { DropdownMenuSeparator } from "@/components/UI/dropdown-menu";
-import { Slider } from "../UI/slider";
+import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Slider } from "../ui/slider";
 import { Input } from "../UI/input";
 import { Link } from "react-router-dom";
+import api from "@/apps";
 
 interface forNavBar {
   navBar: boolean;
 }
 
-interface Location {
-  number_of_properties: number;
-  city: string;
-  country: string;
-  description: string;
+interface Destination {
+  description: string,
+  image: string,
+  name: string,
+  Destination: string,
 }
 
 function Search({ navBar }: forNavBar) {
-  const locations: Location[] = [
-    {
-      number_of_properties: 25,
-      city: "Manila",
-      country: "Philippines",
-      description:
-        "Capital of the Philippines, known for its waterfront and Chinatown.",
-    },
-    {
-      number_of_properties: 30,
-      city: "Tokyo",
-      country: "Japan",
-      description: "Japan's capital, famous for skyscrapers and pop culture.",
-    },
-    {
-      number_of_properties: 15,
-      city: "New York",
-      country: "USA",
-      description:
-        "Largest city in the USA, known for Times Square and Central Park.",
-    },
-    {
-      number_of_properties: 20,
-      city: "Paris",
-      country: "France",
-      description:
-        "France's capital, renowned for art, fashion, and the Eiffel Tower.",
-    },
-    {
-      number_of_properties: 31,
-      city: "Dubai",
-      country: "UAE",
-      description:
-        "Known for modern architecture, luxury shopping, and nightlife.",
-    },
-    {
-      number_of_properties: 26,
-      city: "Bangkok",
-      country: "Thailand",
-      description: "Thailand's capital, famous for shrines and street life.",
-    },
-  ];
+  const [destinations, setDestinationsData] = useState([]);
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  
+  const getUserData = async () => {
+    try {
+      const response = await api.get("apps/destination/list/");
+      setDestinationsData(response.data);
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const parsedDestinations : Destination[] = destinations;
 
   const [firstDate, setFirstDate] = useState<Date>(new Date());
   const [secondDate, setSecondDate] = useState<Date>(new Date());
@@ -77,26 +52,25 @@ function Search({ navBar }: forNavBar) {
   const [maximumPrice, setMaximumPrice] = useState<number[] | null>([12000]);
 
   const [searchItem, setSearchItem] = useState<string>("");
-  const [selectedLocation, setSelectedLocation] = useState<string | null>();
-  const [filteredLocations, setFilteredLocations] =
-    useState<Location[]>(locations);
+  const [selectedDestination, setSelectedDestination] = useState<string | null>();
+  const [filteredDestinations, setFilteredDestinations] = useState<Destination[]>(parsedDestinations);
 
   const [locPopoverOpen, setLocPopoverOpen] = useState<boolean>(false);
 
   function saveToStorage({ name, variable }: { name: string; variable: any }) {
-    if (selectedLocation) {
+    if (selectedDestination) {
       localStorage.setItem(name, variable);
     }
   }
-  saveToStorage({ name: "Location", variable: selectedLocation });
+  saveToStorage({ name: "destination", variable: selectedDestination });
   saveToStorage({ name: "FirstDate", variable: firstDate });
   saveToStorage({ name: "LastDate", variable: secondDate });
   saveToStorage({ name: "Minimum", variable: minimumPrice });
   saveToStorage({ name: "Maximum", variable: maximumPrice });
 
   const loadStorage = () => {
-    const location = localStorage.getItem("Location");
-    if (location) setSelectedLocation(location);
+    const Destination = localStorage.getItem("Destination");
+    if (Destination) setSelectedDestination(Destination);
 
     const firstDate = localStorage.getItem("FirstDate");
     if (firstDate) setFirstDate(new Date(firstDate));
@@ -119,11 +93,11 @@ function Search({ navBar }: forNavBar) {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
 
-    const filteredItems = locations.filter((location) => {
-      return location.city.toLowerCase().includes(searchTerm.toLowerCase());
+    const filteredItems = parsedDestinations.filter((destination) => {
+      return destination.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
-    setFilteredLocations(filteredItems);
+    setFilteredDestinations(filteredItems);
   };
 
   return (
@@ -143,22 +117,22 @@ function Search({ navBar }: forNavBar) {
               <div className="flex h-full flex-col justify-center text-left">
                 {!navBar ? (
                   <div>
-                    <p className="text-md font-bold">Location</p>
+                    <p className="text-md font-bold">Destination</p>
                     <p className="text-xs">
-                      {selectedLocation
-                        ? selectedLocation
-                        : "Enter your location"}
+                      {selectedDestination
+                        ? selectedDestination
+                        : "Enter your Destination"}
                     </p>
                   </div>
                 ) : (
                   <p className="text-md font-bold">
-                    {selectedLocation ? selectedLocation : "Location"}
+                    {selectedDestination ? selectedDestination : "Destination"}
                   </p>
                 )}
               </div>
             </Button>
           </PopoverTrigger>
-          <PopoverContent>
+          <PopoverContent className="w-[400px]">
             <div className="text-center">
               <p className="pb-3">Set your destination</p>
               <DropdownMenuSeparator />
@@ -166,7 +140,7 @@ function Search({ navBar }: forNavBar) {
             <div className="pt-2">
               <Input value={searchItem} onChange={handleInputChange} />
               <div className="pt-2">
-                {filteredLocations.map((location, index) => {
+                {filteredDestinations.map((destination, index) => {
                   if (index > 2) {
                     return null;
                   }
@@ -175,14 +149,14 @@ function Search({ navBar }: forNavBar) {
                       key={index}
                       className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-zinc-900"
                       onClick={() => {
-                        setSelectedLocation(location.city);
+                        setSelectedDestination(destination.name);
                         setLocPopoverOpen(false);
                       }}
                     >
-                      <MapPinned />
-                      <div>
-                        <p>{location.city}</p>
-                        <p className="text-xs">{location.description}</p>
+                      <MapPinned/>
+                      <div className="w-5/6">
+                        <p>{destination.name}</p>
+                        <p className="text-xs">{destination.description}</p>
                       </div>
                     </div>
                   );
@@ -349,7 +323,7 @@ function Search({ navBar }: forNavBar) {
           className="h-full bg-teal-500 text-white dark:text-[#09090b]"
         >
           <Link
-            to={`/search/${selectedLocation}/${firstDate.toLocaleDateString().replace(/\//g, "-")}/${secondDate.toLocaleDateString().replace(/\//g, "-")}/${minimumPrice}/${maximumPrice}`}
+            to={`/search/${selectedDestination}/${firstDate.toLocaleDateString().replace(/\//g, "-")}/${secondDate.toLocaleDateString().replace(/\//g, "-")}/${minimumPrice}/${maximumPrice}`}
           >
             {!navBar ? (
               <p className="text-md px-2 py-2">Find My Trailventure</p>

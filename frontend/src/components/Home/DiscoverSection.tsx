@@ -1,59 +1,33 @@
 import { Card } from "../UI/card";
-import TokyoImage from "../../assets/Home/tokyo.jpg";
-import ManilaImage from "../../assets/Home/manila.jpg";
-import ParisImage from "../../assets/Home/paris.jpeg";
-import NewYorkImage from "../../assets/Home/new york.jpg";
-import DubaiImage from "../../assets/Home/dubai.png";
-import BangkokImage from "../../assets/Home/bangkok.png";
 import { MapPin } from "lucide-react";
+import { useState, useEffect } from "react";
+import api from "../../apps";
 
-interface Location {
-  number_of_properties: number;
-  city: string;
-  country: string;
-  cityImage: string;
+interface Destination {
+  description: string,
+  image: string,
+  name: string,
+  location: string,
 }
 
 function DiscoverSection() {
-  const locations: Location[] = [
-    {
-      number_of_properties: 25,
-      city: "Manila",
-      country: "Philippines",
-      cityImage: ManilaImage,
-    },
-    {
-      number_of_properties: 30,
-      city: "Tokyo",
-      country: "Japan",
-      cityImage: TokyoImage,
-    },
-    {
-      number_of_properties: 15,
-      city: "New York",
-      country: "USA",
-      cityImage: NewYorkImage,
-    },
-    {
-      number_of_properties: 20,
-      city: "Paris",
-      country: "France",
-      cityImage: ParisImage,
-    },
-    {
-      number_of_properties: 31,
-      city: "Dubai",
-      country: "UAE",
-      cityImage: DubaiImage,
-    },
-    {
-      number_of_properties: 26,
-      city: "Bangkok",
-      country: "Thailand",
-      cityImage: BangkokImage,
-    },
-  ];
+  const [destinations, setDestinationsData] = useState([]);
+  useEffect(() => {
+    getUserData();
+  }, []);
 
+  
+  const getUserData = async () => {
+    try {
+      const response = await api.get("apps/destination/list/");
+      setDestinationsData(response.data);
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const parsedDestinations : Destination[] = destinations;
+  
   return (
     <div className="py-10">
       <div>
@@ -68,7 +42,7 @@ function DiscoverSection() {
         </p>
       </div>
       <div className="grid grid-cols-4 gap-4">
-        {locations.map((location, index) => {
+        {parsedDestinations.slice(0,6).map((destination, index) => {
           const gridClasses = [
             "col-span-1 row-span-2",
             "col-span-1 row-span-1",
@@ -82,17 +56,17 @@ function DiscoverSection() {
             >
               <div className="h-full">
                 <img
-                  src={location.cityImage}
+                  src={destination.image}
                   className="h-full w-full rounded-lg object-cover"
-                  alt={`${location.city} image`}
+                  alt={`${destination.image} image`}
                 ></img>
                 <div className="relative bottom-[85px] ml-4 mr-4 rounded-2xl bg-white dark:bg-[#09090b]">
                   <div className="flex items-center gap-2 px-4 py-2">
                     <MapPin />
                     <div>
-                      <p className="text-xl font-semibold">{location.city}</p>
+                      <p className="text-xl font-semibold">{destination.name}</p>
                       <p className="text-xs">
-                        {location.number_of_properties} properties
+                        {destination.location}
                       </p>
                     </div>
                   </div>
