@@ -6,15 +6,18 @@ class DestinationTypeSerializer(serializers.ModelSerializer):
     model = DestinationType
     fields = "__all__"
 
-class DestinationSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Destination
-    fields = "__all__"
-
 class CountrySerializer(serializers.ModelSerializer):
   class Meta:
     model = Country
     fields = "__all__"
+
+class DestinationSerializer(serializers.ModelSerializer):
+  country = CountrySerializer(read_only=True)
+
+  class Meta:
+    model = Destination
+    fields = "__all__"
+
 
 class CitySerializer(serializers.ModelSerializer):
   class Meta:

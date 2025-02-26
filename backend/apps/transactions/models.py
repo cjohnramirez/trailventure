@@ -8,7 +8,6 @@ from apps.packages.models import PackageType
 User = get_user_model()
 
 
-
 class AdditionalFees(models.Model):
     class Meta:
         verbose_name_plural = "additional fees"
@@ -16,10 +15,10 @@ class AdditionalFees(models.Model):
     tax_paid_percent = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00
     )
-    site_fees = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    site_fees_percent = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return f"Tax: {self.tax_paid_percent}%, Site Fees: {self.site_fees}"
+        return f"Tax: {self.tax_paid_percent}%, Site Fees: {self.site_fees_percent}"
 
 
 class Booking(models.Model):
@@ -36,10 +35,6 @@ class Booking(models.Model):
     booking_date = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-
-    def clean(self):
-        if self.check_out_date <= self.check_in_date:
-            raise ValidationError("Check-out date must be after check-in date.")
 
     def __str__(self):
         return f"Booking id: {self.id}"
@@ -73,6 +68,7 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"Transaction id: {self.id}"
+
 
 class PackageReview(models.Model):
     class Meta:

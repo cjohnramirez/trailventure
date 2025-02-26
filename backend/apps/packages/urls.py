@@ -15,6 +15,10 @@ urlpatterns = [
   path("type/create/", views.PackageTypeCreateView.as_view()),
   path("type/modify/<int:pk>/", views.PackageTypeModifyView.as_view()),
 
+  path("type-amenity/list/", views.PackageTypeAmenityListView.as_view()),
+  path("type-amenity/create/", views.PackageTypeAmenityCreateView.as_view()),
+  path("type-amenity/modify/<int:pk>/", views.PackageTypeAmenityModifyView.as_view()),
+
   path("amenity/list/", views.PackageAmenityListView.as_view()),
   path("amenity/create/", views.PackageAmenityCreateView.as_view()),
   path("amenity/modify/<int:pk>/", views.PackageAmenityModifyView.as_view()),

@@ -19,6 +19,11 @@ class PackageTypeSerializer(serializers.ModelSerializer):
     model = PackageType
     fields = "__all__"
 
+class PackageTypeAmenitySerializer(serializers.ModelSerializer):
+  class Meta:
+    model = PackageTypeAmenity
+    fields = "__all__"
+
 class PackageAmenitySerializer(serializers.ModelSerializer):
   class Meta:
     model = PackageAmenity

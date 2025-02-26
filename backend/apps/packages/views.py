@@ -44,6 +44,22 @@ class PackageTypeModifyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsHost]
 
 
+class PackageTypeAmenityListView(generics.ListAPIView):
+    queryset = PackageTypeAmenity.objects.all()
+    serializer_class = PackageTypeAmenitySerializer
+    permission_classes = [AllowAny]
+
+
+class PackageTypeAmenityCreateView(generics.CreateAPIView):
+    serializer_class = PackageTypeAmenitySerializer
+    permission_classes = [IsHost]
+
+
+class PackageTypeAmenityModifyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PackageTypeAmenitySerializer
+    permission_classes = [IsHost]
+
+
 class PackageAmenityListView(generics.ListAPIView):
     queryset = PackageAmenity.objects.all()
     serializer_class = PackageAmenitySerializer
