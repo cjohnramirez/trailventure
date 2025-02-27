@@ -1,13 +1,14 @@
 import { Card } from "../UI/card";
-import { MapPin } from "lucide-react";
+import { MapPin, Terminal } from "lucide-react";
 import { useState, useEffect } from "react";
 import api from "../../apps";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 interface Destination {
-  description: string,
-  image: string,
-  name: string,
-  location: string,
+  description: string;
+  image: string;
+  name: string;
+  location: string;
 }
 
 function DiscoverSection() {
@@ -16,18 +17,23 @@ function DiscoverSection() {
     getUserData();
   }, []);
 
-  
   const getUserData = async () => {
     try {
       const response = await api.get("apps/destination/list/");
       setDestinationsData(response.data);
     } catch (err) {
-      alert(err);
+      <Alert>
+        <Terminal className="h-4 w-4" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          Error fetching data
+        </AlertDescription>
+      </Alert>;
     }
   };
 
-  const parsedDestinations : Destination[] = destinations;
-  
+  const parsedDestinations: Destination[] = destinations;
+
   return (
     <div className="py-10">
       <div>
@@ -42,7 +48,7 @@ function DiscoverSection() {
         </p>
       </div>
       <div className="grid grid-cols-4 gap-4">
-        {parsedDestinations.slice(0,6).map((destination, index) => {
+        {parsedDestinations.slice(0, 6).map((destination, index) => {
           const gridClasses = [
             "col-span-1 row-span-2",
             "col-span-1 row-span-1",
@@ -64,10 +70,10 @@ function DiscoverSection() {
                   <div className="flex items-center gap-2 px-4 py-2">
                     <MapPin />
                     <div>
-                      <p className="text-xl font-semibold">{destination.name}</p>
-                      <p className="text-xs">
-                        {destination.location}
+                      <p className="text-xl font-semibold">
+                        {destination.name}
                       </p>
+                      <p className="text-xs">{destination.location}</p>
                     </div>
                   </div>
                 </div>

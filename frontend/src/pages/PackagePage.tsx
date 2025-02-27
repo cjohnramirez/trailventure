@@ -20,8 +20,8 @@ function PackagePage() {
           </div>
         </div>
       </div>
-      <div className="flex">
-        <div className="mx-8 my-4 flex flex-col gap-4 p-8">
+      <div className="mx-8 my-4 flex flex-row justify-center gap-4 p-8">
+        <div className="flex w-full justify-between max-w-[1200px]">
           <p className="text-2xl font-semibold">{name}</p>
           <Button>Save to Wishlist</Button>
         </div>

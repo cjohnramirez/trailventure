@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-//import api from "@/apps";
 import Search from "../components/Home/SearchBar";
 import NavBar from "@/components/Home/NavBar";
 import DiscoverSection from "@/components/Home/DiscoverSection";
