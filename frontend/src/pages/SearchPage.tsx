@@ -55,10 +55,11 @@ function SearchPage() {
   const [_isFiltered, setIsFiltered] = useState(false);
 
   useEffect(() => {
-    getUserData();
+    getPackageData();
+    applyFilters();
   }, []);
 
-  const getUserData = async () => {
+  const getPackageData = async () => {
     try {
       const fetchPackage = await api.get("apps/package/list/");
       setTourPackages(fetchPackage.data);
@@ -132,7 +133,7 @@ function SearchPage() {
     "Bad",
     "Terrible",
   ];
-
+  
   const applyFilters = () => {
     const filteredResults = tourPackages.filter((tourPackage: tourPackage) => {
       if (
@@ -184,6 +185,10 @@ function SearchPage() {
   };
 
   const packagesToDisplay = filteredTourPackages;
+
+  useEffect(() => {
+    applyFilters();
+  }, [tourPackages, state]);
 
   return (
     <>
@@ -394,8 +399,11 @@ function SearchPage() {
                           <div className="rounded-xl border-[1px]">
                             <p className="p-2 text-sm font-semibold">
                               PHP{" "}
-                              {Math.floor(Number(tourPackage.package_type[0]?.price_per_person)) ||
-                                ""}
+                              {Math.floor(
+                                Number(
+                                  tourPackage.package_type[0]?.price_per_person,
+                                ),
+                              ) || ""}
                             </p>
                           </div>
                         </div>
