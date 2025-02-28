@@ -92,6 +92,7 @@ function PackagePage() {
               >
                 <img
                   src={image.image}
+                  alt={parsedTourPackage[0]?.name + " image " + index}
                   className="h-full w-full rounded-lg object-cover"
                 ></img>
               </div>
