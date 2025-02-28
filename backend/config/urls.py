@@ -12,7 +12,7 @@ urlpatterns = [
     path("apps/token/", TokenObtainPairView.as_view(), name="access_token"),
     path("apps/token/refresh/", TokenRefreshView.as_view(), name="refresh_token"),
     path("apps/users/", include("apps.users.urls")),
-    path("apps/packages/", include("apps.packages.urls")),
+    path("apps/package/", include("apps.packages.urls")),
     path("apps/transaction/", include("apps.transactions.urls")),
     path("apps/destination/", include("apps.destinations.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

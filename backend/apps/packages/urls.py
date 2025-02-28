@@ -7,7 +7,7 @@ urlpatterns = [
   path("modify/<int:pk>/", views.PackageModifyView.as_view()),
   
   path("review/list/<int:pk>/", views.PackageCreateView.as_view()),
-  path("image/list/<int:pk>/", views.PackageImageListView.as_view()),
+  path("image/list/", views.PackageImageListView.as_view()),
   path("image/create/", views.PackageImageCreateView.as_view()),
   path("image/modify/<int:pk>/", views.PackageImageModifyView.as_view()),
 

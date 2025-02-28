@@ -7,9 +7,15 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class PackageListView(generics.ListAPIView):
-    queryset = Package.objects.all()
     serializer_class = PackageSerializer
     permission_classes = [AllowAny]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def get_queryset(self):
+        packages = Package.objects.all()
+        for package in packages:
+            package.image_urls = [image.image.url for image in package.package_image.all()]
+        return packages
 
 
 class PackageCreateView(generics.CreateAPIView):

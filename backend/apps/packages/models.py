@@ -6,25 +6,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class PackageAmenity(models.Model):
-    class Meta:
-        verbose_name_plural = "Package amenities"
-
-    name = models.CharField(max_length=255, unique=True)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        related_package = self.package.all()
-        package_names = ", ".join(pt.name for pt in related_package)
-
-        return (
-            f'{self.name}: For package "{package_names}"'
-            if package_names
-            else self.name
-        )
-
-
 class Package(models.Model):
     name = models.CharField(max_length=255, unique=True, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
@@ -34,14 +15,33 @@ class Package(models.Model):
     destination = models.ForeignKey(
         Destination, on_delete=models.CASCADE, related_name="package", null=True
     )
-    package_amenity = models.ManyToManyField(PackageAmenity, related_name="package")
     address = models.TextField(blank=True, null=True)
-    currency = models.CharField(max_length=3, blank=True, null=True)
+    start_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            raise ValidationError("End date should be greater than start date.")
+
+    def __str__(self):
+        return f"Package: {self.name}"
+
+
+class PackageAmenity(models.Model):
+    class Meta:
+        verbose_name_plural = "Package amenities"
+
+    package = models.ForeignKey(
+        Package, on_delete=models.CASCADE, related_name="package_amenity"
+    )
+    name = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Package: {self.name}"
+        return f"Package {self.package.name}: {self.name} "
 
 
 class PackageImage(models.Model):
@@ -55,10 +55,32 @@ class PackageImage(models.Model):
         return f"Package Image for package {self.package.name}"
 
 
+class PackageType(models.Model):
+    name = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    price_per_person = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True
+    )
+    package = models.ForeignKey(
+        Package, related_name="package_type", on_delete=models.CASCADE, null=True
+    )
+    description = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Package: {self.package.name}, Package Type: {self.name}"
+
+
 class PackageTypeAmenity(models.Model):
     class Meta:
         verbose_name_plural = "Package type amenities"
 
+    package_type = models.ForeignKey(
+        PackageType,
+        on_delete=models.CASCADE,
+        related_name="package_type_amenity",
+        null=True
+    )
     name = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -72,25 +94,6 @@ class PackageTypeAmenity(models.Model):
             if package_type_names
             else self.name
         )
-
-
-class PackageType(models.Model):
-    name = models.CharField(max_length=255, unique=True, blank=True, null=True)
-    price_per_person = models.DecimalField(
-        max_digits=10, decimal_places=2, blank=True, null=True
-    )
-    package = models.ForeignKey(
-        Package, on_delete=models.CASCADE, related_name="package_type", null=True
-    )
-    package_type_amenity = models.ManyToManyField(
-        PackageTypeAmenity, related_name="package_type"
-    )
-    description = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Package Type: {self.name}"
 
 
 class PackageRoutePoint(models.Model):
@@ -113,6 +116,4 @@ class PackageRoutePoint(models.Model):
     count = 0
 
     def __str__(self):
-        return (
-            f"Package {self.package_type.name} Route Point {self.point_number}: {self.title}"
-        )
+        return f"Package {self.package_type.name} Route Point {self.point_number}: {self.title}"
