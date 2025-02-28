@@ -29,7 +29,7 @@ function App() {
           path="/search/:location/:startdate/:enddate/:startprice/:endprice"
           element={<SearchPage />}
         />
-        <Route path="/package/:name" element={<PackagePage />} />
+        <Route path="/package/:id" element={<PackagePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />

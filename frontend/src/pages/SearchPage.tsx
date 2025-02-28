@@ -18,38 +18,13 @@ import { useState, useEffect } from "react";
 import api from "../lib/api";
 import { AxiosError } from "axios";
 import { toast } from "../components/Error/ErrorSonner";
+import { tourPackage } from "@/lib/SearchPage/tourPackage";
 
 interface destinationDropdown {
   description: string;
   image: string;
   name: string;
   location: string;
-  id: string;
-}
-
-interface tourPackage {
-  id: Number;
-  name: string;
-  description: string;
-  location: string;
-  start_date: string;
-  end_date: string;
-  package_image: tourPackageImage[];
-  package_type: tourPackageLowestPrice[];
-  destination: tourDestination;
-}
-
-interface tourPackageImage {
-  image: string;
-  id: Number;
-}
-
-interface tourPackageLowestPrice {
-  price_per_person: string;
-}
-
-interface tourDestination {
-  name: string;
   id: string;
 }
 
@@ -210,8 +185,6 @@ function SearchPage() {
 
   const packagesToDisplay = filteredTourPackages;
 
-  console.log(tourPackages)
-
   return (
     <>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
@@ -266,7 +239,16 @@ function SearchPage() {
                 step={500}
                 max={100000}
               />
-              <Input value={state.minPrice} className="w-1/3" />
+              <Input
+                value={state.minPrice}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_MIN_PRICE",
+                    payload: e.target.value,
+                  })
+                }
+                className="w-1/3"
+              />
             </div>
             <div className="flex items-center gap-4">
               <p>Maximum</p>
@@ -281,7 +263,16 @@ function SearchPage() {
                 step={500}
                 max={100000}
               />
-              <Input value={state.maxPrice} className="w-1/3" />
+              <Input
+                value={state.maxPrice}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_MAX_PRICE",
+                    payload: e.target.value,
+                  })
+                }
+                className="w-1/3"
+              />
             </div>
           </div>
           <div>
@@ -375,7 +366,7 @@ function SearchPage() {
             {packagesToDisplay.length > 0 ? (
               packagesToDisplay.map((tourPackage: tourPackage, index) => {
                 return (
-                  <Link to={`/package/${tourPackage.name}`} key={index}>
+                  <Link to={`/package/${tourPackage.id}`} key={index}>
                     <div className="h-full flex-row rounded-xl border-[1px] p-4">
                       <div className="h-1/2 w-full pb-4">
                         <img

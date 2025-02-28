@@ -9,14 +9,16 @@ from rest_framework.parsers import MultiPartParser, FormParser
 class PackageListView(generics.ListAPIView):
     serializer_class = PackageSerializer
     permission_classes = [AllowAny]
-    parser_classes = (MultiPartParser, FormParser)
+    queryset = Package.objects.all()
+
+
+class PackageSingleView(generics.ListAPIView):
+    serializer_class = PackageSerializer
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
-        packages = Package.objects.all()
-        for package in packages:
-            package.image_urls = [image.image.url for image in package.package_image.all()]
-        return packages
-
+        pk = self.kwargs.get('pk')
+        return Package.objects.filter(id=pk)
 
 class PackageCreateView(generics.CreateAPIView):
     serializer_class = PackageSerializer

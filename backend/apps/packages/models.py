@@ -86,14 +86,7 @@ class PackageTypeAmenity(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        related_package_types = self.package_type.all()
-        package_type_names = ", ".join(pt.name for pt in related_package_types)
-
-        return (
-            f'{self.name}: For package "{package_type_names}"'
-            if package_type_names
-            else self.name
-        )
+        return f"Package type: {self.package_type.name}, Amenity: {self.name}"
 
 
 class PackageRoutePoint(models.Model):
@@ -112,8 +105,6 @@ class PackageRoutePoint(models.Model):
     end_time = models.TimeField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-
-    count = 0
 
     def __str__(self):
         return f"Package {self.package_type.name} Route Point {self.point_number}: {self.title}"

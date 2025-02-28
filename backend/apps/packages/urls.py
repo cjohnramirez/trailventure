@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+  path("<int:pk>/", views.PackageSingleView.as_view()),
   path("list/", views.PackageListView.as_view()),
   path("create/", views.PackageCreateView.as_view()),
   path("modify/<int:pk>/", views.PackageModifyView.as_view()),
