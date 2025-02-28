@@ -25,7 +25,10 @@ function App() {
       <Routes>
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/" element={<Home />} />
-        <Route path="/search/:location/:startdate/:enddate/:startprice/:endprice" element={<SearchPage />} />
+        <Route
+          path="/search/:location/:startdate/:enddate/:startprice/:endprice"
+          element={<SearchPage />}
+        />
         <Route path="/package/:name" element={<PackagePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { Button } from "../UI/button";
+import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 
 function NavBarDropdown() {

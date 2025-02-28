@@ -5,16 +5,16 @@ import {
   Search as SearchIcon,
   MapPinned,
 } from "lucide-react";
-import { Button } from "../UI/button";
+import { Button } from "../ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { PopoverContent } from "@/components/ui/popover";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Slider } from "../ui/slider";
-import { Input } from "../UI/input";
+import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
-import api from "@/apps";
+import api from "../../lib/api";
 
 interface forNavBar {
   navBar: boolean;
@@ -39,7 +39,7 @@ function Search({ navBar }: forNavBar) {
       const response = await api.get("apps/destination/list/");
       setDestinationsData(response.data);
     } catch (err) {
-      alert(err);
+      
     }
   };
 
@@ -52,7 +52,7 @@ function Search({ navBar }: forNavBar) {
   const [maximumPrice, setMaximumPrice] = useState<number[] | null>([12000]);
 
   const [searchItem, setSearchItem] = useState<string>("");
-  const [selectedDestination, setSelectedDestination] = useState<string | null>();
+  const [selectedDestination, setSelectedDestination] = useState<string | "">("Set Location");
   const [filteredDestinations, setFilteredDestinations] = useState<Destination[]>(parsedDestinations);
 
   const [locPopoverOpen, setLocPopoverOpen] = useState<boolean>(false);

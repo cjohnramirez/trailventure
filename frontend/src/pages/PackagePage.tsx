@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import NavBar from "@/components/Home/NavBar";
-import { Button } from "@/components/UI/button";
+import { Button } from "@/components/ui/button";
 
 function PackagePage() {
   const { name } = useParams();
@@ -23,7 +23,7 @@ function PackagePage() {
       <div className="mx-8 my-4 flex flex-row justify-center gap-4 p-8">
         <div className="flex w-full justify-between max-w-[1200px]">
           <p className="text-2xl font-semibold">{name}</p>
-          <Button>Save to Wishlist</Button>
+          <Button variant={"outline"}>Save to Wishlist</Button>
         </div>
       </div>
     </>
