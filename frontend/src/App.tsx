@@ -7,6 +7,7 @@ import Home from "./pages/Home.tsx";
 import AboutUs from "./pages/AboutUs.tsx";
 import SearchPage from "./pages/SearchPage.tsx";
 import Experiment from "./pages/Experiment.tsx";
+import PackagePage from "./pages/PackagePage.tsx";
 
 function Logout() {
   localStorage.clear();
@@ -24,7 +25,11 @@ function App() {
       <Routes>
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/" element={<Home />} />
-        <Route path="/search/:location/:startdate/:enddate/:startprice/:endprice" element={<SearchPage />} />
+        <Route
+          path="/search/:location/:startdate/:enddate/:startprice/:endprice"
+          element={<SearchPage />}
+        />
+        <Route path="/package/:id" element={<PackagePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />

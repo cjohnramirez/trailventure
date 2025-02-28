@@ -1,5 +1,7 @@
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from rest_framework import serializers
-from .models import UserProfile, User
+from .models import CustomerProfile, HostProfile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,12 +18,25 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print(validated_data)
         user = User.objects.create_user(**validated_data)
+
+        if user.role == User.CUSTOMER:
+            CustomerProfile.objects.create(user=user)
+        elif user.role == User.HOST:
+            HostProfile.objects.create(user=user)
+
         return user
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class HostProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
     class Meta:
-        model = UserProfile
+        model = HostProfile
+        fields = "__all__"
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = CustomerProfile
         fields = "__all__"

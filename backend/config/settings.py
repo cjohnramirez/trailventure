@@ -25,11 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-0n_uj=^&dw6lwc)4#0r%227^m49k&c6dlvk68^sppwf6(q5y5#"
+STRIPE_PUBLISHABLE_KEY = "pk_test_51QvhbiKODu0UvT2EWdRAcVNEDgQcwlUIeWUjYJ7HfZeihmckqzQ7dFxIEEbO75JdSwbWX09FBe9LJQul6RFWeaNL00JYIn2R6q"
+STRIPE_SECRET_KEY = "sk_test_51QvhbiKODu0UvT2EA22xFbHY02oI26TylA0CiGet0wsOTqV5WUsap7ksWZn0sPbxqLmYsBy4jSYlv2Mw63Ow7dPF00RqgR9F6Z"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+MEDIA_URL = "/media/"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -56,12 +62,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt",
     "corsheaders",
     "django_extensions",
-    "apps.categories",
-    "apps.locations",
-    "apps.neighborhoods",
-    "apps.properties",
+    "apps.destinations",
+    "apps.packages",
     "apps.transactions",
     "apps.users",
 ]
@@ -135,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Manila"
 
 USE_I18N = True
 

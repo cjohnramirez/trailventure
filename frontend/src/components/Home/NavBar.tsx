@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import { Button } from "../UI/button";
+import { Button } from "../ui/button";
 import NavBarDropdown from "./NavBarDropdown";
 import Search from "./SearchBar";
 import { Link } from "react-router-dom";

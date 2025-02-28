@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import api from "../../apps";
+import api from "../../lib/api";
 import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 
@@ -14,9 +14,9 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/UI/form";
-import { Input } from "@/components/UI/input";
-import { Button } from "@/components/UI/button";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { loginSchema, registerSchema } from "@/lib/Form/loginRegisterSchema";
 import { loginRegisterFields } from "@/lib/Form/loginRegisterFields";
 import {
@@ -25,7 +25,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/UI/card";
+} from "@/components/ui/card";
 import LoginPageImage from "../../assets/Form/LoginPage.jpg";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
@@ -94,7 +94,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
         navigate("/login");
       }
     } catch (error) {
-      alert(error);
+      
     } finally {
       setLoading(false);
     }
