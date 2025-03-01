@@ -207,7 +207,7 @@ function PackagePage() {
                 <DropdownMenuSeparator />
                 <div className="flex justify-between">
                   <div>
-                    <p className="text-2xl font-semibold">PHP {parsedTourPackage[0]?.package_type[indexPackage].price_per_person}</p>
+                    <p className="text-2xl font-semibold">PHP {Number(parsedTourPackage[0]?.package_type[indexPackage].price_per_person) * quantity}</p>
                     <p>Check all required fields before proceeding</p>
                   </div>
                   <Button variant={"outline"} className="h-full bg-teal-500 px-10 text-black">
@@ -217,7 +217,9 @@ function PackagePage() {
               </div>
             </div>
             <div className="rounded-2xl border-[1px] p-8">
-              <p className="pb-4 text-xl font-semibold" id="reviews">Reviews</p>
+              <p className="pb-4 text-xl font-semibold" id="reviews">
+                Reviews
+              </p>
             </div>
           </div>
           <div className="sticky top-20 h-full w-1/3 rounded-2xl border-[1px] p-8">
@@ -226,6 +228,12 @@ function PackagePage() {
               {parsedTourPackage[0]?.package_type[indexPackage]?.package_route_point?.map((routePoints, index) => {
                 return (
                   <div key={index} className="mb-4 flex flex-col gap-2 rounded-xl border-[1px] p-4">
+                    <div className="flex gap-4">
+                      <div className="flex gap-4 rounded-xl border-[1px] p-2 px-4">
+                        <p className="pr-4 border-r-2">Route {routePoints.point_number}</p>
+                        <p>Day {routePoints.day}</p>
+                      </div>
+                    </div>
                     <div className="flex justify-between gap-2">
                       <MapPin />
                       <div className="flex w-full justify-between">

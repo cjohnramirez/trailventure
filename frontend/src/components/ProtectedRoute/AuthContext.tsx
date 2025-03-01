@@ -23,6 +23,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await api.post("/apps/token/refresh/", {
         refresh: refreshToken,
       });
+      console.log(res.data)
+
       if (res.status === 200) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         setIsAuthorized(true);

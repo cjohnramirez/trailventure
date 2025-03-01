@@ -36,7 +36,8 @@ class CustomerProfile(models.Model):
     )
     date_of_birth = models.DateField(null=True)
     phone_number = models.CharField(max_length=15)
-    avatar = models.ImageField(upload_to="users_avatar/")
+    avatar = models.ImageField(upload_to="users_avatar/", null=True)
+    banner = models.ImageField(upload_to="users_banner/", null=True)
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 

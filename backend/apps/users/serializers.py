@@ -39,4 +39,4 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerProfile
-        fields = "__all__"
+        fields = ["user", "date_of_birth", "phone_number", "avatar", "banner"]
