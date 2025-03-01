@@ -94,7 +94,7 @@ class PackageRoutePoint(models.Model):
         verbose_name_plural = "Package route points"
 
     package_type = models.ForeignKey(
-        PackageType, on_delete=models.CASCADE, related_name="itineraries", null=True
+        PackageType, on_delete=models.CASCADE, related_name="package_route_point", null=True
     )
     title = models.CharField(max_length=255)
     point_number = models.PositiveIntegerField(null=True, blank=True)

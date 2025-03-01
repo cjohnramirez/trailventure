@@ -3,30 +3,21 @@ import { Button } from "../components/ui/button";
 import { useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { Calendar } from "@/components/ui/calendar";
-import { ChevronDown, MapPinned, PhilippinePeso, X } from "lucide-react";
+import { MapPin, MapPinned, PhilippinePeso, X } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import {
-  DropdownMenu,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../lib/api";
 import { AxiosError } from "axios";
 import { toast } from "../components/Error/ErrorSonner";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
-
-interface destinationDropdown {
-  description: string;
-  image: string;
-  name: string;
-  location: string;
-  id: string;
-}
 
 interface FilterState {
   startDate: string | undefined;
@@ -35,6 +26,13 @@ interface FilterState {
   maxPrice: string | undefined;
   destination: string | undefined;
   reviewScore: string;
+}
+
+interface Destination {
+  description: string;
+  image: string;
+  name: string;
+  Destination: string;
 }
 
 type FilterAction =
@@ -49,10 +47,16 @@ type FilterAction =
 function SearchPage() {
   const { location, startdate, enddate, startprice, endprice } = useParams();
 
-  const [tourPackages, setTourPackages] = useState([]);
-  const [destinations, setDestinations] = useState([]);
-  const [filteredTourPackages, setFilteredTourPackages] = useState([]);
+  const [tourPackages, setTourPackages] = useState<tourPackage[]>([]);
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [filteredTourPackages, setFilteredTourPackages] = useState<
+    tourPackage[]
+  >([]);
   const [_isFiltered, setIsFiltered] = useState(false);
+  const [searchItem, setSearchItem] = useState<string>("");
+  const [filteredDestinations, setFilteredDestinations] = useState<
+    Destination[]
+  >([]);
 
   useEffect(() => {
     getPackageData();
@@ -67,6 +71,7 @@ function SearchPage() {
 
       const response = await api.get("apps/destination/list/");
       setDestinations(response.data);
+      setFilteredDestinations(response.data);
     } catch (error) {
       const err = error as AxiosError;
       let errorMessage = "An unexpected error occurred.";
@@ -121,19 +126,32 @@ function SearchPage() {
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setSearchItem(searchTerm);
+
+    const filteredItems = destinations.filter((destination) => {
+      return destination.name.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+
+    setFilteredDestinations(filteredItems);
+  };
+
   const [state, dispatch] = useReducer(filterReducer, initialState);
-  const parsedDestinations: destinationDropdown[] = destinations;
+  const [selectedDestination, setSelectedDestination] =
+    useState<string>("Set Location");
+  const [locPopoverOpen, setLocPopoverOpen] = useState<boolean>(false);
 
-  const reviewScores: String[] = ["5", "4", "3", "2", "1"];
+  const reviewScores: string[] = ["5", "4", "3", "2", "1"];
 
-  const altReviewScores: String[] = [
+  const altReviewScores: string[] = [
     "Excellent",
     "Great",
     "Good",
     "Bad",
     "Terrible",
   ];
-  
+
   const applyFilters = () => {
     const filteredResults = tourPackages.filter((tourPackage: tourPackage) => {
       if (
@@ -164,12 +182,14 @@ function SearchPage() {
       ) {
         return false;
       }
-      if (state.destination) {
-        if (tourPackage.destination.name !== state.destination) {
-          return false;
-        }
+      if (
+        state.destination &&
+        tourPackage.destination.name !== state.destination
+      ) {
+        return false;
       }
       if (state.reviewScore) {
+        // Add review score filtering logic here if needed
       }
       return true;
     });
@@ -182,13 +202,8 @@ function SearchPage() {
     dispatch({ type: "RESET_FILTERS" });
     setFilteredTourPackages(tourPackages);
     setIsFiltered(false);
+    setSelectedDestination("Set Location");
   };
-
-  const packagesToDisplay = filteredTourPackages;
-
-  useEffect(() => {
-    applyFilters();
-  }, [tourPackages, state]);
 
   return (
     <>
@@ -196,7 +211,7 @@ function SearchPage() {
         <NavBar change={false} />
       </div>
       <div className="flex">
-        <aside className="sticky top-20 mx-8 my-4 flex h-full w-2/5 flex-col gap-4 rounded-2xl border-[1px] p-8">
+        <aside className="sticky top-20 mx-8 my-4 flex h-full w-2/5 max-w-[430px] flex-col gap-4 rounded-2xl border-[1px] p-8 overflow-y-scroll">
           <div className="flex justify-between">
             <p className="text-xl font-semibold">Filters</p>
             <Button variant={"outline"} onClick={resetFilters}>
@@ -204,26 +219,35 @@ function SearchPage() {
               Clear Filter
             </Button>
           </div>
-          <div className="flex">
+          <div className="flex flex-col items-center rounded-2xl border-[1px] p-8">
+            <div className="flex w-full gap-4 rounded-2xl border-[1px] p-4">
+              <PhilippinePeso />
+              <p>Set Date Range</p>
+            </div>
             <Calendar
-              mode="single"
-              selected={state.startDate ? new Date(state.startDate) : undefined}
-              onSelect={(date) => {
-                dispatch({
-                  type: "SET_START_DATE",
-                  payload: date?.toLocaleDateString() || "",
-                });
+              mode="range"
+              selected={{
+                from: state.startDate ? new Date(state.startDate) : undefined,
+                to: state.endDate ? new Date(state.endDate) : undefined,
               }}
-            />
-            <Calendar
-              mode="single"
-              selected={state.endDate ? new Date(state.endDate) : undefined}
-              onSelect={(date) => {
-                dispatch({
-                  type: "SET_END_DATE",
-                  payload: date?.toLocaleDateString() || "",
-                });
+              onSelect={(range) => {
+                if (range) {
+                  const { from, to } = range;
+                  if (from) {
+                    dispatch({
+                      type: "SET_START_DATE",
+                      payload: from.toLocaleDateString() || "",
+                    });
+                  }
+                  if (to) {
+                    dispatch({
+                      type: "SET_END_DATE",
+                      payload: to.toLocaleDateString() || "",
+                    });
+                  }
+                }
               }}
+              className="pt-8"
             />
           </div>
           <div className="rounded-2xl border-[1px] p-4">
@@ -236,22 +260,28 @@ function SearchPage() {
               <Slider
                 value={[Number(state.minPrice) || 0]}
                 onValueChange={(value) => {
-                  dispatch({
-                    type: "SET_MIN_PRICE",
-                    payload: value[0].toString(),
-                  });
+                  const newMinPrice = value[0];
+                  if (newMinPrice <= Number(state.maxPrice)) {
+                    dispatch({
+                      type: "SET_MIN_PRICE",
+                      payload: newMinPrice.toString(),
+                    });
+                  }
                 }}
                 step={500}
                 max={100000}
               />
               <Input
                 value={state.minPrice}
-                onChange={(e) =>
-                  dispatch({
-                    type: "SET_MIN_PRICE",
-                    payload: e.target.value,
-                  })
-                }
+                onChange={(e) => {
+                  const newMinPrice = Number(e.target.value);
+                  if (newMinPrice <= Number(state.maxPrice)) {
+                    dispatch({
+                      type: "SET_MIN_PRICE",
+                      payload: e.target.value,
+                    });
+                  }
+                }}
                 className="w-1/3"
               />
             </div>
@@ -260,22 +290,28 @@ function SearchPage() {
               <Slider
                 value={[Number(state.maxPrice) || 25000]}
                 onValueChange={(value) => {
-                  dispatch({
-                    type: "SET_MAX_PRICE",
-                    payload: value[0].toString(),
-                  });
+                  const newMaxPrice = value[0];
+                  if (newMaxPrice >= Number(state.minPrice)) {
+                    dispatch({
+                      type: "SET_MAX_PRICE",
+                      payload: newMaxPrice.toString(),
+                    });
+                  }
                 }}
                 step={500}
                 max={100000}
               />
               <Input
                 value={state.maxPrice}
-                onChange={(e) =>
-                  dispatch({
-                    type: "SET_MAX_PRICE",
-                    payload: e.target.value,
-                  })
-                }
+                onChange={(e) => {
+                  const newMaxPrice = Number(e.target.value);
+                  if (newMaxPrice >= Number(state.minPrice)) {
+                    dispatch({
+                      type: "SET_MAX_PRICE",
+                      payload: e.target.value,
+                    });
+                  }
+                }}
                 className="w-1/3"
               />
             </div>
@@ -286,33 +322,61 @@ function SearchPage() {
                 <MapPinned />
                 <p>Destinations</p>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant={"outline"}>
-                    <ChevronDown />
-                    <p>{state.destination || "Select destination"}</p>
+              <Popover open={locPopoverOpen} onOpenChange={setLocPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex h-full gap-4 px-6 pr-8"
+                  >
+                    <MapPin />
+                    <div className="flex h-full flex-col justify-center text-left">
+                      <p className="text-md font-bold">
+                        {selectedDestination
+                          ? selectedDestination
+                          : "Destination"}
+                      </p>
+                    </div>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-full">
-                  <DropdownMenuGroup>
-                    {parsedDestinations.map((destination, index) => {
-                      return (
-                        <DropdownMenuItem
-                          key={index}
-                          onSelect={() =>
-                            dispatch({
-                              type: "SET_DESTINATION",
-                              payload: destination.name,
-                            })
-                          }
-                        >
-                          <p>{destination.name}</p>
-                        </DropdownMenuItem>
-                      );
-                    })}
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </PopoverTrigger>
+                <PopoverContent className="w-[400px]">
+                  <div className="text-center">
+                    <p className="pb-3">Enter your destination</p>
+                    <DropdownMenuSeparator />
+                  </div>
+                  <div className="pt-2">
+                    <Input value={searchItem} onChange={handleInputChange} />
+                    <div className="pt-2">
+                      {filteredDestinations.map((destination, index) => {
+                        if (index > 2) {
+                          return null;
+                        }
+                        return (
+                          <div
+                            key={index}
+                            className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-zinc-900"
+                            onClick={() => {
+                              setSelectedDestination(destination.name);
+                              dispatch({
+                                type: "SET_DESTINATION",
+                                payload: destination.name,
+                              });
+                              setLocPopoverOpen(false);
+                            }}
+                          >
+                            <MapPinned />
+                            <div className="w-5/6">
+                              <p>{destination.name}</p>
+                              <p className="text-xs">
+                                {destination.description}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <div>
@@ -362,23 +426,23 @@ function SearchPage() {
             <p className="text-xl font-semibold">Search Results</p>
             <div className="rounded-2xl border-[1px] px-8 py-2">
               <p className="text-sm">
-                Found {packagesToDisplay.length} search result
-                {packagesToDisplay.length !== 1 ? "s" : ""}
+                Found {filteredTourPackages.length} search result
+                {filteredTourPackages.length !== 1 ? "s" : ""}
               </p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {packagesToDisplay.length > 0 ? (
-              packagesToDisplay.map((tourPackage: tourPackage, index) => {
+            {filteredTourPackages.length > 0 ? (
+              filteredTourPackages.map((tourPackage: tourPackage, index) => {
                 return (
-                  <Link to={`/package/${tourPackage.id}`} key={index}>
+                  <Link to={`/package/${index + 1}`} key={index}>
                     <div className="h-full flex-row rounded-xl border-[1px] p-4">
                       <div className="h-1/2 w-full pb-4">
                         <img
                           src={tourPackage.package_image[0]?.image || ""}
                           alt={String(tourPackage.package_image[0]?.id || "")}
                           className="h-full w-full rounded-xl object-cover"
-                        ></img>
+                        />
                       </div>
                       <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4">
                         <div>
@@ -423,4 +487,5 @@ function SearchPage() {
     </>
   );
 }
+
 export default SearchPage;

@@ -147,7 +147,7 @@ function Search({ navBar }: forNavBar) {
                   return (
                     <div
                       key={index}
-                      className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-zinc-900"
+                      className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-teal-500 hover:text-white"
                       onClick={() => {
                         setSelectedDestination(destination.name);
                         setLocPopoverOpen(false);
@@ -207,22 +207,18 @@ function Search({ navBar }: forNavBar) {
             </div>
             <div className="flex">
               <Calendar
-                mode="single"
-                selected={firstDate}
-                onSelect={(date) => {
-                  if (date && date < secondDate) {
-                    date && setFirstDate(date);
+              mode="range"
+              selected={{ from: firstDate, to: secondDate }}
+              onSelect={(range) => {
+                if (range) {
+                  if (range.from) {
+                    setFirstDate(range.from);
                   }
-                }}
-              />
-              <Calendar
-                mode="single"
-                selected={secondDate}
-                onSelect={(date) => {
-                  if (date && date > firstDate) {
-                    setSecondDate(date);
+                  if (range.to) {
+                    setSecondDate(range.to);
                   }
-                }}
+                }
+              }}
               />
             </div>
           </PopoverContent>

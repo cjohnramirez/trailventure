@@ -47,11 +47,10 @@ function DiscoverSection() {
   };
 
   const parsedDestinations : Destination[] = destinations;
-  console.log(destinations)
   
   return (
-    <div className="py-10">
-      <div>
+    <div className="flex flex-col justify-center py-10">
+      <div className="">
         <p className="relative -z-10 py-10 text-center text-[70px] font-extrabold">
           FEATURED DESTINATIONS
         </p>
@@ -62,7 +61,7 @@ function DiscoverSection() {
           Choose your next travel destination
         </p>
       </div>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 max-w-[1200px] mx-auto">
         {parsedDestinations.slice(0,6).map((destination, index) => {
           const gridClasses = [
             "col-span-1 row-span-2",
