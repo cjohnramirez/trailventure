@@ -7,11 +7,7 @@ import { MapPin, MapPinned, PhilippinePeso, X } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../lib/api";
@@ -35,38 +31,24 @@ interface Destination {
   Destination: string;
 }
 
-type FilterAction =
-  | { type: "SET_START_DATE"; payload: string }
-  | { type: "SET_END_DATE"; payload: string }
-  | { type: "SET_MIN_PRICE"; payload: string }
-  | { type: "SET_MAX_PRICE"; payload: string }
-  | { type: "SET_DESTINATION"; payload: string }
-  | { type: "SET_REVIEW_SCORE"; payload: string }
-  | { type: "RESET_FILTERS" };
+type FilterAction = { type: "SET_START_DATE"; payload: string } | { type: "SET_END_DATE"; payload: string } | { type: "SET_MIN_PRICE"; payload: string } | { type: "SET_MAX_PRICE"; payload: string } | { type: "SET_DESTINATION"; payload: string } | { type: "SET_REVIEW_SCORE"; payload: string } | { type: "RESET_FILTERS" };
 
 function SearchPage() {
   const { location, startdate, enddate, startprice, endprice } = useParams();
 
   const [tourPackages, setTourPackages] = useState<tourPackage[]>([]);
   const [destinations, setDestinations] = useState<Destination[]>([]);
-  const [filteredTourPackages, setFilteredTourPackages] = useState<
-    tourPackage[]
-  >([]);
+  const [filteredTourPackages, setFilteredTourPackages] = useState<tourPackage[]>([]);
   const [_isFiltered, setIsFiltered] = useState(false);
   const [searchItem, setSearchItem] = useState<string>("");
-  const [filteredDestinations, setFilteredDestinations] = useState<
-    Destination[]
-  >([]);
+  const [filteredDestinations, setFilteredDestinations] = useState<Destination[]>([]);
 
   useEffect(() => {
     getPackageData();
   }, []);
 
   useEffect(() => {
-    if (
-      tourPackages.length > 0 && 
-      (location || startdate || enddate || startprice || endprice)
-    ) {
+    if (tourPackages.length > 0 && (location || startdate || enddate || startprice || endprice)) {
       applyFilters();
 
       if (location) {
@@ -83,7 +65,7 @@ function SearchPage() {
 
       const fetchPackage = await api.get("apps/package/list/");
       setTourPackages(fetchPackage.data);
-      setFilteredTourPackages(fetchPackage.data); 
+      setFilteredTourPackages(fetchPackage.data);
     } catch (error) {
       const err = error as AxiosError;
       let errorMessage = "An unexpected error occurred.";
@@ -91,8 +73,7 @@ function SearchPage() {
       if (err.response) {
         errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
       } else if (err.request) {
-        errorMessage =
-          "Network error: Unable to reach the server. Please check your internet connection.";
+        errorMessage = "Network error: Unable to reach the server. Please check your internet connection.";
       } else {
         errorMessage = err.message;
       }
@@ -150,54 +131,28 @@ function SearchPage() {
   };
 
   const [state, dispatch] = useReducer(filterReducer, initialState);
-  const [selectedDestination, setSelectedDestination] =
-    useState<string>("Set Location");
+  const [selectedDestination, setSelectedDestination] = useState<string>("Set Location");
   const [locPopoverOpen, setLocPopoverOpen] = useState<boolean>(false);
 
   const reviewScores: string[] = ["5", "4", "3", "2", "1"];
 
-  const altReviewScores: string[] = [
-    "Excellent",
-    "Great",
-    "Good",
-    "Bad",
-    "Terrible",
-  ];
+  const altReviewScores: string[] = ["Excellent", "Great", "Good", "Bad", "Terrible"];
 
   const applyFilters = () => {
     const filteredResults = tourPackages.filter((tourPackage: tourPackage) => {
-      if (
-        state.startDate &&
-        new Date(tourPackage.start_date) < new Date(state.startDate)
-      ) {
+      if (state.startDate && new Date(tourPackage.start_date) < new Date(state.startDate)) {
         return false;
       }
-      if (
-        state.endDate &&
-        new Date(tourPackage.end_date) > new Date(state.endDate)
-      ) {
+      if (state.endDate && new Date(tourPackage.end_date) > new Date(state.endDate)) {
         return false;
       }
-      if (
-        state.minPrice &&
-        tourPackage.package_type[0]?.price_per_person &&
-        Number(tourPackage.package_type[0].price_per_person) <
-          Number(state.minPrice)
-      ) {
+      if (state.minPrice && tourPackage.package_type[0]?.price_per_person && Number(tourPackage.package_type[0].price_per_person) < Number(state.minPrice)) {
         return false;
       }
-      if (
-        state.maxPrice &&
-        tourPackage.package_type[0]?.price_per_person &&
-        Number(tourPackage.package_type[0].price_per_person) >
-          Number(state.maxPrice)
-      ) {
+      if (state.maxPrice && tourPackage.package_type[0]?.price_per_person && Number(tourPackage.package_type[0].price_per_person) > Number(state.maxPrice)) {
         return false;
       }
-      if (
-        state.destination &&
-        tourPackage.destination.name !== state.destination
-      ) {
+      if (state.destination && tourPackage.destination.name !== state.destination) {
         return false;
       }
       if (state.reviewScore) {
@@ -217,13 +172,15 @@ function SearchPage() {
     setSelectedDestination("Set Location");
   };
 
+  console.log(filteredTourPackages)
+
   return (
     <>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
         <NavBar change={false} />
       </div>
       <div className="flex">
-        <aside className="sticky top-20 mx-8 my-4 flex h-full w-2/5 max-w-[430px] flex-col gap-4 rounded-2xl border-[1px] p-8 overflow-y-scroll">
+        <aside className="sticky top-20 mx-8 my-4 flex h-full w-2/5 max-w-[430px] flex-col gap-4 overflow-y-scroll rounded-2xl border-[1px] p-8">
           <div className="flex justify-between">
             <p className="text-xl font-semibold">Filters</p>
             <Button variant={"outline"} onClick={resetFilters}>
@@ -336,17 +293,10 @@ function SearchPage() {
               </div>
               <Popover open={locPopoverOpen} onOpenChange={setLocPopoverOpen}>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex h-full gap-4 px-6 pr-8"
-                  >
+                  <Button variant="outline" className="flex h-full gap-4 px-6 pr-8">
                     <MapPin />
                     <div className="flex h-full flex-col justify-center text-left">
-                      <p className="text-md font-bold">
-                        {selectedDestination
-                          ? selectedDestination
-                          : "Destination"}
-                      </p>
+                      <p className="text-md font-bold">{selectedDestination ? selectedDestination : "Destination"}</p>
                     </div>
                   </Button>
                 </PopoverTrigger>
@@ -378,9 +328,7 @@ function SearchPage() {
                             <MapPinned />
                             <div className="w-5/6">
                               <p>{destination.name}</p>
-                              <p className="text-xs">
-                                {destination.description}
-                              </p>
+                              <p className="text-xs">{destination.description}</p>
                             </div>
                           </div>
                         );
@@ -403,11 +351,7 @@ function SearchPage() {
                     <Button
                       id={review.toString()}
                       key={index}
-                      className={`w-full ${
-                        state.reviewScore === review
-                          ? "bg-teal-500 text-black"
-                          : ""
-                      }`}
+                      className={`w-full ${state.reviewScore === review ? "bg-teal-500 text-black" : ""}`}
                       variant={"outline"}
                       onClick={() => {
                         dispatch({
@@ -425,11 +369,7 @@ function SearchPage() {
               </div>
             </div>
           </div>
-          <Button
-            variant={"outline"}
-            className="w-full bg-teal-500 text-white dark:text-[#09090b]"
-            onClick={applyFilters}
-          >
+          <Button variant={"outline"} className="w-full bg-teal-500 text-white dark:text-[#09090b]" onClick={applyFilters}>
             Apply Filter
           </Button>
         </aside>
@@ -447,40 +387,23 @@ function SearchPage() {
             {filteredTourPackages.length > 0 ? (
               filteredTourPackages.map((tourPackage: tourPackage, index) => {
                 return (
-                  <Link to={`/package/${index + 1}`} key={index}>
+                  <Link to={`/package/${tourPackage.id}/`} key={index}>
                     <div className="h-full flex-row rounded-xl border-[1px] p-4">
                       <div className="h-1/2 w-full pb-4">
-                        <img
-                          src={tourPackage.package_image[0]?.image || ""}
-                          alt={String(tourPackage.package_image[0]?.id || "")}
-                          className="h-full w-full rounded-xl object-cover"
-                        />
+                        <img src={tourPackage.package_image[0]?.image || ""} alt={String(tourPackage.package_image[0]?.id || "")} className="h-full w-full rounded-xl object-cover" />
                       </div>
                       <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4">
                         <div>
-                          <p className="text-lg font-semibold">
-                            {tourPackage.name}
-                          </p>
-                          <p className="text-xs">
-                            {tourPackage.description.substring(0, 50) + "..."}
-                          </p>
+                          <p className="text-lg font-semibold">{tourPackage.name}</p>
+                          <p className="text-xs">{tourPackage.description.substring(0, 50) + "..."}</p>
                         </div>
                         <div className="flex flex-row items-center justify-between gap-4">
                           <div>
-                            <p className="text-sm font-semibold">
-                              Cheapest Package
-                            </p>
+                            <p className="text-sm font-semibold">Cheapest Package</p>
                             <p className="text-xs">Price per person</p>
                           </div>
                           <div className="rounded-xl border-[1px]">
-                            <p className="p-2 text-sm font-semibold">
-                              PHP{" "}
-                              {Math.floor(
-                                Number(
-                                  tourPackage.package_type[0]?.price_per_person,
-                                ),
-                              ) || ""}
-                            </p>
+                            <p className="p-2 text-sm font-semibold">PHP {Math.floor(Number(tourPackage.package_type[0]?.price_per_person)) || ""}</p>
                           </div>
                         </div>
                       </div>

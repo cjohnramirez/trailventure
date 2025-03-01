@@ -31,19 +31,14 @@ function Home() {
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
         <NavBar change={forNavBar} />
       </div>
-      <div className="flex h-screen w-full flex-col px-8 pb-[100px]">
-        <div className="flex h-full flex-col items-center justify-center bg-opacity-0 bg-cover bg-center">
-          <div className="absolute inset-0 box-border h-full w-full p-8 pt-20">
-            <img
-              src={BackgroundImage}
-              className="h-full w-full rounded-2xl object-cover"
-            />
+      <div className="flex h-screen w-full select-none flex-col px-8 pb-[100px]">
+        <div className="relative flex h-full w-full flex-col items-center justify-center bg-opacity-0 bg-cover bg-center">
+          <div className="absolute inset-0 box-border w-full">
+            <img src={BackgroundImage} className="h-full w-full rounded-2xl object-cover" />
           </div>
           <div className="relative -top-8 flex flex-col items-center justify-center">
             <div className="text-center">
-              <p className="title m-[-50px] text-[200px] font-semibold text-[#f4f4f5] dark:text-[#09090b]">
-                EXPLORE
-              </p>
+              <p className="title m-[-50px] text-[200px] font-semibold text-[#f4f4f5] dark:text-[#09090b]">EXPLORE</p>
             </div>
             <Search navBar={!forNavBar} />
           </div>

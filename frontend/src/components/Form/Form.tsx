@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import LoginPageImage from "../../assets/Form/LoginPage.jpg";
+import { toast } from "../../components/Error/ErrorSonner";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
   const [_loading, setLoading] = useState<boolean>(false);
@@ -61,7 +62,6 @@ function HomeForm({ route, method }: { route: string; method: string }) {
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
 
-    console.log(values);
     if ("passwordConfirm" in values) {
       const { passwordConfirm, ...filteredValues } = values as {
         username: string;
@@ -77,8 +77,6 @@ function HomeForm({ route, method }: { route: string; method: string }) {
       values = { ...filteredValues };
     }
 
-
-
     try {
       const res = await api.post(
         route,
@@ -86,15 +84,33 @@ function HomeForm({ route, method }: { route: string; method: string }) {
           ? { username: values.username, password: values.password }
           : values,
       );
+
       if (isLogin) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+
+        toast({
+          title: "Login Successful!",
+          description: "You have successfully logged in.",
+          button: {
+          label: "Ignore",
+          onClick: () => console.log("OK clicked"),
+          },
+        });
         navigate("/");
+        window.location.reload();
       } else {
         navigate("/login");
       }
     } catch (error) {
-      
+      toast({
+        title: "Login Failed!",
+        description: "Invalid username or password.",
+        button: {
+        label: "Retry",
+        onClick: () => console.log("Retry clicked"),
+        },
+      });
     } finally {
       setLoading(false);
     }

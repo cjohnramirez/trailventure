@@ -62,6 +62,7 @@ class PackageListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
         fields = [
+            "id",
             "name",
             "description",
             "destination",

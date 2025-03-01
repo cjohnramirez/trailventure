@@ -1,14 +1,27 @@
-import { User } from "lucide-react";
+import { User, UserCheck } from "lucide-react";
 import { Button } from "../ui/button";
 import NavBarDropdown from "./NavBarDropdown";
 import Search from "./SearchBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../ProtectedRoute/AuthContext";
 
 interface NavBarInterface {
   change: boolean;
 }
 
 function NavBar({ change }: NavBarInterface) {
+  const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleAuthClick = () => {
+    if (authContext?.isAuthorized) {
+      navigate("/user-page");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="z-20 w-full select-none flex-col">
       <div className="flex items-center justify-between">
@@ -25,12 +38,19 @@ function NavBar({ change }: NavBarInterface) {
           </div>
         )}
         <div className="flex gap-2">
-          <Link to="/login">
-            <Button variant="outline" onClick={() => {}}>
-              <User />
-              <p>Login</p>
-            </Button>
-          </Link>
+          <Button variant="outline" onClick={handleAuthClick}>
+            {authContext?.isAuthorized ? (
+              <>
+                <UserCheck />
+                <p>Logged In!</p>
+              </>
+            ) : (
+              <>
+                <User />
+                <p>Login</p>
+              </>
+            )}
+          </Button>
           <NavBarDropdown />
         </div>
       </div>
