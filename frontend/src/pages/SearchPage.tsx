@@ -172,8 +172,6 @@ function SearchPage() {
     setSelectedDestination("Set Location");
   };
 
-  console.log(filteredTourPackages)
-
   return (
     <>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
