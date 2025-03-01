@@ -4,8 +4,24 @@ import api from "@/lib/api";
 import { AxiosError } from "axios";
 import { toast } from "@/components/Error/ErrorSonner";
 
+interface UserData {
+  user: {
+    id: number;
+    username: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    role: string;
+  };
+  date_of_birth: string;
+  phone_number: string;
+  avatar: string;
+  banner: string;
+}
+
 function UserPage() {
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState<UserData[]>([]);
 
   useEffect(() => {
     getUserData();
@@ -38,15 +54,22 @@ function UserPage() {
     }
   };
 
-  console.log(userData)
+  console.log(userData);
 
   return (
-    <>
+    <div className="w-full">
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
         <NavBar change={false} />
       </div>
-    </>
-  )
+      <div className="p-8">
+        <div className="relative w-full rounded-2xl border-[1px] p-4">
+          <img src={userData[0]?.banner} className="h-full max-h-[300px] w-full rounded-2xl object-cover"></img>
+          <img src={userData[0]?.avatar} className="absolute top-[190px] ml-24 w-[250px] rounded-full"></img>
+        </div>
+        <div className=""></div>
+      </div>
+    </div>
+  );
 }
 
 export default UserPage;

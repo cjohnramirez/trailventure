@@ -24,7 +24,7 @@ function NavBar({ change }: NavBarInterface) {
 
   return (
     <div className="z-20 w-full select-none flex-col">
-      <div className="flex items-center justify-between">
+      <div className="flex md:flex-row flex-col items-center justify-between">
         <p className="title text-4xl font-bold">
           <Link to="/">TRAILVENTURE</Link>
         </p>

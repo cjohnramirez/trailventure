@@ -15,4 +15,7 @@ urlpatterns = [
     path("apps/package/", include("apps.packages.urls")),
     path("apps/transaction/", include("apps.transactions.urls")),
     path("apps/destination/", include("apps.destinations.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

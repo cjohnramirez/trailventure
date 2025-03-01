@@ -89,7 +89,7 @@ function PackagePage() {
           {parsedTourPackage[0]?.package_image.map((image, index) => {
             const gridClasses = ["col-span-1 row-span-2", "col-span-2 row-span-2", "col-span-1 row-span-1", "col-span-1 row-span-1"];
             return (
-              <div key={index} className={`${gridClasses[index]} flex max-h-[400px] w-full flex-col transition duration-300 ease-in-out hover:scale-105`}>
+              <div key={index} className={`${gridClasses[index]} flex h-full w-full flex-col transition duration-300 ease-in-out hover:scale-105`}>
                 <img src={image.image} alt={parsedTourPackage[0]?.name + " image " + index} className="h-full w-full rounded-lg object-cover"></img>
               </div>
             );
@@ -230,7 +230,7 @@ function PackagePage() {
                   <div key={index} className="mb-4 flex flex-col gap-2 rounded-xl border-[1px] p-4">
                     <div className="flex gap-4">
                       <div className="flex gap-4 rounded-xl border-[1px] p-2 px-4">
-                        <p className="pr-4 border-r-2">Route {routePoints.point_number}</p>
+                        <p className="border-r-2 pr-4">Route {routePoints.point_number}</p>
                         <p>Day {routePoints.day}</p>
                       </div>
                     </div>
