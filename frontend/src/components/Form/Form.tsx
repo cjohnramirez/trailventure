@@ -71,7 +71,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
         passwordConfirm: string;
         role?: string;
       };
-      filteredValues.role = "guest";
+      filteredValues.role = "customer";
 
       values = { ...filteredValues };
     }

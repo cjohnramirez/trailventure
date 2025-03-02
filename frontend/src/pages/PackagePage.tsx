@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
 import api from "../lib/api";
@@ -12,6 +12,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 function PackagePage() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [tourPkg, setTourPkg] = useState([]);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -210,7 +211,13 @@ function PackagePage() {
                     <p className="text-2xl font-semibold">PHP {Number(parsedTourPackage[0]?.package_type[indexPackage].price_per_person) * quantity}</p>
                     <p>Check all required fields before proceeding</p>
                   </div>
-                  <Button variant={"outline"} className="h-full bg-teal-500 px-10 text-black">
+                  <Button
+                    variant={"outline"}
+                    className="h-full bg-teal-500 px-10 text-black"
+                    onClick={() => {
+                      navigate("/booking");
+                    }}
+                  >
                     Book Now
                   </Button>
                 </div>

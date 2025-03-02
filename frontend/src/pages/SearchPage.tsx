@@ -1,13 +1,13 @@
 import NavBar from "@/components/NavBar/NavBar";
-import { Button } from "../components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import api from "../lib/api";
+import api from "@/lib/api";
 import { AxiosError } from "axios";
-import { toast } from "../components/Error/ErrorSonner";
+import { toast } from "@/components/Error/ErrorSonner";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
 import SearchPageDate from "@/components/SearchPage/SearchPageDate";
 import SearchPageDestination from "@/components/SearchPage/SearchPageDestination";

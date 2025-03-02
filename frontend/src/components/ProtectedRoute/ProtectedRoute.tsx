@@ -1,7 +1,7 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { ReactNode, useContext } from "react";
-import { AuthContext } from "../ProtectedRoute/AuthContext";
-import { toast } from "../../components/Error/ErrorSonner";
+import { AuthContext } from "@/components/Contexts/AuthContext";
+import { toast } from "@/components/Error/ErrorSonner";
 
 interface ProtectedRouteProps {
   children: ReactNode;

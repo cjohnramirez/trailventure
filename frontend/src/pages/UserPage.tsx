@@ -1,59 +1,32 @@
 import NavBar from "@/components/NavBar/NavBar";
-import { useState, useEffect } from "react";
-import api from "@/lib/api";
-import { AxiosError } from "axios";
-import { toast } from "@/components/Error/ErrorSonner";
-
-interface UserData {
-  user: {
-    id: number;
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-    password: string;
-    role: string;
-  };
-  date_of_birth: string;
-  phone_number: string;
-  avatar: string;
-  banner: string;
-}
+import { useState, useEffect, useContext } from "react";
+import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
+import DefaultBanner from "@/assets/UserPage/defaultBanner.jpeg";
+import { siFacebook, siX, siInstagram } from "simple-icons";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Calendar as CalendarIcon, Edit } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { UserData } from "@/lib/UserPage/UserData";
+import { AuthContext } from "@/components/Contexts/AuthContext";
 
 function UserPage() {
-  const [userData, setUserData] = useState<UserData[]>([]);
+  const [editMode, setEditMode] = useState(false);
+  const authContext = useContext(AuthContext)
+
+  const userData: UserData[] = (authContext?.userData ?? []) as UserData[];
+  const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
 
   useEffect(() => {
-    getUserData();
-  }, []);
-
-  const getUserData = async () => {
-    try {
-      const fetchUserData = await api.get(`/apps/users/customer/profile/`);
-      setUserData(fetchUserData.data);
-    } catch (error) {
-      const err = error as AxiosError;
-      let errorMessage = "An unexpected error occurred.";
-
-      if (err.response) {
-        errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
-      } else if (err.request) {
-        errorMessage =
-          "Network error: Unable to reach the server. Please check your internet connection.";
-      } else {
-        errorMessage = "Internal server error.";
-      }
-
-      toast({
-        title: "404 NOT FOUND",
-        description: errorMessage,
-        button: {
-          label: "Ignore",
-          onClick: () => console.log("OK clicked"),
-        },
-      });
+    if (userData.length > 0 && userData[0]?.date_of_birth) {
+      setDateOfBirth(new Date(userData[0].date_of_birth));
     }
-  };
+  }, [userData]);
 
   return (
     <div className="w-full">
@@ -61,25 +34,170 @@ function UserPage() {
         <NavBar isNavBar={true} />
       </div>
       <div className="p-8">
-        <div className="relative w-full p-4">
+        <div className="relative w-full">
           <img
-            src={userData[0]?.banner}
-            className="object-bottom h-full max-h-[300px] w-full rounded-2xl object-cover"
+            src={userData[0]?.banner || DefaultBanner}
+            className="h-full max-h-[300px] w-full rounded-2xl object-cover object-bottom"
           ></img>
           <img
-            src={userData[0]?.avatar}
-            className="absolute left-[120px] top-[120px] z-10 aspect-square w-[250px] rounded-[60px] object-cover"
+            src={userData[0]?.avatar || DefaultProfile}
+            className="absolute left-[90px] top-[120px] z-10 aspect-square w-[250px] rounded-2xl object-cover"
           ></img>
           <div className="relative top-[-165px] w-full p-12">
-            <div className="h-[240px] w-full rounded-2xl bg-[#09090b] p-8 shadow-2xl shadow-teal-500/20 leading-tight">
-              <div className="flex flex-col relative left-[320px]">
-                <p className="text-[50px]">
+            <div className="h-[220px] w-full max-w-[800px] rounded-2xl border-[1px] bg-white p-8 leading-tight dark:bg-[#09090b]">
+              <div className="relative left-[290px] flex flex-col">
+                <p>Customer Profile</p>
+                <p className="text-[50px] font-semibold">
                   {userData[0]?.user.first_name +
                     " " +
                     userData[0]?.user.last_name}
                 </p>
-                <p>Customer Profile</p>
+                <div className="mt-2 flex w-[220px] items-center gap-4 rounded-3xl border-[1px] p-4">
+                  <p className="border-r-2 pr-4">Links</p>
+                  <div>
+                    <a
+                      href={userData[0]?.user.user_profile_links.facebook}
+                      target="_blank"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                      >
+                        <path d={siFacebook.path} />
+                      </svg>
+                    </a>
+                  </div>
+                  <div>
+                    <a
+                      href={userData[0]?.user.user_profile_links.twitter}
+                      target="_blank"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                      >
+                        <path d={siX.path} />
+                      </svg>
+                    </a>
+                  </div>
+                  <div>
+                    <a
+                      href={userData[0]?.user.user_profile_links.instagram}
+                      target="_blank"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                      >
+                        <path d={siInstagram.path} />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div className="relative top-[-165px] w-full">
+          <div className="ml-12 flex flex-col rounded-2xl border-[1px] p-8">
+            <div className="flex justify-between gap-4 pb-4">
+              <p className="pb-4 text-2xl">User Details</p>
+              <Button
+                variant={"outline"}
+                className="h-full"
+                onClick={() => {
+                  setEditMode(!editMode);
+                }}
+              >
+                <Edit />
+                <p>{editMode ? "Save Edit" : "Edit User Details"}</p>
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {editMode ? (
+                <>
+                  <div className="flex items-center rounded-2xl border-[1px] p-4">
+                    <p className="w-[150px] pr-4">First Name</p>
+                    <Input
+                      type="text"
+                      placeholder="Enter your new first name"
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="flex items-center rounded-2xl border-[1px] p-4">
+                    <p className="w-[150px] pr-4">Last Name</p>
+                    <Input
+                      type="text"
+                      placeholder="Enter your new last name"
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="flex items-center rounded-2xl border-[1px] p-4">
+                    <p className="w-[150px] pr-4">Email</p>
+                    <Input
+                      type="email"
+                      placeholder="Enter your new email"
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="flex w-full items-center rounded-2xl border-[1px] p-4">
+                    <p className="w-[150px] pr-4">Date of Birth</p>
+                    <div className="w-full">
+                      <Popover>
+                        <PopoverTrigger asChild className="w-full">
+                          <Button
+                            variant={"outline"}
+                            className="flex justify-start"
+                          >
+                            <CalendarIcon />
+                            <p>{dateOfBirth?.toLocaleDateString()}</p>
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <Calendar
+                            mode="single"
+                            selected={dateOfBirth ? new Date(dateOfBirth) : undefined}
+                            onSelect={(date) => {
+                              setDateOfBirth(date || null)
+                            }}
+                            className="rounded-md border shadow"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
+                    <p className="w-[150px] border-r-[1px] pr-2">First Name</p>
+                    <p className="pl-4">{userData[0]?.user.first_name}</p>
+                  </div>
+                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-5">
+                    <p className="w-[150px] border-r-[1px] pr-2">Last Name</p>
+                    <p className="pl-4">{userData[0]?.user.last_name}</p>
+                  </div>
+                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
+                    <p className="w-[150px] border-r-[1px] pr-2">Email</p>
+                    <p className="pl-4">{userData[0]?.user.email}</p>
+                  </div>
+                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
+                    <p className="w-[150px] border-r-[1px] pr-2">
+                      Date of Birth
+                    </p>
+                    <p className="pl-4">{userData[0]?.date_of_birth}</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

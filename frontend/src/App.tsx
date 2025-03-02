@@ -9,7 +9,8 @@ import SearchPage from "./pages/SearchPage.tsx";
 import PackagePage from "./pages/PackagePage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
 import UserPage from "./pages/UserPage.tsx";
-import { AuthProvider } from "./components/ProtectedRoute/AuthContext.tsx";
+import { AuthProvider } from "@/components/Contexts/AuthContext.tsx";
+import BookingPage from "./pages/BookingPage.tsx";
 
 function Logout() {
   localStorage.clear();
@@ -34,9 +35,20 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/booking"
+            element={
+              <ProtectedRoute>
+                <BookingPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/" element={<Home />} />
-          <Route path="/search/:location/:startdate/:enddate/:startprice/:endprice" element={<SearchPage />} />
+          <Route
+            path="/search/:location/:startdate/:enddate/:startprice/:endprice"
+            element={<SearchPage />}
+          />
           <Route path="/package/:id" element={<PackagePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />

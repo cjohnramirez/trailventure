@@ -21,22 +21,25 @@ export default function SearchLocation({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="flex justify-start h-full gap-4 px-6 pr-8 w-full">
+        <Button
+          variant="outline"
+          className="flex h-full w-full justify-start gap-4 px-6 pr-8"
+        >
           <CalendarIcon />
           <div className="flex h-full flex-col justify-center text-left">
-              <div>
-                <p className="text-md font-bold">Date</p>
-                <p className="text-xs">
-                  {firstDate.toLocaleDateString() ===
-                    new Date().toLocaleDateString() &&
-                  secondDate.toLocaleDateString() ===
-                    new Date().toLocaleDateString()
-                    ? "Choose your date"
-                    : firstDate.toLocaleDateString() +
-                      " to " +
-                      secondDate.toLocaleDateString()}
-                </p>
-              </div>
+            <div>
+              <p className="text-md font-bold">Date</p>
+              <p className="text-xs">
+                {firstDate.toLocaleDateString() ===
+                  new Date().toLocaleDateString() &&
+                secondDate.toLocaleDateString() ===
+                  new Date().toLocaleDateString()
+                  ? "Choose your date"
+                  : firstDate.toLocaleDateString() +
+                    " to " +
+                    secondDate.toLocaleDateString()}
+              </p>
+            </div>
           </div>
         </Button>
       </PopoverTrigger>

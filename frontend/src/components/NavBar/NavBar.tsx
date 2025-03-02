@@ -4,26 +4,20 @@ import NavBarDropdown from "./NavBarDropdown";
 import Search from "./SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../ProtectedRoute/AuthContext";
-import DefaultUserProfile from "@/assets/userProfile.jpg";
+import { AuthContext } from "../Contexts/AuthContext";
+import DefaultUserProfile from "@/assets/UserPage/defaultProfile.jpg";
+import { UserData } from "@/lib/UserPage/UserData";
 
 interface NavBarInterface {
   isNavBar: boolean;
-  userName?: string;
-  userAvatar?: string;
 }
 
-function NavBar({
-  isNavBar,
-  userName = "User!",
-  userAvatar = DefaultUserProfile,
-}: NavBarInterface) {
+function NavBar({ isNavBar }: NavBarInterface) {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const [atUserPage, setAtUserPage] = useState(
-    location.pathname === "/user-page",
-  );
+  const [atUserPage, setAtUserPage] = useState(location.pathname === "/user-page");
+  const userData: UserData[] = (authContext?.userData ?? []) as UserData[];
 
   useEffect(() => {
     setAtUserPage(location.pathname === "/user-page");
@@ -39,7 +33,7 @@ function NavBar({
   };
 
   return (
-    <div className="flex z-10 w-full select-none">
+    <div className="z-10 flex w-full select-none">
       <div className="flex w-full flex-row items-center justify-between">
         <p className="title w-1/3 text-4xl font-bold">
           <Link to="/">TRAILVENTURE</Link>
@@ -53,12 +47,8 @@ function NavBar({
             <Search navBar={true} />
           </div>
         )}
-        <div className="w-1/3 flex justify-end gap-2">
-          <Button
-            variant="outline"
-            className="h-full py-0"
-            onClick={handleAuthClick}
-          >
+        <div className="flex w-1/3 justify-end gap-2">
+          <Button variant="outline" className="h-full py-0" onClick={handleAuthClick}>
             {authContext?.isAuthorized ? (
               atUserPage ? (
                 <div className="flex items-center gap-2">
@@ -68,11 +58,11 @@ function NavBar({
               ) : (
                 <div className="flex items-center gap-2">
                   <img
-                    src={userAvatar}
+                    src={userData[0]?.avatar || DefaultUserProfile}
                     className="w-7 rounded-full"
                     alt="User avatar"
                   />
-                  <span>Welcome, {userName}</span>
+                  <span>Welcome, {userData[0]?.user?.username || "user!"}</span>
                 </div>
               )
             ) : (
