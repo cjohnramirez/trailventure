@@ -32,16 +32,12 @@ function DiscoverSection() {
         errorMessage =
           "Network error: Unable to reach the server. Please check your internet connection.";
       } else {
-        errorMessage = err.message;
+        errorMessage = "";
       }
 
       toast({
         title: "404 NOT FOUND",
         description: errorMessage,
-        button: {
-          label: "Ignore",
-          onClick: () => console.log("OK clicked"),
-        },
       });
     }
   };
@@ -58,7 +54,7 @@ function DiscoverSection() {
           Choose your next travel destination
         </p>
       </div>
-      <div className="mx-auto w-full grid max-w-[1200px] gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-[1200px] gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
         {parsedDestinations.slice(0, 6).map((destination, index) => {
           const gridClasses = [
             "sm:col-span-1 sm:row-span-2",

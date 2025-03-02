@@ -89,7 +89,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
         setTimeout(() => {
           window.location.href = "/";
-        }, 1500);
+        }, 1000);
         toast({
           title: "Login Successful!",
           description: "Redirecting to homepage...",
@@ -105,11 +105,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
     } catch (error) {
       toast({
         title: "Login Failed!",
-        description: "Invalid username or password.",
-        button: {
-          label: "Retry",
-          onClick: () => console.log("Retry clicked"),
-        },
+        description: "Invalid username or password. Try again"
       });
     } finally {
       setLoading(false);

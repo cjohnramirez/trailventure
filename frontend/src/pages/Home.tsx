@@ -1,13 +1,11 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import Search from "../components/NavBar/SearchBar";
 import NavBar from "@/components/NavBar/NavBar";
 import DiscoverSection from "@/components/Home/DiscoverSection";
 import BackgroundImage from "../assets/Home/HomePage.png";
-import { AuthContext } from "@/components/ProtectedRoute/AuthContext";
 
 function Home() {
   const [forNavBar, setforNavBar] = useState(true);
-  const authContext = useContext(AuthContext)
 
   const checkSectionInView = () => {
     const section = document.getElementById("section1");

@@ -29,11 +29,30 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+class UserProfileLinks(models.Model):
+    class Meta:
+        verbose_name_plural = "User profile links"
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_profile_links")
+    facebook = models.URLField(max_length=255, null=True, blank=True)
+    twitter = models.URLField(max_length=255, null=True, blank=True)
+    instagram = models.URLField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"Links for {self.user.username}"
+
 
 class CustomerProfile(models.Model):
+    GENDER_CHOICES = [
+        ("M", "Male"),
+        ("F", "Female"),
+        ("O", "Other"),
+    ]
+
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="customer_profile"
     )
+    gender = models.CharField(max_length=15, choices=GENDER_CHOICES, null=True)
     date_of_birth = models.DateField(null=True)
     phone_number = models.CharField(max_length=15)
     avatar = models.ImageField(upload_to="users_avatar/", null=True)

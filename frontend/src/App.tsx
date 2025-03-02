@@ -13,7 +13,7 @@ import { AuthProvider } from "./components/ProtectedRoute/AuthContext.tsx";
 
 function Logout() {
   localStorage.clear();
-  return <Navigate to="/login" />;
+  return <Navigate to="/" />;
 }
 
 function RegisterAndLogout() {

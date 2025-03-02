@@ -38,7 +38,8 @@ function UserPage() {
       if (err.response) {
         errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
       } else if (err.request) {
-        errorMessage = "Network error: Unable to reach the server. Please check your internet connection.";
+        errorMessage =
+          "Network error: Unable to reach the server. Please check your internet connection.";
       } else {
         errorMessage = "Internal server error.";
       }
@@ -54,19 +55,34 @@ function UserPage() {
     }
   };
 
-  //console.log(userData);
-
   return (
     <div className="w-full">
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
         <NavBar isNavBar={true} />
       </div>
       <div className="p-8">
-        <div className="relative w-full rounded-2xl border-[1px] p-4">
-          <img src={userData[0]?.banner} className="h-full max-h-[300px] w-full rounded-2xl object-cover"></img>
-          <img src={userData[0]?.avatar} className="absolute top-[190px] ml-24 w-[250px] rounded-full"></img>
+        <div className="relative w-full p-4">
+          <img
+            src={userData[0]?.banner}
+            className="object-bottom h-full max-h-[300px] w-full rounded-2xl object-cover"
+          ></img>
+          <img
+            src={userData[0]?.avatar}
+            className="absolute left-[120px] top-[120px] z-10 aspect-square w-[250px] rounded-[60px] object-cover"
+          ></img>
+          <div className="relative top-[-165px] w-full p-12">
+            <div className="h-[240px] w-full rounded-2xl bg-[#09090b] p-8 shadow-2xl shadow-teal-500/20 leading-tight">
+              <div className="flex flex-col relative left-[320px]">
+                <p className="text-[50px]">
+                  {userData[0]?.user.first_name +
+                    " " +
+                    userData[0]?.user.last_name}
+                </p>
+                <p>Customer Profile</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className=""></div>
       </div>
     </div>
   );
