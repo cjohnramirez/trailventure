@@ -2,21 +2,16 @@ import { PhilippinePeso } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 
-type FilterAction = 
-  | { type: "SET_MIN_PRICE"; payload: string }
-  | { type: "SET_MAX_PRICE"; payload: string };
-
-interface State {
-  minPrice: string;
-  maxPrice: string;
-}
-
 interface Props {
-  state: State;
-  dispatch: React.Dispatch<FilterAction>;
+  state: {
+    minPrice: string;
+    maxPrice: string;
+  };
+  setMinPrice: React.Dispatch<React.SetStateAction<string>>;
+  setMaxPrice: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function SearchPagePrice({ state, dispatch }: Props) {
+export default function SearchPagePrice({ state, setMinPrice, setMaxPrice }: Props) {
   return (
     <div className="rounded-2xl border-[1px] p-4">
       <div className="flex gap-4">
@@ -30,10 +25,7 @@ export default function SearchPagePrice({ state, dispatch }: Props) {
           onValueChange={(value) => {
             const newMinPrice = value[0];
             if (newMinPrice <= Number(state.maxPrice)) {
-              dispatch({
-                type: "SET_MIN_PRICE",
-                payload: newMinPrice.toString(),
-              });
+              setMinPrice(newMinPrice.toString());
             }
           }}
           step={500}
@@ -44,10 +36,7 @@ export default function SearchPagePrice({ state, dispatch }: Props) {
           onChange={(e) => {
             const newMinPrice = Number(e.target.value);
             if (newMinPrice <= Number(state.maxPrice)) {
-              dispatch({
-                type: "SET_MIN_PRICE",
-                payload: e.target.value,
-              });
+              setMinPrice(e.target.value);
             }
           }}
           className="w-1/3"
@@ -56,14 +45,11 @@ export default function SearchPagePrice({ state, dispatch }: Props) {
       <div className="flex items-center gap-4">
         <p>Maximum</p>
         <Slider
-          value={[Number(state.maxPrice) || 25000]}
+          value={[Number(state.maxPrice) || 0]}
           onValueChange={(value) => {
             const newMaxPrice = value[0];
             if (newMaxPrice >= Number(state.minPrice)) {
-              dispatch({
-                type: "SET_MAX_PRICE",
-                payload: newMaxPrice.toString(),
-              });
+              setMaxPrice(newMaxPrice.toString());
             }
           }}
           step={500}
@@ -74,10 +60,7 @@ export default function SearchPagePrice({ state, dispatch }: Props) {
           onChange={(e) => {
             const newMaxPrice = Number(e.target.value);
             if (newMaxPrice >= Number(state.minPrice)) {
-              dispatch({
-                type: "SET_MAX_PRICE",
-                payload: e.target.value,
-              });
+              setMaxPrice(e.target.value);
             }
           }}
           className="w-1/3"

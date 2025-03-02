@@ -1,16 +1,14 @@
 import { MapPinned } from "lucide-react";
 import { Button } from "../ui/button";
 
-type FilterAction = { type: "SET_REVIEW_SCORE"; payload: string };
-
 interface SearchPageReviewProps {
-  dispatch: React.Dispatch<FilterAction>;
-  state: any;
+  reviewScore: string;
+  setReviewScore: React.Dispatch<React.SetStateAction<string>>;
   altReviewScores: string[];
   reviewScores: string[];
 }
 
-export default function SearchPageReview({ dispatch, state, altReviewScores, reviewScores }: SearchPageReviewProps) {
+export default function SearchPageReview({ reviewScore, setReviewScore, altReviewScores, reviewScores }: SearchPageReviewProps) {
   return (
     <div>
       <div className="flex-row items-center justify-between rounded-2xl border-[1px] p-4">
@@ -24,13 +22,10 @@ export default function SearchPageReview({ dispatch, state, altReviewScores, rev
               <Button
                 id={review.toString()}
                 key={index}
-                className={`w-full ${state.reviewScore === review ? "bg-teal-500 text-black" : ""}`}
+                className={`w-full ${reviewScore === review ? "bg-teal-500 text-black" : ""}`}
                 variant={"outline"}
                 onClick={() => {
-                  dispatch({
-                    type: "SET_REVIEW_SCORE",
-                    payload: review.toString(),
-                  });
+                  setReviewScore(review.toString());
                 }}
               >
                 <p className="text-left">

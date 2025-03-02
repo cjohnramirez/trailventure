@@ -42,7 +42,7 @@ export default function SearchPrice({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] md:w-[400px]">
+      <PopoverContent className="w-[400px]">
         <div className="text-center">
           <p className="pb-3">Set your price range</p>
           <DropdownMenuSeparator />
@@ -53,7 +53,7 @@ export default function SearchPrice({
             <p className="block sm:hidden">Min</p>
             <Slider
               defaultValue={[580]}
-              max={12000}
+              max={100000}
               step={100}
               min={580}
               onValueChange={(e) => {
@@ -64,7 +64,7 @@ export default function SearchPrice({
               value={minimumPrice!}
             />
             <Input
-              className="w-1/3"
+              className="w-2/5"
               onChange={(e) => {
                 if (Number(e.target.value) <= maximumPrice![0]) {
                   setMinimumPrice([Number(e.target.value)]);
@@ -78,7 +78,7 @@ export default function SearchPrice({
             <p className="block sm:hidden">Max</p>
             <Slider
               defaultValue={[50]}
-              max={12000}
+              max={100000}
               step={100}
               min={580}
               onValueChange={(e) => {
@@ -89,7 +89,7 @@ export default function SearchPrice({
               value={maximumPrice!}
             />
             <Input
-              className="w-1/3"
+              className="w-2/5"
               onChange={(e) => {
                 if (Number(e.target.value) >= minimumPrice![0]) {
                   setMaximumPrice([Number(e.target.value)]);

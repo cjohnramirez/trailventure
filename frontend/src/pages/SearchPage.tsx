@@ -1,10 +1,9 @@
 import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
-import { useReducer } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import { AxiosError } from "axios";
 import { toast } from "@/components/Error/ErrorSonner";
@@ -26,14 +25,17 @@ function SearchPage() {
 
   const [tourPackages, setTourPackages] = useState<tourPackage[]>([]);
   const [destinations, setDestinations] = useState<Destination[]>([]);
-  const [filteredTourPackages, setFilteredTourPackages] = useState<
-    tourPackage[]
-  >([]);
+  const [filteredTourPackages, setFilteredTourPackages] = useState<tourPackage[]>([]);
   const [_isFiltered, setIsFiltered] = useState(false);
   const [searchItem, setSearchItem] = useState<string>("");
-  const [filteredDestinations, setFilteredDestinations] = useState<
-    Destination[]
-  >([]);
+  const [filteredDestinations, setFilteredDestinations] = useState<Destination[]>([]);
+
+  const [startDate, setStartDate] = useState<string>(startdate || "");
+  const [endDate, setEndDate] = useState<string>(enddate || "");
+  const [minPrice, setMinPrice] = useState<string>(startprice || "");
+  const [maxPrice, setMaxPrice] = useState<string>(endprice || "");
+  const [destination, setDestination] = useState<string>(location || "");
+  const [reviewScore, setReviewScore] = useState<string>("");
 
   useEffect(() => {
     getPackageData();
@@ -75,54 +77,6 @@ function SearchPage() {
     }
   };
 
-  const initialState = {
-    startDate: startdate || "",
-    endDate: enddate || "",
-    minPrice: startprice || "",
-    maxPrice: endprice || "",
-    destination: location || "",
-    reviewScore: "",
-  };
-
-  interface FilterState {
-    startDate: string;
-    endDate: string;
-    minPrice: string;
-    maxPrice: string;
-    destination: string;
-    reviewScore: string;
-  }
-
-  type FilterAction =
-    | { type: "SET_START_DATE"; payload: string }
-    | { type: "SET_END_DATE"; payload: string }
-    | { type: "SET_MIN_PRICE"; payload: string }
-    | { type: "SET_MAX_PRICE"; payload: string }
-    | { type: "SET_DESTINATION"; payload: string }
-    | { type: "SET_REVIEW_SCORE"; payload: string }
-    | { type: "RESET_FILTERS" };
-
-  const filterReducer = (state: FilterState, action: FilterAction) => {
-    switch (action.type) {
-      case "SET_START_DATE":
-        return { ...state, startDate: action.payload };
-      case "SET_END_DATE":
-        return { ...state, endDate: action.payload };
-      case "SET_MIN_PRICE":
-        return { ...state, minPrice: action.payload };
-      case "SET_MAX_PRICE":
-        return { ...state, maxPrice: action.payload };
-      case "SET_DESTINATION":
-        return { ...state, destination: action.payload };
-      case "SET_REVIEW_SCORE":
-        return { ...state, reviewScore: action.payload };
-      case "RESET_FILTERS":
-        return initialState;
-      default:
-        return state;
-    }
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
@@ -134,9 +88,7 @@ function SearchPage() {
     setFilteredDestinations(filteredItems);
   };
 
-  const [state, dispatch] = useReducer(filterReducer, initialState);
-  const [selectedDestination, setSelectedDestination] =
-    useState<string>("Set Location");
+  const [selectedDestination, setSelectedDestination] = useState<string>("Set Location");
   const [locPopoverOpen, setLocPopoverOpen] = useState<boolean>(false);
 
   const reviewScores: string[] = ["5", "4", "3", "2", "1"];
@@ -151,41 +103,22 @@ function SearchPage() {
 
   const applyFilters = () => {
     const filteredResults = tourPackages.filter((tourPackage: tourPackage) => {
-      if (
-        state.startDate &&
-        new Date(tourPackage.start_date) < new Date(state.startDate)
-      ) {
+      if (startDate && new Date(tourPackage.start_date) < new Date(startDate)) {
         return false;
       }
-      if (
-        state.endDate &&
-        new Date(tourPackage.end_date) > new Date(state.endDate)
-      ) {
+      if (endDate && new Date(tourPackage.end_date) > new Date(endDate)) {
         return false;
       }
-      if (
-        state.minPrice &&
-        tourPackage.package_type[0]?.price_per_person &&
-        Number(tourPackage.package_type[0].price_per_person) <
-          Number(state.minPrice)
-      ) {
+      if (minPrice && tourPackage.package_type[0]?.price_per_person && Number(tourPackage.package_type[0].price_per_person) < Number(minPrice)) {
         return false;
       }
-      if (
-        state.maxPrice &&
-        tourPackage.package_type[0]?.price_per_person &&
-        Number(tourPackage.package_type[0].price_per_person) >
-          Number(state.maxPrice)
-      ) {
+      if (maxPrice && tourPackage.package_type[0]?.price_per_person && Number(tourPackage.package_type[0].price_per_person) > Number(maxPrice)) {
         return false;
       }
-      if (
-        state.destination &&
-        tourPackage.destination.name !== state.destination
-      ) {
+      if (destination && tourPackage.destination.name !== destination) {
         return false;
       }
-      if (state.reviewScore) {
+      if (reviewScore) {
         // Add review score filtering logic here if needed
       }
       return true;
@@ -196,7 +129,12 @@ function SearchPage() {
   };
 
   const resetFilters = () => {
-    dispatch({ type: "RESET_FILTERS" });
+    setStartDate("");
+    setEndDate("");
+    setMinPrice("");
+    setMaxPrice("");
+    setDestination("");
+    setReviewScore("");
     setFilteredTourPackages(tourPackages);
     setIsFiltered(false);
     setSelectedDestination("Set Location");
@@ -216,9 +154,10 @@ function SearchPage() {
               Clear Filter
             </Button>
           </div>
-          <SearchPageDate state={state} dispatch={dispatch} />
-          <SearchPagePrice state={state} dispatch={dispatch} />
+          <SearchPageDate state={{ startDate, endDate }} setStartDate={setStartDate} setEndDate={setEndDate} />
+          <SearchPagePrice state={{ minPrice, maxPrice }} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
           <SearchPageDestination
+            state={destination}
             locPopoverOpen={locPopoverOpen}
             selectedDestination={selectedDestination}
             setLocPopoverOpen={setLocPopoverOpen}
@@ -226,11 +165,11 @@ function SearchPage() {
             handleInputChange={handleInputChange}
             filteredDestinations={filteredDestinations}
             setSelectedDestination={setSelectedDestination}
-            dispatch={dispatch}
+            setDestination={setDestination}
           />
           <SearchPageReview
-            dispatch={dispatch}
-            state={state}
+            reviewScore={reviewScore}
+            setReviewScore={setReviewScore}
             altReviewScores={altReviewScores}
             reviewScores={reviewScores}
           />
@@ -267,11 +206,11 @@ function SearchPage() {
                       </div>
                       <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4">
                         <div>
-                          <p className="text-font-semibold">
+                          <p className="text-lg font-semibold">
                             {tourPackage.name}
                           </p>
                           <p className="text-xs">
-                            {tourPackage.description.substring(0, 50) + "..."}
+                            {tourPackage.description.substring(0, 100) + "..."}
                           </p>
                         </div>
                         <div className="flex flex-row items-center justify-between gap-4">

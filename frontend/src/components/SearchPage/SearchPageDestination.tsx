@@ -2,26 +2,26 @@ import { Button } from "@/components/ui/button";
 import { MapPin, MapPinned } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Dispatch } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-interface SearchPageDestinationProps {
-  locPopoverOpen: boolean;
-  selectedDestination: string;
-  setLocPopoverOpen: (open: boolean) => void;
-  searchItem: string;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  filteredDestinations: { name: string; description: string }[];
-  setSelectedDestination: (destination: string) => void;
-  dispatch: Dispatch<FilterAction>;
+interface Destination {
+  description: string;
+  image: string;
+  name: string;
+  Destination: string;
 }
 
-type FilterAction = { type: "SET_DESTINATION"; payload: string }
-
+interface SearchPageDestinationProps {
+  state: string;
+  locPopoverOpen: boolean;
+  selectedDestination: string;
+  setLocPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  searchItem: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  filteredDestinations: Destination[];
+  setSelectedDestination: React.Dispatch<React.SetStateAction<string>>;
+  setDestination: React.Dispatch<React.SetStateAction<string>>;
+}
 
 export default function SearchPageDestination({
   locPopoverOpen,
@@ -31,7 +31,8 @@ export default function SearchPageDestination({
   handleInputChange,
   filteredDestinations,
   setSelectedDestination,
-  dispatch,
+  setDestination,
+  state,
 }: SearchPageDestinationProps) {
   return (
     <div className="flex items-center justify-between rounded-2xl border-[1px] p-4">
@@ -44,9 +45,7 @@ export default function SearchPageDestination({
           <Button variant="outline" className="flex h-full gap-4 px-6 pr-8">
             <MapPin />
             <div className="flex h-full flex-col justify-center text-left">
-              <p className="text-md">
-                {selectedDestination ? selectedDestination : "Destination"}
-              </p>
+              <p className="text-md">{state ? state : selectedDestination}</p>
             </div>
           </Button>
         </PopoverTrigger>
@@ -68,10 +67,7 @@ export default function SearchPageDestination({
                     className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-zinc-900"
                     onClick={() => {
                       setSelectedDestination(destination.name);
-                      dispatch({
-                        type: "SET_DESTINATION",
-                        payload: destination.name,
-                      });
+                      setDestination(destination.name);
                       setLocPopoverOpen(false);
                     }}
                   >

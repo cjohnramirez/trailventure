@@ -14,6 +14,7 @@ import BookingPage from "./pages/BookingPage.tsx";
 
 function Logout() {
   localStorage.clear();
+  window.location.href= "/"
   return <Navigate to="/" />;
 }
 
