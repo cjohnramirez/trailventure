@@ -44,7 +44,7 @@ export default function SearchPageDestination({
           <Button variant="outline" className="flex h-full gap-4 px-6 pr-8">
             <MapPin />
             <div className="flex h-full flex-col justify-center text-left">
-              <p className="text-md font-bold">
+              <p className="text-md">
                 {selectedDestination ? selectedDestination : "Destination"}
               </p>
             </div>

@@ -37,30 +37,20 @@ function SearchPage() {
 
   useEffect(() => {
     getPackageData();
+    applyFilters();
   }, []);
 
   useEffect(() => {
-    if (
-      tourPackages.length > 0 &&
-      (location || startdate || enddate || startprice || endprice)
-    ) {
-      applyFilters();
-
-      if (location) {
-        dispatch({ type: "SET_DESTINATION", payload: location });
-      }
-    }
+    applyFilters();
   }, [tourPackages]);
 
   const getPackageData = async () => {
     try {
       const response = await api.get("apps/destination/list/");
       setDestinations(response.data);
-      setFilteredDestinations(response.data);
 
       const fetchPackage = await api.get("apps/package/list/");
       setTourPackages(fetchPackage.data);
-      setFilteredTourPackages(fetchPackage.data);
     } catch (error) {
       const err = error as AxiosError;
       let errorMessage = "An unexpected error occurred.";
