@@ -3,7 +3,6 @@ import { useState } from "react";
 import api from "../../lib/api";
 import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
-
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,17 +87,18 @@ function HomeForm({ route, method }: { route: string; method: string }) {
       if (isLogin) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
         toast({
           title: "Login Successful!",
-          description: "You have successfully logged in.",
+          description: "Redirecting to homepage...",
           button: {
-          label: "Ignore",
-          onClick: () => console.log("OK clicked"),
+            label: "Go immediately!",
+            onClick: () => navigate("/"),
           },
         });
-        navigate("/");
-        window.location.reload();
+
       } else {
         navigate("/login");
       }
@@ -107,8 +107,8 @@ function HomeForm({ route, method }: { route: string; method: string }) {
         title: "Login Failed!",
         description: "Invalid username or password.",
         button: {
-        label: "Retry",
-        onClick: () => console.log("Retry clicked"),
+          label: "Retry",
+          onClick: () => console.log("Retry clicked"),
         },
       });
     } finally {

@@ -1,4 +1,4 @@
-import NavBar from "@/components/Home/NavBar";
+import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "../components/ui/button";
 import { useReducer } from "react";
 import { useParams } from "react-router-dom";
@@ -215,10 +215,10 @@ function SearchPage() {
   return (
     <>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar change={false} />
+        <NavBar isNavBar={false} />
       </div>
-      <div className="flex w-screen flex-col p-8 pt-0 lg:flex-row lg:p-0">
-        <aside className="top-20 block h-full w-full flex-col gap-4 overflow-y-scroll rounded-2xl border-[1px] p-8 lg:sticky lg:m-8 lg:mx-8 lg:my-4 lg:mt-2 lg:flex xl:w-3/5 lg:max-w-[430px]">
+      <div className="flex w-screen flex-row">
+        <aside className="sticky top-20 m-8 mt-2 flex h-full w-2/5 flex-col gap-4 overflow-y-scroll rounded-2xl border-[1px] p-8">
           <div className="flex items-center justify-between pb-4">
             <p className="text-xl font-semibold">Filters</p>
             <Button variant={"outline"} onClick={resetFilters}>
@@ -252,7 +252,7 @@ function SearchPage() {
             Apply Filter
           </Button>
         </aside>
-        <div className="mt-8 flex w-full flex-col gap-4 rounded-2xl border-[1px] p-8 lg:mx-4 lg:my-2">
+        <div className="m-8 ml-0 mt-2 flex w-3/5 flex-col gap-4 rounded-2xl border-[1px] p-8">
           <div className="flex justify-between">
             <p className="text-xl font-semibold">Search Results</p>
             <div className="rounded-2xl border-[1px] px-8 py-2">
@@ -277,7 +277,7 @@ function SearchPage() {
                       </div>
                       <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4">
                         <div>
-                          <p className="text-lg font-semibold">
+                          <p className="text-font-semibold">
                             {tourPackage.name}
                           </p>
                           <p className="text-xs">

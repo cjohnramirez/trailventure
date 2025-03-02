@@ -1,4 +1,4 @@
-import NavBar from "@/components/Home/NavBar";
+import NavBar from "@/components/NavBar/NavBar";
 import PersonHiking from "../assets/AboutUs/personHiking.jpeg";
 import { MapIcon, MapPin } from "lucide-react";
 import PhilippineImage from "../assets/AboutUs/philippines.png";
@@ -43,7 +43,7 @@ function AboutUs() {
   return (
     <div>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar change={false} />
+        <NavBar isNavBar={false} />
       </div>
       <div className="h-screen select-none pb-[120px]">
         <div className="items-around mb-[70px] flex h-full flex-row justify-center gap-20 px-16 py-8">

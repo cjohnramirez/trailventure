@@ -2,15 +2,14 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import NotFound from "./components/Error/NotFound.tsx";
 import Home from "./pages/Home.tsx";
 import AboutUs from "./pages/AboutUs.tsx";
 import SearchPage from "./pages/SearchPage.tsx";
-import Experiment from "./pages/Experiment.tsx";
 import PackagePage from "./pages/PackagePage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
 import UserPage from "./pages/UserPage.tsx";
-import { AuthProvider } from "./components/ProtectedRoute/AuthContext.tsx"; // ✅ Use AuthProvider
+import { AuthProvider } from "./components/ProtectedRoute/AuthContext.tsx";
 
 function Logout() {
   localStorage.clear();
@@ -43,7 +42,6 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<RegisterAndLogout />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/exp" element={<Experiment />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

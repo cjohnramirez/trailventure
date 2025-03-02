@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import NavBar from "@/components/Home/NavBar";
+import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
 import api from "../lib/api";
 import { AxiosError } from "axios";
@@ -72,7 +72,7 @@ function PackagePage() {
         </div>
       </div>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar change={false} />
+        <NavBar isNavBar={false} />
       </div>
       <div className="mx-8 my-4 flex flex-col items-center gap-4 p-8" id="description">
         <div className="flex w-full max-w-[1200px] items-center justify-between">

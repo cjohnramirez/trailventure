@@ -1,4 +1,4 @@
-import NavBar from "@/components/Home/NavBar";
+import NavBar from "@/components/NavBar/NavBar";
 import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import { AxiosError } from "axios";
@@ -54,12 +54,12 @@ function UserPage() {
     }
   };
 
-  console.log(userData);
+  //console.log(userData);
 
   return (
     <div className="w-full">
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar change={false} />
+        <NavBar isNavBar={true} />
       </div>
       <div className="p-8">
         <div className="relative w-full rounded-2xl border-[1px] p-4">
