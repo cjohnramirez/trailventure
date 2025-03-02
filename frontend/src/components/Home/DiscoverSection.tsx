@@ -32,7 +32,7 @@ function DiscoverSection() {
         errorMessage =
           "Network error: Unable to reach the server. Please check your internet connection.";
       } else {
-        errorMessage = "";
+        errorMessage = "Server error. ";
       }
 
       toast({
