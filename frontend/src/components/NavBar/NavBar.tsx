@@ -3,28 +3,27 @@ import { Button } from "../ui/button";
 import NavBarDropdown from "./NavBarDropdown";
 import Search from "./SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../Contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "../Contexts/AuthContext";
 import DefaultUserProfile from "@/assets/UserPage/defaultProfile.jpg";
-import { UserData } from "@/lib/UserPage/UserData";
 
 interface NavBarInterface {
   isNavBar: boolean;
 }
 
 function NavBar({ isNavBar }: NavBarInterface) {
-  const authContext = useContext(AuthContext);
+  const isAuthorized = useAuthStore((state) => state.isAuthorized);
+  const userData = useAuthStore((state) => state.userData) || [];
   const navigate = useNavigate();
   const location = useLocation();
   const [atUserPage, setAtUserPage] = useState(location.pathname === "/user-page");
-  const userData: UserData[] = (authContext?.userData ?? []) as UserData[];
 
   useEffect(() => {
     setAtUserPage(location.pathname === "/user-page");
   }, [location.pathname]);
 
   const handleAuthClick = () => {
-    if (authContext?.isAuthorized) {
+    if (isAuthorized) {
       const newPath = atUserPage ? "/" : "/user-page";
       navigate(newPath);
     } else {
@@ -49,7 +48,7 @@ function NavBar({ isNavBar }: NavBarInterface) {
         )}
         <div className="flex w-1/3 justify-end gap-2">
           <Button variant="outline" className="h-full py-0" onClick={handleAuthClick}>
-            {authContext?.isAuthorized ? (
+            {isAuthorized ? (
               atUserPage ? (
                 <div className="flex items-center gap-2">
                   <Home />

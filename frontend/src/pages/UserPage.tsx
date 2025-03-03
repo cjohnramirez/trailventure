@@ -1,29 +1,22 @@
 import NavBar from "@/components/NavBar/NavBar";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
 import DefaultBanner from "@/assets/UserPage/defaultBanner.jpeg";
 import { siFacebook, siX, siInstagram } from "simple-icons";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Edit } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { UserData } from "@/lib/UserPage/UserData";
-import { AuthContext } from "@/components/Contexts/AuthContext";
+import { useAuthStore } from "@/components/Contexts/AuthContext";
 
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
-  const authContext = useContext(AuthContext)
-
-  const userData: UserData[] = (authContext?.userData ?? []) as UserData[];
+  const userData = useAuthStore((state) => state.userData) || [];
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
 
   useEffect(() => {
-    if (userData.length > 0 && userData[0]?.date_of_birth) {
+    if (userData && userData[0].date_of_birth) {
       setDateOfBirth(new Date(userData[0].date_of_birth));
     }
   }, [userData]);
@@ -48,17 +41,12 @@ function UserPage() {
               <div className="relative left-[290px] flex flex-col">
                 <p>Customer Profile</p>
                 <p className="text-[50px] font-semibold">
-                  {userData[0]?.user.first_name +
-                    " " +
-                    userData[0]?.user.last_name}
+                  {userData[0]?.user?.first_name + " " + userData[0]?.user?.last_name}
                 </p>
                 <div className="mt-2 flex w-[220px] items-center gap-4 rounded-3xl border-[1px] p-4">
                   <p className="border-r-2 pr-4">Links</p>
                   <div>
-                    <a
-                      href={userData[0]?.user.user_profile_links.facebook}
-                      target="_blank"
-                    >
+                    <a href={userData[0]?.user?.user_profile_links.facebook} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -71,10 +59,7 @@ function UserPage() {
                     </a>
                   </div>
                   <div>
-                    <a
-                      href={userData[0]?.user.user_profile_links.twitter}
-                      target="_blank"
-                    >
+                    <a href={userData[0]?.user?.user_profile_links.twitter} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -87,10 +72,7 @@ function UserPage() {
                     </a>
                   </div>
                   <div>
-                    <a
-                      href={userData[0]?.user.user_profile_links.instagram}
-                      target="_blank"
-                    >
+                    <a href={userData[0]?.user?.user_profile_links.instagram} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -154,10 +136,7 @@ function UserPage() {
                     <div className="w-full">
                       <Popover>
                         <PopoverTrigger asChild className="w-full">
-                          <Button
-                            variant={"outline"}
-                            className="flex justify-start"
-                          >
+                          <Button variant={"outline"} className="flex justify-start">
                             <CalendarIcon />
                             <p>{dateOfBirth?.toLocaleDateString()}</p>
                           </Button>
@@ -167,7 +146,7 @@ function UserPage() {
                             mode="single"
                             selected={dateOfBirth ? new Date(dateOfBirth) : undefined}
                             onSelect={(date) => {
-                              setDateOfBirth(date || null)
+                              setDateOfBirth(date || null);
                             }}
                             className="rounded-md border shadow"
                           />
@@ -180,20 +159,18 @@ function UserPage() {
                 <>
                   <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
                     <p className="w-[150px] border-r-[1px] pr-2">First Name</p>
-                    <p className="pl-4">{userData[0]?.user.first_name}</p>
+                    <p className="pl-4">{userData[0]?.user?.first_name}</p>
                   </div>
                   <div className="flex items-center rounded-2xl border-[1px] p-4 py-5">
                     <p className="w-[150px] border-r-[1px] pr-2">Last Name</p>
-                    <p className="pl-4">{userData[0]?.user.last_name}</p>
+                    <p className="pl-4">{userData[0]?.user?.last_name}</p>
                   </div>
                   <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
                     <p className="w-[150px] border-r-[1px] pr-2">Email</p>
-                    <p className="pl-4">{userData[0]?.user.email}</p>
+                    <p className="pl-4">{userData[0]?.user?.email}</p>
                   </div>
                   <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
-                    <p className="w-[150px] border-r-[1px] pr-2">
-                      Date of Birth
-                    </p>
+                    <p className="w-[150px] border-r-[1px] pr-2">Date of Birth</p>
                     <p className="pl-4">{userData[0]?.date_of_birth}</p>
                   </div>
                 </>

@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from "react-router-dom";
-import { ReactNode, useContext } from "react";
-import { AuthContext } from "@/components/Contexts/AuthContext";
+import { ReactNode } from "react";
+import { useAuthStore } from "@/components/Contexts/AuthContext";
 import { toast } from "@/components/Error/ErrorSonner";
 
 interface ProtectedRouteProps {
@@ -8,14 +8,12 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const authContext = useContext(AuthContext);
+  const { isAuthorized } = useAuthStore();
   const navigate = useNavigate();
 
-  if (!authContext) {
+  if (!isAuthorized) {
     return <Navigate to="/login" />;
   }
-
-  const { isAuthorized } = authContext;
 
   if (!isAuthorized) {
     if (isAuthorized === false) {

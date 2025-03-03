@@ -1,52 +1,51 @@
-import { jwtDecode } from "jwt-decode";
+import { create } from "zustand";
+import { UserData } from "@/lib/UserPage/UserData";
 import api from "../../lib/api";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "../../constants";
-import { useState, useEffect, ReactNode, createContext } from "react";
-import { UserData } from "@/lib/UserPage/UserData";
 import { AxiosError } from "axios";
 import { toast } from "../Error/ErrorSonner";
+import { jwtDecode } from "jwt-decode";
 
-interface AuthContextType {
-  isAuthorized: boolean;
+interface AuthState {
+  isAuthorized: boolean | null;
+  userData: UserData[] | null;
   setIsAuthorized: (value: boolean) => void;
-  userData: UserData | null;
+  getUserData: () => Promise<void>;
+  refreshToken: () => Promise<void>;
+  auth: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const useAuthStore = create<AuthState>((set) => ({
+  isAuthorized: null,
+  userData: null,
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
+  setIsAuthorized: (value: boolean) => set({ isAuthorized: value }),
 
-  useEffect(() => {
-    auth().catch(() => setIsAuthorized(false));
-  }, []);
-
-  const getUserData = async () => {
+  getUserData: async () => {
     try {
-      const fetchUserData = await api.get(`/apps/users/customer/profile/`);
-      setUserData(fetchUserData.data);
+      const response = await api.get(`/apps/users/customer/profile/`);
+      set({ userData: response.data });
     } catch (error) {
       const err = error as AxiosError;
       let errorMessage = "An unexpected error occurred.";
 
       if (err.response) {
-        errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
+        errorMessage = `Error ${err.response.status}: ${
+          err.response.data || "Something went wrong"
+        }`;
       } else if (err.request) {
         errorMessage =
           "Network error: Unable to reach the server. Please check your internet connection.";
-      } else {
-        errorMessage = "Internal server error.";
       }
 
       toast({
         title: "404 NOT FOUND",
-        description: errorMessage
+        description: errorMessage,
       });
     }
-  };
+  },
 
-  const refreshToken = async () => {
+  refreshToken: async () => {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
     try {
       const res = await api.post("/apps/token/refresh/", {
@@ -54,41 +53,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       if (res.status === 200) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        getUserData();
-        setIsAuthorized(true);
+        await useAuthStore.getState().getUserData();
+        set({ isAuthorized: true });
       } else {
-        setIsAuthorized(false);
+        set({ isAuthorized: false });
       }
     } catch (error) {
-      setIsAuthorized(false);
+      set({ isAuthorized: false });
     }
-  };
+  },
 
-  const auth = async () => {
+  auth: async () => {
     const token = localStorage.getItem(ACCESS_TOKEN);
     if (!token) {
-      setIsAuthorized(false);
+      set({ isAuthorized: false });
       return;
     }
+
     const decoded: any = jwtDecode(token);
     const tokenExpiration = decoded.exp;
     const now = Date.now() / 1000;
 
     if (tokenExpiration && tokenExpiration < now) {
-      await refreshToken();
+      await useAuthStore.getState().refreshToken();
     } else {
-      getUserData();
-      setIsAuthorized(true);
+      await useAuthStore.getState().getUserData();
+      set({ isAuthorized: true });
     }
-  };
-
-  if (isAuthorized === null) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <AuthContext.Provider value={{ isAuthorized, setIsAuthorized, userData }}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
+  },
+}));
