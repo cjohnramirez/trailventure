@@ -34,18 +34,15 @@ function PackagePage() {
       if (err.response) {
         errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
       } else if (err.request) {
-        errorMessage = "Network error: Unable to reach the server. Please check your internet connection.";
+        errorMessage =
+          "Network error: Unable to reach the server. Please check your internet connection.";
       } else {
         errorMessage = err.message;
       }
 
       toast({
         title: "404 NOT FOUND",
-        description: errorMessage,
-        button: {
-          label: "Ignore",
-          onClick: () => console.log("OK clicked"),
-        },
+        description: errorMessage
       });
     }
   };
@@ -57,23 +54,45 @@ function PackagePage() {
       <div className="fixed bottom-0 z-20 flex w-full justify-center px-8 py-4">
         <div className="flex w-full max-w-[500px] justify-center rounded-full border-[1px] bg-[#ffffff] p-4 dark:bg-[#09090b]">
           <div className="flex gap-4">
-            <Button variant={"outline"} onClick={() => document.getElementById("main")?.scrollIntoView({ behavior: "smooth" })}>
+            <Button
+              variant={"outline"}
+              onClick={() =>
+                document.getElementById("main")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               Overview
             </Button>
-            <Button variant={"outline"} onClick={() => document.getElementById("description")?.scrollIntoView({ behavior: "smooth", block: "center" })}>
+            <Button
+              variant={"outline"}
+              onClick={() =>
+                document
+                  .getElementById("description")
+                  ?.scrollIntoView({ behavior: "smooth", block: "center" })
+              }
+            >
               Description
             </Button>
-            <Button variant={"outline"} onClick={() => document.getElementById("packageType")?.scrollIntoView({ behavior: "smooth" })}>
+            <Button
+              variant={"outline"}
+              onClick={() =>
+                document.getElementById("packageType")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               Package Type
             </Button>
-            <Button variant={"outline"} onClick={() => document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" })}>
+            <Button
+              variant={"outline"}
+              onClick={() =>
+                document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               Reviews
             </Button>
           </div>
         </div>
       </div>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar isNavBar={false} />
+        <NavBar isNavBar={true} />
       </div>
       <div className="mx-8 my-4 flex flex-col items-center gap-4 p-8" id="description">
         <div className="flex w-full max-w-[1200px] items-center justify-between">
@@ -88,10 +107,22 @@ function PackagePage() {
         </div>
         <div className="grid w-full max-w-[1200px] grid-cols-4 gap-4">
           {parsedTourPackage[0]?.package_image.map((image, index) => {
-            const gridClasses = ["col-span-1 row-span-2", "col-span-2 row-span-2", "col-span-1 row-span-1", "col-span-1 row-span-1"];
+            const gridClasses = [
+              "col-span-1 row-span-2",
+              "col-span-2 row-span-2",
+              "col-span-1 row-span-1",
+              "col-span-1 row-span-1",
+            ];
             return (
-              <div key={index} className={`${gridClasses[index]} flex h-full w-full flex-col transition duration-300 ease-in-out hover:scale-105`}>
-                <img src={image.image} alt={parsedTourPackage[0]?.name + " image " + index} className="h-full w-full rounded-lg object-cover"></img>
+              <div
+                key={index}
+                className={`${gridClasses[index]} flex h-full w-full flex-col transition duration-300 ease-in-out hover:scale-105`}
+              >
+                <img
+                  src={image.image}
+                  alt={parsedTourPackage[0]?.name + " image " + index}
+                  className="h-full w-full rounded-lg object-cover"
+                ></img>
               </div>
             );
           })}
@@ -144,14 +175,19 @@ function PackagePage() {
                   <p className="text-xl font-semibold">Package Type Amenities</p>
                   <p>These are amenities that are available for the selected package</p>
                   <div className="grid grid-cols-2 gap-2 pt-4">
-                    {parsedTourPackage[0]?.package_type[indexPackage].package_type_amenity.map((amenity, index) => {
-                      return (
-                        <div key={index} className="flex gap-4 rounded-full border-[1px] p-2 px-4">
-                          <Box />
-                          <p>{amenity.name}</p>
-                        </div>
-                      );
-                    })}
+                    {parsedTourPackage[0]?.package_type[indexPackage].package_type_amenity.map(
+                      (amenity, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="flex gap-4 rounded-full border-[1px] p-2 px-4"
+                          >
+                            <Box />
+                            <p>{amenity.name}</p>
+                          </div>
+                        );
+                      },
+                    )}
                   </div>
                 </div>
                 <DropdownMenuSeparator />
@@ -208,7 +244,11 @@ function PackagePage() {
                 <DropdownMenuSeparator />
                 <div className="flex justify-between">
                   <div>
-                    <p className="text-2xl font-semibold">PHP {Number(parsedTourPackage[0]?.package_type[indexPackage].price_per_person) * quantity}</p>
+                    <p className="text-2xl font-semibold">
+                      PHP{" "}
+                      {Number(parsedTourPackage[0]?.package_type[indexPackage].price_per_person) *
+                        quantity}
+                    </p>
                     <p>Check all required fields before proceeding</p>
                   </div>
                   <Button
@@ -232,34 +272,42 @@ function PackagePage() {
           <div className="sticky top-20 h-full w-1/3 rounded-2xl border-[1px] p-8">
             <p className="pb-4 text-xl font-semibold">Package Type Itinerary</p>
             <div>
-              {parsedTourPackage[0]?.package_type[indexPackage]?.package_route_point?.map((routePoints, index) => {
-                return (
-                  <div key={index} className="mb-4 flex flex-col gap-2 rounded-xl border-[1px] p-4">
-                    <div className="flex gap-4">
-                      <div className="flex gap-4 rounded-xl border-[1px] p-2 px-4">
-                        <p className="border-r-2 pr-4">Route {routePoints.point_number}</p>
-                        <p>Day {routePoints.day}</p>
+              {parsedTourPackage[0]?.package_type[indexPackage]?.package_route_point?.map(
+                (routePoints, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="mb-4 flex flex-col gap-2 rounded-xl border-[1px] p-4"
+                    >
+                      <div className="flex gap-4">
+                        <div className="flex gap-4 rounded-xl border-[1px] p-2 px-4">
+                          <p className="border-r-2 pr-4">Route {routePoints.point_number}</p>
+                          <p>Day {routePoints.day}</p>
+                        </div>
+                      </div>
+                      <div className="flex justify-between gap-2">
+                        <MapPin />
+                        <div className="flex w-full justify-between">
+                          <p>{routePoints.location}</p>
+                          <p>
+                            {new Date(`1970-01-01T${routePoints.start_time}`).toLocaleTimeString(
+                              "en-US",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              },
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <p>{routePoints.description}</p>
                       </div>
                     </div>
-                    <div className="flex justify-between gap-2">
-                      <MapPin />
-                      <div className="flex w-full justify-between">
-                        <p>{routePoints.location}</p>
-                        <p>
-                          {new Date(`1970-01-01T${routePoints.start_time}`).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                    <div>
-                      <p>{routePoints.description}</p>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                },
+              )}
             </div>
           </div>
         </div>

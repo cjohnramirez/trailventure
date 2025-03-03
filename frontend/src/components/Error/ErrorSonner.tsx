@@ -10,10 +10,12 @@ export function toast(toast: Omit<ToastProps, "id">) {
           title={toast.title}
           description={toast.description}
           duration={toast.duration || 1000}
-          button={{
-            label: toast?.button?.label,
-            onClick: () => console.log("Button clicked"),
-          }}
+          {...(toast.button ? {
+            button: {
+              label: toast?.button?.label,
+              onClick: () => console.log("Button clicked"),
+            }
+          } : {})}
         />
       </>
     );

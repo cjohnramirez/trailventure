@@ -37,7 +37,7 @@ function DiscoverSection() {
 
       toast({
         title: "404 NOT FOUND",
-        description: errorMessage,
+        description: errorMessage
       });
     }
   };

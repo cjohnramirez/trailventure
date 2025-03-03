@@ -44,7 +44,7 @@ function AboutUs() {
   return (
     <div>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar isNavBar={false} />
+        <NavBar isNavBar={true} />
       </div>
       <div className="fixed bottom-0 z-20 flex w-full justify-center px-8 py-4">
         <div className="flex w-full max-w-[500px] justify-center rounded-full border-[1px] bg-[#ffffff] p-4 dark:bg-[#09090b]">

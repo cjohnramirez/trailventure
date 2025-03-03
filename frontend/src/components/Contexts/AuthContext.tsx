@@ -41,11 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       toast({
         title: "404 NOT FOUND",
-        description: errorMessage,
-        button: {
-          label: "Ignore",
-          onClick: () => console.log("OK clicked"),
-        },
+        description: errorMessage
       });
     }
   };
