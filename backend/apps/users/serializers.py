@@ -1,12 +1,19 @@
 from django.contrib.auth import get_user_model
 User = get_user_model()
 from rest_framework import serializers
-from .models import CustomerProfile, HostProfile
+from .models import CustomerProfile, HostProfile, UserProfileLinks
+
+class UserProfileLinksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfileLinks
+        fields = ["facebook", "twitter", "instagram"]
 
 class UserSerializer(serializers.ModelSerializer):
+    user_profile_links = UserProfileLinksSerializer(read_only=True)
+
     class Meta:
         model = User
-        fields = ["id", "username", "first_name", "last_name", "email", "password", "role"]
+        fields = ["id", "username", "first_name", "last_name", "email", "password", "role", "user_profile_links"]
 
     def validate(self, data):
         required_fields = ["email", "first_name", "last_name", "role"]
@@ -26,7 +33,6 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
-
 class HostProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
@@ -39,4 +45,4 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerProfile
-        fields = "__all__"
+        fields = ["user", "date_of_birth", "phone_number", "avatar", "banner"]

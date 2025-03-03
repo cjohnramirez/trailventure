@@ -8,8 +8,8 @@ import { Toaster } from "sonner";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider>
-      <Toaster />
       <App />
+      <Toaster />
     </ThemeProvider>
   </StrictMode>
 );

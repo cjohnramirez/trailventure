@@ -7,13 +7,13 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class PackageListView(generics.ListAPIView):
-    serializer_class = PackageSerializer
+    serializer_class = PackageListSerializer
     permission_classes = [AllowAny]
     queryset = Package.objects.all()
 
 
 class PackageSingleView(generics.ListAPIView):
-    serializer_class = PackageSerializer
+    serializer_class = PackageSingleSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -21,7 +21,7 @@ class PackageSingleView(generics.ListAPIView):
         return Package.objects.filter(id=pk)
 
 class PackageCreateView(generics.CreateAPIView):
-    serializer_class = PackageSerializer
+    serializer_class = PackageListSerializer
     permission_classes = [IsHost]
 
     def perform_create(self, serializer):
@@ -29,7 +29,7 @@ class PackageCreateView(generics.CreateAPIView):
 
 
 class PackageModifyView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = PackageSerializer
+    serializer_class = PackageListSerializer
     permission_classes = [IsHost]
 
     def get_queryset(self):
@@ -38,17 +38,17 @@ class PackageModifyView(generics.RetrieveUpdateDestroyAPIView):
 
 class PackageTypeListView(generics.ListAPIView):
     queryset = PackageType.objects.all()
-    serializer_class = PackageTypeSerializer
+    serializer_class = PackageTypeListSerializer
     permission_classes = [AllowAny]
 
 
 class PackageTypeCreateView(generics.CreateAPIView):
-    serializer_class = PackageTypeSerializer
+    serializer_class = PackageTypeListSerializer
     permission_classes = [IsHost]
 
 
 class PackageTypeModifyView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = PackageTypeSerializer
+    serializer_class = PackageTypeListSerializer
     permission_classes = [IsHost]
 
 

@@ -5,35 +5,28 @@ User = get_user_model()
 from .serializers import UserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import CustomerProfile, HostProfile
-from .serializers import HostProfileSerializer, CustomerProfileSerializer
+from .models import CustomerProfile
+from .serializers import CustomerProfileSerializer
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
-class UserProfileCreate(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
+class CustomerProfileListView(generics.ListAPIView):
+    serializer_class = CustomerProfileSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
-        user = self.request.user 
+        if self.request.user:
+            return CustomerProfile.objects.filter(user=self.request.user)
+        return CustomerProfile.objects.none()
 
-        if user.role == User.CUSTOMER:
-            return CustomerProfile.objects.filter(user=user)
-        elif user.role == User.HOST:
-            return HostProfile.objects.filter(user=user)
+class CustomerProfileModifyView(generics.RetrieveUpdateAPIView):
+    serializer_class = CustomerProfileSerializer
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
-        return CustomerProfile.objects.none() 
-
-    def get_serializer_class(self):
-        user = self.request.user
-
-        if user.role == User.CUSTOMER:
-            return CustomerProfileSerializer
-        elif user.role == User.HOST:
-            return HostProfileSerializer
-
-        return None 
+    def get_queryset(self):
+        return CustomerProfile.objects.filter(user=self.request.user )

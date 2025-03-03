@@ -1,15 +1,15 @@
 import { Card } from "../ui/card";
 import { MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
-import { toast } from "../Error/ErrorSonner"
+import { toast } from "../Error/ErrorSonner";
 import api from "../../lib/api";
-import  { AxiosError } from 'axios';
+import { AxiosError } from "axios";
 
 interface Destination {
-  description: string,
-  image: string,
-  name: string,
-  location: string,
+  description: string;
+  image: string;
+  name: string;
+  location: string;
 }
 
 function DiscoverSection() {
@@ -18,62 +18,54 @@ function DiscoverSection() {
     getUserData();
   }, []);
 
-  
   const getUserData = async () => {
     try {
       const response = await api.get("apps/destination/list/");
       setDestinationsData(response.data);
     } catch (error) {
-      const err = error as AxiosError
+      const err = error as AxiosError;
       let errorMessage = "An unexpected error occurred.";
 
       if (err.response) {
         errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
       } else if (err.request) {
-        errorMessage = "Network error: Unable to reach the server. Please check your internet connection.";
+        errorMessage =
+          "Network error: Unable to reach the server. Please check your internet connection.";
       } else {
-        errorMessage = err.message;
+        errorMessage = "Server error. ";
       }
-      
+
       toast({
-        title: '404 NOT FOUND',
-        description: errorMessage,
-        button: {
-          label: 'Ignore',
-          onClick: () => console.log('OK clicked'),
-        },
+        title: "404 NOT FOUND",
+        description: errorMessage
       });
     }
   };
 
-  const parsedDestinations : Destination[] = destinations;
-  console.log(destinations)
-  
+  const parsedDestinations: Destination[] = destinations;
+
   return (
-    <div className="py-10">
-      <div>
-        <p className="relative -z-10 py-10 text-center text-[70px] font-extrabold">
+    <div className="flex flex-col justify-center py-10 md:py-20">
+      <div className="">
+        <p className="relative text-center text-[40px] font-extrabold leading-none md:text-[40px] lg:text-[70px]">
           FEATURED DESTINATIONS
         </p>
-        <p className="title relative bottom-[245px] -z-20 mb-[-305px] text-center text-[200px] font-bold text-gray-200 dark:text-gray-900">
-          DESTINATIONS
-        </p>
-        <p className="py-10 text-center font-semibold">
+        <p className="pb-12 pt-4 text-center font-semibold md:pb-20">
           Choose your next travel destination
         </p>
       </div>
-      <div className="grid grid-cols-4 gap-4">
-        {parsedDestinations.slice(0,6).map((destination, index) => {
+      <div className="mx-auto grid max-w-[1200px] gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
+        {parsedDestinations.slice(0, 6).map((destination, index) => {
           const gridClasses = [
-            "col-span-1 row-span-2",
-            "col-span-1 row-span-1",
-            "col-span-1 row-span-2",
-            "col-span-1 row-span-1",
+            "sm:col-span-1 sm:row-span-2",
+            "sm:col-span-1 sm:row-span-1",
+            "sm:col-span-1 sm:row-span-2",
+            "sm:col-span-1 sm:row-span-1",
           ];
           return (
             <Card
               key={index}
-              className={`flex max-w-xs flex-col transition duration-300 ease-in-out hover:scale-110 ${gridClasses[index]}`}
+              className={`flex lg:max-w-sm w-full flex-col transition duration-300 ease-in-out hover:scale-105 ${gridClasses[index]}`}
             >
               <div className="h-full">
                 <img
@@ -85,10 +77,10 @@ function DiscoverSection() {
                   <div className="flex items-center gap-2 px-4 py-2">
                     <MapPin />
                     <div>
-                      <p className="text-xl font-semibold">{destination.name}</p>
-                      <p className="text-xs">
-                        {destination.location}
+                      <p className="text-xl font-semibold">
+                        {destination.name}
                       </p>
+                      <p className="text-xs">{destination.location}</p>
                     </div>
                   </div>
                 </div>

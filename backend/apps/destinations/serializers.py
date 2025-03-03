@@ -16,7 +16,7 @@ class DestinationSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Destination
-    fields = "__all__"
+    fields = ["name", "description", "image", "location", "country"]
 
 
 class CitySerializer(serializers.ModelSerializer):
