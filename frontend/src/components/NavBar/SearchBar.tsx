@@ -7,6 +7,7 @@ import SearchDate from "../SearchBar/SearchDate";
 import SearchLocation from "../SearchBar/SearchLocation";
 import SearchPrice from "../SearchBar/SearchPrice";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useMediaQuery } from "react-responsive";
 
 interface forNavBar {
   navBar: boolean;
@@ -59,15 +60,18 @@ function Search({ navBar, homePage }: forNavBar) {
     setFilteredDestinations(filteredItems);
   };
 
+  const mediumScreen = useMediaQuery({ query: "(max-width: 1024px)" });
+
   return (
     <div
       className={
         "gap-4" +
         (navBar
-          ? "grid grid-cols-1 rounded-full border-[1px]"
-          : "flex items-center justify-center rounded-full border-[1px] bg-[#f4f4f5] p-2 dark:bg-[#09090b]")
+          ? ""
+          : "flex items-center justify-center rounded-full border-[1px] bg-[#f4f4f5] dark:bg-[#09090b]")
       }
     >
+<<<<<<< HEAD
       <div className={`${navBar ? "" : "flex items-center"} gap-4`}>
         {navBar ? (
           <Popover>
@@ -79,12 +83,28 @@ function Search({ navBar, homePage }: forNavBar) {
                 <div className="flex w-full items-center justify-center gap-2">
                   <LucideSearch />
                   <p>Search TrailVenture</p>
+=======
+      <div className={`${navBar ? "" : "flex items-center"} gap-4 ${homePage ? "p-2" : ""}`}>
+        {navBar ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant={"outline"} className={`w-full flex h-full ${homePage ? " lg:w-full md:w-[450px] sm:w-[400px]" : ""}`}>
+                <div className="flex w-full items-center justify-between gap-2">
+                  <div className="rounded-full border-[1px] bg-teal-500 p-2 text-black">
+                    <LucideSearch className="" />
+                  </div>
+                  <p className="w-full pr-8 sm:pr-10 md:text-sm text-xs">Search TrailVenture</p>
+>>>>>>> d590c20627205c050573c67dd926bf1f5e95d9f2
                 </div>
               </Button>
             </PopoverTrigger>
             <PopoverContent
               className={
+<<<<<<< HEAD
                 homePage
+=======
+                homePage || mediumScreen
+>>>>>>> d590c20627205c050573c67dd926bf1f5e95d9f2
                   ? `t-2 flex w-[330px] flex-col gap-2 rounded-[20px] md:gap-4`
                   : `mt-2 flex w-full flex-row gap-4 rounded-full`
               }

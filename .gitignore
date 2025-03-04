@@ -27,3 +27,5 @@ dist-ssr
 backend/config/settings.py
 
 venv/
+frontend/.env/
+backend/.env/

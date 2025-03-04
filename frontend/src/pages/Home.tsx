@@ -32,7 +32,7 @@ function Home() {
   return (
     <div>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar isNavBar={!forNavBar} />
+        <NavBar isNavBar={!forNavBar} isHomePage={true}/>
       </div>
       <div className="flex h-screen w-full select-none flex-col px-8 pb-[100px]">
         <div className="relative flex h-full w-full flex-col items-center justify-center">

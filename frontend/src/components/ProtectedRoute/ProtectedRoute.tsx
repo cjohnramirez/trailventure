@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { ReactNode } from "react";
-import { useAuthStore } from "@/components/Contexts/AuthContext";
+import { useGlobalStore } from "@/components/Contexts/GlobalContext";
 import { toast } from "@/components/Error/ErrorSonner";
 
 interface ProtectedRouteProps {
@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthorized } = useAuthStore();
+  const { isAuthorized } = useGlobalStore();
   const navigate = useNavigate();
 
   if (!isAuthorized) {

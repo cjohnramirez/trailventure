@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Edit } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { useAuthStore } from "@/components/Contexts/AuthContext";
+import { useGlobalStore } from "@/components/Contexts/GlobalContext";
 
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
-  const userData = useAuthStore((state) => state.userData) || [];
+  const userData = useGlobalStore((state) => state.userData) || [];
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
 
   useEffect(() => {

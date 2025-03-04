@@ -5,19 +5,23 @@ import { REFRESH_TOKEN, ACCESS_TOKEN } from "../../constants";
 import { AxiosError } from "axios";
 import { toast } from "../Error/ErrorSonner";
 import { jwtDecode } from "jwt-decode";
+import { tourPackage } from "@/lib/SearchPage/tourPackage";
 
-interface AuthState {
+interface GlobalState {
   isAuthorized: boolean | null;
   userData: UserData[] | null;
+  packageData: tourPackage[] | null;
   setIsAuthorized: (value: boolean) => void;
   getUserData: () => Promise<void>;
   refreshToken: () => Promise<void>;
   auth: () => Promise<void>;
+  getPackageData: (id: Number) => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useGlobalStore = create<GlobalState>((set) => ({
   isAuthorized: null,
   userData: null,
+  packageData: null,
 
   setIsAuthorized: (value: boolean) => set({ isAuthorized: value }),
 
@@ -53,7 +57,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       });
       if (res.status === 200) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        await useAuthStore.getState().getUserData();
+        await useGlobalStore.getState().getUserData();
         set({ isAuthorized: true });
       } else {
         set({ isAuthorized: false });
@@ -75,10 +79,34 @@ export const useAuthStore = create<AuthState>((set) => ({
     const now = Date.now() / 1000;
 
     if (tokenExpiration && tokenExpiration < now) {
-      await useAuthStore.getState().refreshToken();
+      await useGlobalStore.getState().refreshToken();
     } else {
-      await useAuthStore.getState().getUserData();
+      await useGlobalStore.getState().getUserData();
       set({ isAuthorized: true });
     }
   },
+
+  getPackageData: async (id : Number) => {
+    try {
+      const fetchPkg = await api.get(`apps/package/${id}/`);
+      set({ packageData: fetchPkg.data });
+    } catch (error) {
+      const err = error as AxiosError;
+      let errorMessage = "An unexpected error occurred.";
+
+      if (err.response) {
+        errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
+      } else if (err.request) {
+        errorMessage =
+          "Network error: Unable to reach the server. Please check your internet connection.";
+      } else {
+        errorMessage = err.message;
+      }
+
+      toast({
+        title: "404 NOT FOUND",
+        description: errorMessage,
+      });
+    }
+  }
 }));

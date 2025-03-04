@@ -144,7 +144,7 @@ function SearchPage() {
   return (
     <>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar isNavBar={false} />
+        <NavBar isNavBar={false} isHomePage={true}/>
       </div>
       <div className="w-screen flex-col md:flex-row lg:flex">
         <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll">
