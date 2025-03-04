@@ -71,19 +71,6 @@ function Search({ navBar, homePage }: forNavBar) {
           : "flex items-center justify-center rounded-full border-[1px] bg-[#f4f4f5] dark:bg-[#09090b]")
       }
     >
-<<<<<<< HEAD
-      <div className={`${navBar ? "" : "flex items-center"} gap-4`}>
-        {navBar ? (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={`w-[250px] border-none text-center sm:w-[400px] lg:w-full lg:py-4 py-6`}
-              >
-                <div className="flex w-full items-center justify-center gap-2">
-                  <LucideSearch />
-                  <p>Search TrailVenture</p>
-=======
       <div className={`${navBar ? "" : "flex items-center"} gap-4 ${homePage ? "p-2" : ""}`}>
         {navBar ? (
           <Popover>
@@ -94,17 +81,12 @@ function Search({ navBar, homePage }: forNavBar) {
                     <LucideSearch className="" />
                   </div>
                   <p className="w-full pr-8 sm:pr-10 md:text-sm text-xs">Search TrailVenture</p>
->>>>>>> d590c20627205c050573c67dd926bf1f5e95d9f2
                 </div>
               </Button>
             </PopoverTrigger>
             <PopoverContent
               className={
-<<<<<<< HEAD
-                homePage
-=======
                 homePage || mediumScreen
->>>>>>> d590c20627205c050573c67dd926bf1f5e95d9f2
                   ? `t-2 flex w-[330px] flex-col gap-2 rounded-[20px] md:gap-4`
                   : `mt-2 flex w-full flex-row gap-4 rounded-full`
               }

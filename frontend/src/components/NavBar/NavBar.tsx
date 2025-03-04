@@ -43,16 +43,6 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
             <></>
           </div>
         ) : (
-<<<<<<< HEAD
-          <div className="w-1/3 max-w-[500px] sm:block hidden">
-            <Search navBar={true} />
-          </div>
-        )}
-        <div className="flex w-1/3 justify-end gap-2">
-          <Button
-            variant="outline"
-            className={`sm:block hidden h-full py-0 ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
-=======
           <div className="col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1">
             <Search navBar={true} />
           </div>
@@ -61,18 +51,13 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
           <Button
             variant="outline"
             className={`hidden h-full sm:block ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
->>>>>>> d590c20627205c050573c67dd926bf1f5e95d9f2
             onClick={handleAuthClick}
           >
             {isAuthorized ? (
               atUserPage ? (
                 <div className="flex items-center gap-2">
                   <Home />
-<<<<<<< HEAD
-                  <p className="lg:block hidden">Go to homepage</p>
-=======
                   <p className="hidden lg:block">Go to homepage</p>
->>>>>>> d590c20627205c050573c67dd926bf1f5e95d9f2
                 </div>
               ) : (
                 <div className="flex items-center gap-2 p-1">
