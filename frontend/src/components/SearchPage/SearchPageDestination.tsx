@@ -35,21 +35,21 @@ export default function SearchPageDestination({
   state,
 }: SearchPageDestinationProps) {
   return (
-    <div className="flex items-center justify-between rounded-2xl border-[1px] p-4">
-      <div className="flex gap-4">
+    <div className="sm:flex items-center justify-between rounded-2xl border-[1px] p-4">
+      <div className="flex gap-4 sm:mb-0 mb-4">
         <MapPinned />
         <p>Destinations</p>
       </div>
       <Popover open={locPopoverOpen} onOpenChange={setLocPopoverOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="flex h-full gap-4 px-6 pr-8">
+          <Button variant="outline" className="flex h-full gap-4 px-6 pr-8 sm:w-auto w-full">
             <MapPin />
             <div className="flex h-full flex-col justify-center text-left">
               <p className="text-md">{state ? state : selectedDestination}</p>
             </div>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[400px]">
+        <PopoverContent className="sm:w-[400px]">
           <div className="text-center">
             <p className="pb-3">Enter your destination</p>
             <DropdownMenuSeparator />

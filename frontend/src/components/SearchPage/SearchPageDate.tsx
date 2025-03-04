@@ -13,7 +13,7 @@ interface Props {
 export default function SearchPageDate({ state, setStartDate, setEndDate }: Props) {
   return (
     <div className="flex flex-col items-center rounded-2xl border-[1px] p-8">
-      <div className="flex w-full gap-4 rounded-2xl border-[1px] p-4">
+      <div className="flex w-full gap-4">
         <CalendarIcon />
         <p>Set Date Range</p>
       </div>

@@ -22,7 +22,7 @@ function NavBarDropdown() {
           Menu
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-40 p-2 select-none">
+      <DropdownMenuContent className="p-2 mr-8 select-none">
         <DropdownMenuGroup>
           <DropdownMenuItem>Messages</DropdownMenuItem>
           <DropdownMenuItem>Notifications</DropdownMenuItem>

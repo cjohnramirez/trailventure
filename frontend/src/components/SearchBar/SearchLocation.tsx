@@ -23,7 +23,7 @@ export default function SearchLocation({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="flex h-full w-full justify-start gap-4 px-6 pr-8"
+          className="flex h-full w-full justify-start gap-4 px-6 pr-8 "
         >
           <CalendarIcon />
           <div className="flex h-full flex-col justify-center text-left">

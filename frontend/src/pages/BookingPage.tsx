@@ -1,8 +1,8 @@
-
-
 function BookingPage() {
   return (
-    <></>
+    <>
+      
+    </>
   )
 }
 

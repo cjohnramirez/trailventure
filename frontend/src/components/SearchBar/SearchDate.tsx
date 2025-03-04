@@ -41,7 +41,7 @@ export default function SearchDate({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[400px]">
+      <PopoverContent className="sm:w-[400px]">
         <div className="text-center">
           <p className="pb-3">Set your destination</p>
           <DropdownMenuSeparator />
@@ -56,16 +56,16 @@ export default function SearchDate({
               return (
                 <div
                   key={index}
-                  className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-teal-500 hover:text-white"
+                  className="flex sm:h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-teal-500 hover:text-white"
                   onClick={() => {
                     setSelectedDestination(destination.name);
                     setLocPopoverOpen(false);
                   }}
                 >
                   <MapPinned />
-                  <div className="w-5/6">
+                  <div className="text-sm sm:text-base w-5/6">
                     <p>{destination.name}</p>
-                    <p className="text-xs">{destination.description}</p>
+                    <p className="text-xs sm:block hidden">{destination.description}</p>
                   </div>
                 </div>
               );

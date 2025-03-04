@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search as SearchIcon } from "lucide-react";
+import { LucideSearch, Search as SearchIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import api from "../../lib/api";
@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface forNavBar {
   navBar: boolean;
+  homePage?: boolean;
 }
 
 interface Destination {
@@ -19,7 +20,7 @@ interface Destination {
   Destination: string;
 }
 
-function Search({ navBar }: forNavBar) {
+function Search({ navBar, homePage }: forNavBar) {
   const [destinations, setDestinationsData] = useState([]);
   useEffect(() => {
     getUserData();
@@ -41,9 +42,7 @@ function Search({ navBar }: forNavBar) {
   const [maximumPrice, setMaximumPrice] = useState<number[] | null>([12000]);
 
   const [searchItem, setSearchItem] = useState<string>("");
-  const [selectedDestination, setSelectedDestination] = useState<string | "">(
-    "Set Location",
-  );
+  const [selectedDestination, setSelectedDestination] = useState<string | "">("Set Location");
   const [filteredDestinations, setFilteredDestinations] =
     useState<Destination[]>(parsedDestinations);
 
@@ -63,24 +62,33 @@ function Search({ navBar }: forNavBar) {
   return (
     <div
       className={
-        "gap-4 " +
+        "gap-4" +
         (navBar
           ? "grid grid-cols-1 rounded-full border-[1px]"
           : "flex items-center justify-center rounded-full border-[1px] bg-[#f4f4f5] p-2 dark:bg-[#09090b]")
       }
     >
-      <div className={`${navBar ? " " : "flex items-center"} gap-4`}>
+      <div className={`${navBar ? "" : "flex items-center"} gap-4`}>
         {navBar ? (
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
-                className={`w-full border-none text-center`}
+                className={`w-[250px] border-none text-center sm:w-[400px] lg:w-full lg:py-4 py-6`}
               >
-                <p>Search TrailVenture</p>
+                <div className="flex w-full items-center justify-center gap-2">
+                  <LucideSearch />
+                  <p>Search TrailVenture</p>
+                </div>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="mt-2 flex w-full flex-row gap-4 rounded-full">
+            <PopoverContent
+              className={
+                homePage
+                  ? `t-2 flex w-[330px] flex-col gap-2 rounded-[20px] md:gap-4`
+                  : `mt-2 flex w-full flex-row gap-4 rounded-full`
+              }
+            >
               <SearchDate
                 locPopoverOpen={locPopoverOpen}
                 setLocPopoverOpen={setLocPopoverOpen}
@@ -139,10 +147,7 @@ function Search({ navBar }: forNavBar) {
               setMinimumPrice={setMinimumPrice}
               setMaximumPrice={setMaximumPrice}
             />
-            <Button
-              variant="outline"
-              className="h-full bg-teal-500 text-white dark:text-[#09090b]"
-            >
+            <Button variant="outline" className="h-full bg-teal-500 text-white dark:text-[#09090b]">
               <Link
                 to={`/search/${selectedDestination}/${firstDate.toLocaleDateString().replace(/\//g, "-")}/${secondDate.toLocaleDateString().replace(/\//g, "-")}/${minimumPrice}/${maximumPrice}`}
               >

@@ -24,7 +24,7 @@ export default function SearchPrice({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="flex h-full w-full justify-start gap-4 px-6 pr-8"
+          className="flex h-full w-full justify-start gap-4 px-6 pr-8 "
         >
           <PhilippinePeso />
           <div className="flex h-full flex-col justify-center text-left">
@@ -42,7 +42,7 @@ export default function SearchPrice({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[400px]">
+      <PopoverContent className="sm:w-[400px]">
         <div className="text-center">
           <p className="pb-3">Set your price range</p>
           <DropdownMenuSeparator />
@@ -64,7 +64,7 @@ export default function SearchPrice({
               value={minimumPrice!}
             />
             <Input
-              className="w-2/5"
+              className="sm:w-2/5"
               onChange={(e) => {
                 if (Number(e.target.value) <= maximumPrice![0]) {
                   setMinimumPrice([Number(e.target.value)]);
@@ -89,7 +89,7 @@ export default function SearchPrice({
               value={maximumPrice!}
             />
             <Input
-              className="w-2/5"
+              className="sm:w-2/5"
               onChange={(e) => {
                 if (Number(e.target.value) >= minimumPrice![0]) {
                   setMaximumPrice([Number(e.target.value)]);

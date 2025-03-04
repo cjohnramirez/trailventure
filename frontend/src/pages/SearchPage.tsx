@@ -12,6 +12,7 @@ import SearchPageDate from "@/components/SearchPage/SearchPageDate";
 import SearchPageDestination from "@/components/SearchPage/SearchPageDestination";
 import SearchPagePrice from "@/components/SearchPage/SearchPagePrice";
 import SearchPageReview from "@/components/SearchPage/SearchPageReview";
+import { useMediaQuery } from "react-responsive";
 
 interface Destination {
   description: string;
@@ -68,7 +69,7 @@ function SearchPage() {
 
       toast({
         title: "404 NOT FOUND",
-        description: errorMessage
+        description: errorMessage,
       });
     }
   };
@@ -89,13 +90,7 @@ function SearchPage() {
 
   const reviewScores: string[] = ["5", "4", "3", "2", "1"];
 
-  const altReviewScores: string[] = [
-    "Excellent",
-    "Great",
-    "Good",
-    "Bad",
-    "Terrible",
-  ];
+  const altReviewScores: string[] = ["Excellent", "Great", "Good", "Bad", "Terrible"];
 
   const applyFilters = () => {
     const filteredResults = tourPackages.filter((tourPackage: tourPackage) => {
@@ -105,10 +100,18 @@ function SearchPage() {
       if (endDate && new Date(tourPackage.end_date) > new Date(endDate)) {
         return false;
       }
-      if (minPrice && tourPackage.package_type[0]?.price_per_person && Number(tourPackage.package_type[0].price_per_person) < Number(minPrice)) {
+      if (
+        minPrice &&
+        tourPackage.package_type[0]?.price_per_person &&
+        Number(tourPackage.package_type[0].price_per_person) < Number(minPrice)
+      ) {
         return false;
       }
-      if (maxPrice && tourPackage.package_type[0]?.price_per_person && Number(tourPackage.package_type[0].price_per_person) > Number(maxPrice)) {
+      if (
+        maxPrice &&
+        tourPackage.package_type[0]?.price_per_person &&
+        Number(tourPackage.package_type[0].price_per_person) > Number(maxPrice)
+      ) {
         return false;
       }
       if (destination && tourPackage.destination.name !== destination) {
@@ -136,13 +139,15 @@ function SearchPage() {
     setSelectedDestination("Set Location");
   };
 
+  const largeScreen = useMediaQuery({ query: "(max-width: 1280px)" });
+
   return (
     <>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
         <NavBar isNavBar={false} />
       </div>
-      <div className="flex w-screen flex-row">
-        <aside className="sticky top-20 m-8 mt-2 flex h-full w-2/5 flex-col gap-4 overflow-y-scroll rounded-2xl border-[1px] p-8">
+      <div className="w-screen flex-col md:flex-row lg:flex">
+        <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll">
           <div className="flex items-center justify-between pb-4">
             <p className="text-xl font-semibold">Filters</p>
             <Button variant={"outline"} onClick={resetFilters}>
@@ -150,8 +155,16 @@ function SearchPage() {
               Clear Filter
             </Button>
           </div>
-          <SearchPageDate state={{ startDate, endDate }} setStartDate={setStartDate} setEndDate={setEndDate} />
-          <SearchPagePrice state={{ minPrice, maxPrice }} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
+          <SearchPageDate
+            state={{ startDate, endDate }}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+          />
+          <SearchPagePrice
+            state={{ minPrice, maxPrice }}
+            setMinPrice={setMinPrice}
+            setMaxPrice={setMaxPrice}
+          />
           <SearchPageDestination
             state={destination}
             locPopoverOpen={locPopoverOpen}
@@ -177,9 +190,9 @@ function SearchPage() {
             Apply Filter
           </Button>
         </aside>
-        <div className="m-8 ml-0 mt-2 flex w-3/5 flex-col gap-4 rounded-2xl border-[1px] p-8">
-          <div className="flex justify-between">
-            <p className="text-xl font-semibold">Search Results</p>
+        <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5">
+          <div className="sm:flex justify-between">
+            <p className="text-xl font-semibold sm:pb-0 pb-2">Search Results</p>
             <div className="rounded-2xl border-[1px] px-8 py-2">
               <p className="text-sm">
                 Found {filteredTourPackages.length} search result
@@ -187,43 +200,38 @@ function SearchPage() {
               </p>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 xl:grid-cols-2">
             {filteredTourPackages.length > 0 ? (
               filteredTourPackages.map((tourPackage: tourPackage, index) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
-                    <div className="h-full flex-row rounded-xl border-[1px] p-4">
-                      <div className="h-1/2 w-full pb-4">
+                    <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 xl:h-full">
+                      <div className="sm:h-2/3 w-full pb-4 xl:h-1/2 h-1/2">
                         <img
                           src={tourPackage.package_image[0]?.image || ""}
                           alt={String(tourPackage.package_image[0]?.id || "")}
                           className="h-full w-full rounded-xl object-cover"
                         />
                       </div>
-                      <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4">
+                      <div className="flex sm:h-1/3 flex-col justify-between rounded-xl border-[1px] p-4 xl:h-1/2 h-1/2">
                         <div>
-                          <p className="text-lg font-semibold">
-                            {tourPackage.name}
-                          </p>
-                          <p className="text-xs">
-                            {tourPackage.description.substring(0, 100) + "..."}
+                          <p className="text-lg font-semibold">{tourPackage.name}</p>
+                          <p className="hidden text-xs sm:block">
+                            {largeScreen
+                              ? tourPackage.description.substring(0, 70) + "..."
+                              : tourPackage.description.substring(0, 100) + "..."}
                           </p>
                         </div>
-                        <div className="flex flex-row items-center justify-between gap-4">
-                          <div>
-                            <p className="text-sm font-semibold">
-                              Cheapest Package
-                            </p>
+                        <div className="sm:flex flex-row items-center justify-between gap-4">
+                          <div className="flex-row">
+                            <p className="text-sm font-semibold">Cheapest Package</p>
                             <p className="text-xs">Price per person</p>
                           </div>
                           <div className="rounded-xl border-[1px]">
                             <p className="p-2 text-sm font-semibold">
                               PHP{" "}
-                              {Math.floor(
-                                Number(
-                                  tourPackage.package_type[0]?.price_per_person,
-                                ),
-                              ) || ""}
+                              {Math.floor(Number(tourPackage.package_type[0]?.price_per_person)) ||
+                                ""}
                             </p>
                           </div>
                         </div>

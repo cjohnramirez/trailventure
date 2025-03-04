@@ -42,26 +42,32 @@ function NavBar({ isNavBar }: NavBarInterface) {
             <div className="flex w-full rounded-full bg-opacity-50 p-2 dark:bg-opacity-50"></div>
           </div>
         ) : (
-          <div className="w-1/3 max-w-[500px]">
+          <div className="w-1/3 max-w-[500px] sm:block hidden">
             <Search navBar={true} />
           </div>
         )}
         <div className="flex w-1/3 justify-end gap-2">
-          <Button variant="outline" className="h-full py-0" onClick={handleAuthClick}>
+          <Button
+            variant="outline"
+            className={`sm:block hidden h-full py-0 ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
+            onClick={handleAuthClick}
+          >
             {isAuthorized ? (
               atUserPage ? (
                 <div className="flex items-center gap-2">
                   <Home />
-                  <p>Go to homepage</p>
+                  <p className="lg:block hidden">Go to homepage</p>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <img
                     src={userData[0]?.avatar || DefaultUserProfile}
-                    className="w-7 rounded-full"
+                    className="aspect-square w-7 rounded-full object-cover"
                     alt="User avatar"
                   />
-                  <span>Welcome, {userData[0]?.user?.username || "user!"}</span>
+                  <p className="hidden lg:block">
+                    Welcome, {userData[0]?.user?.username || "user!"}
+                  </p>
                 </div>
               )
             ) : (

@@ -34,15 +34,24 @@ function UserPage() {
           ></img>
           <img
             src={userData[0]?.avatar || DefaultProfile}
-            className="absolute left-[90px] top-[120px] z-10 aspect-square w-[250px] rounded-2xl object-cover"
+            className="absolute left-[90px] top-[120px] z-10 hidden aspect-square w-[250px] rounded-2xl object-cover lg:block"
           ></img>
-          <div className="relative top-[-165px] w-full p-12">
-            <div className="h-[220px] w-full max-w-[800px] rounded-2xl border-[1px] bg-white p-8 leading-tight dark:bg-[#09090b]">
-              <div className="relative left-[290px] flex flex-col">
-                <p>Customer Profile</p>
-                <p className="text-[50px] font-semibold">
-                  {userData[0]?.user?.first_name + " " + userData[0]?.user?.last_name}
-                </p>
+          <div className="relative top-[-75px] w-full sm:top-[-165px] sm:p-12">
+            <div className="max-w-[800px] rounded-2xl border-[1px] bg-white p-8 leading-tight dark:bg-[#09090b] lg:h-[220px] lg:w-[700px]">
+              <div className="flex flex-col md:left-[290px] lg:relative">
+                <div className="flex items-center gap-4">
+                  <img
+                    src={userData[0]?.avatar || DefaultProfile}
+                    className="block aspect-square w-10 sm:w-20 rounded-full object-cover lg:hidden"
+                  ></img>
+                  <div>
+                    <p className="text-xs sm:text-base">Customer Profile</p>
+                    <p className="text-xl sm:text-3xl font-semibold">
+                      {userData[0]?.user?.first_name + " " + userData[0]?.user?.last_name}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="mt-2 flex w-[220px] items-center gap-4 rounded-3xl border-[1px] p-4">
                   <p className="border-r-2 pr-4">Links</p>
                   <div>
@@ -89,9 +98,9 @@ function UserPage() {
             </div>
           </div>
         </div>
-        <div className="relative top-[-165px] w-full">
-          <div className="ml-12 flex flex-col rounded-2xl border-[1px] p-8">
-            <div className="flex justify-between gap-4 pb-4">
+        <div className="relative top-[-40px] w-full sm:top-[-165px]">
+          <div className="flex flex-col rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0">
+            <div className="justify-between gap-4 pb-4 sm:flex">
               <p className="pb-4 text-2xl">User Details</p>
               <Button
                 variant={"outline"}
@@ -104,39 +113,42 @@ function UserPage() {
                 <p>{editMode ? "Save Edit" : "Edit User Details"}</p>
               </Button>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {editMode ? (
                 <>
-                  <div className="flex items-center rounded-2xl border-[1px] p-4">
-                    <p className="w-[150px] pr-4">First Name</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">First Name</p>
                     <Input
                       type="text"
                       placeholder="Enter your new first name"
-                      className="rounded-full"
+                      className="rounded-xl sm:rounded-full"
                     />
                   </div>
-                  <div className="flex items-center rounded-2xl border-[1px] p-4">
-                    <p className="w-[150px] pr-4">Last Name</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Last Name</p>
                     <Input
                       type="text"
                       placeholder="Enter your new last name"
-                      className="rounded-full"
+                      className="rounded-xl sm:rounded-full"
                     />
                   </div>
-                  <div className="flex items-center rounded-2xl border-[1px] p-4">
-                    <p className="w-[150px] pr-4">Email</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Email</p>
                     <Input
                       type="email"
                       placeholder="Enter your new email"
-                      className="rounded-full"
+                      className="rounded-xl sm:rounded-full"
                     />
                   </div>
-                  <div className="flex w-full items-center rounded-2xl border-[1px] p-4">
-                    <p className="w-[150px] pr-4">Date of Birth</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Date of Birth</p>
                     <div className="w-full">
                       <Popover>
                         <PopoverTrigger asChild className="w-full">
-                          <Button variant={"outline"} className="flex justify-start">
+                          <Button
+                            variant={"outline"}
+                            className="flex justify-start rounded-xl sm:rounded-full"
+                          >
                             <CalendarIcon />
                             <p>{dateOfBirth?.toLocaleDateString()}</p>
                           </Button>
@@ -157,21 +169,29 @@ function UserPage() {
                 </>
               ) : (
                 <>
-                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
-                    <p className="w-[150px] border-r-[1px] pr-2">First Name</p>
-                    <p className="pl-4">{userData[0]?.user?.first_name}</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                      First Name
+                    </p>
+                    <p className="sm:pl-4">{userData[0]?.user?.first_name}</p>
                   </div>
-                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-5">
-                    <p className="w-[150px] border-r-[1px] pr-2">Last Name</p>
-                    <p className="pl-4">{userData[0]?.user?.last_name}</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                      Last Name
+                    </p>
+                    <p className="sm:pl-4">{userData[0]?.user?.last_name}</p>
                   </div>
-                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
-                    <p className="w-[150px] border-r-[1px] pr-2">Email</p>
-                    <p className="pl-4">{userData[0]?.user?.email}</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                      Email
+                    </p>
+                    <p className="sm:pl-4">{userData[0]?.user?.email}</p>
                   </div>
-                  <div className="flex items-center rounded-2xl border-[1px] p-4 py-6">
-                    <p className="w-[150px] border-r-[1px] pr-2">Date of Birth</p>
-                    <p className="pl-4">{userData[0]?.date_of_birth}</p>
+                  <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                      Date of Birth
+                    </p>
+                    <p className="sm:pl-4">{userData[0]?.date_of_birth}</p>
                   </div>
                 </>
               )}

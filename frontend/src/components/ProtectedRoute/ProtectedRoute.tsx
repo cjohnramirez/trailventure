@@ -12,10 +12,6 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   const navigate = useNavigate();
 
   if (!isAuthorized) {
-    return <Navigate to="/login" />;
-  }
-
-  if (!isAuthorized) {
     if (isAuthorized === false) {
       toast({
         title: "Login / Sign Up Required",
@@ -28,7 +24,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }
 
-  return isAuthorized ? <>{children}</> : <Navigate to="/login" />;
+  return isAuthorized ? <>{children}</> : <Navigate to={window.location.pathname} />;
 }
 
 export default ProtectedRoute;

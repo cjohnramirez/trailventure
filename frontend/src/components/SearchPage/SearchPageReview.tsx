@@ -16,7 +16,7 @@ export default function SearchPageReview({ reviewScore, setReviewScore, altRevie
           <MapPinned />
           <p>Review Score</p>
         </div>
-        <div className="grid grid-cols-3 gap-4 pt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4">
           {reviewScores.map((review, index) => {
             return (
               <Button
