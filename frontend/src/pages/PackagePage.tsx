@@ -26,6 +26,13 @@ function PackagePage() {
     getPackageData(Number(id));
   }, []);
 
+  useEffect(() => {
+    if (!packageData) {
+      useGlobalStore.setState({loadingMessage: "Loading package data"});
+      useGlobalStore.setState({ loading: true });
+    }
+  }, [packageData]);
+
   return (
     <div id="main">
       <div className="fixed bottom-0 z-20 flex w-full justify-center px-8 py-4">

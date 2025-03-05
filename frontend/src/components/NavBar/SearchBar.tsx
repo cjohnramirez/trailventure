@@ -3,8 +3,8 @@ import { LucideSearch, Search as SearchIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import api from "../../lib/api";
+import SearchDestination from "../SearchBar/SearchDestination";
 import SearchDate from "../SearchBar/SearchDate";
-import SearchLocation from "../SearchBar/SearchLocation";
 import SearchPrice from "../SearchBar/SearchPrice";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { useMediaQuery } from "react-responsive";
@@ -91,7 +91,7 @@ function Search({ navBar, homePage }: forNavBar) {
                   : `mt-2 flex w-full flex-row gap-4 rounded-full`
               }
             >
-              <SearchDate
+              <SearchDestination
                 locPopoverOpen={locPopoverOpen}
                 setLocPopoverOpen={setLocPopoverOpen}
                 selectedDestination={selectedDestination}
@@ -100,7 +100,7 @@ function Search({ navBar, homePage }: forNavBar) {
                 filteredDestinations={filteredDestinations}
                 setSelectedDestination={setSelectedDestination}
               />
-              <SearchLocation
+              <SearchDate
                 firstDate={firstDate}
                 secondDate={secondDate}
                 setFirstDate={setFirstDate}
@@ -128,7 +128,7 @@ function Search({ navBar, homePage }: forNavBar) {
           </Popover>
         ) : (
           <>
-            <SearchDate
+            <SearchDestination
               locPopoverOpen={locPopoverOpen}
               setLocPopoverOpen={setLocPopoverOpen}
               selectedDestination={selectedDestination}
@@ -137,7 +137,7 @@ function Search({ navBar, homePage }: forNavBar) {
               filteredDestinations={filteredDestinations}
               setSelectedDestination={setSelectedDestination}
             />
-            <SearchLocation
+            <SearchDate
               firstDate={firstDate}
               secondDate={secondDate}
               setFirstDate={setFirstDate}

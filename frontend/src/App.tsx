@@ -12,6 +12,7 @@ import UserPage from "./pages/UserPage";
 import BookingPage from "./pages/BookingPage";
 import { useGlobalStore } from "@/components/Contexts/GlobalContext";
 import { useEffect } from "react";
+import Loading from "./components/Loading/Loading";
 
 function Logout() {
   localStorage.clear();
@@ -25,14 +26,15 @@ function RegisterAndLogout() {
 }
 
 function App() {
-  const { isAuthorized, auth } = useGlobalStore();
+  const auth = useGlobalStore((state) => state.auth);
+  const loading = useGlobalStore((state) => state.loading);
 
   useEffect(() => {
     auth();
   }, []);
 
-  if (isAuthorized === null) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -65,6 +67,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/loading" element={<Loading />} />
       </Routes>
     </BrowserRouter>
   );

@@ -13,6 +13,7 @@ import SearchPageDestination from "@/components/SearchPage/SearchPageDestination
 import SearchPagePrice from "@/components/SearchPage/SearchPagePrice";
 import SearchPageReview from "@/components/SearchPage/SearchPageReview";
 import { useMediaQuery } from "react-responsive";
+import "../components/Loading/Loading.css";
 
 interface Destination {
   description: string;
@@ -38,13 +39,24 @@ function SearchPage() {
   const [destination, setDestination] = useState<string>(location || "");
   const [reviewScore, setReviewScore] = useState<string>("");
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    getPackageData();
-    applyFilters();
+    const fetchData = async () => {
+      setLoading(true);
+      await getPackageData();
+      applyFilters();
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
   useEffect(() => {
-    applyFilters();
+    if (tourPackages.length > 0) {
+      setLoading(true);
+      applyFilters();
+      setLoading(false);
+    }
   }, [tourPackages]);
 
   const getPackageData = async () => {
@@ -144,7 +156,7 @@ function SearchPage() {
   return (
     <>
       <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
-        <NavBar isNavBar={false} isHomePage={true}/>
+        <NavBar isNavBar={false} isHomePage={true} />
       </div>
       <div className="w-screen flex-col md:flex-row lg:flex">
         <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll">
@@ -191,8 +203,8 @@ function SearchPage() {
           </Button>
         </aside>
         <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5">
-          <div className="sm:flex justify-between">
-            <p className="text-xl font-semibold sm:pb-0 pb-2">Search Results</p>
+          <div className="justify-between sm:flex">
+            <p className="pb-2 text-xl font-semibold sm:pb-0">Search Results</p>
             <div className="rounded-2xl border-[1px] px-8 py-2">
               <p className="text-sm">
                 Found {filteredTourPackages.length} search result
@@ -201,19 +213,19 @@ function SearchPage() {
             </div>
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
-            {filteredTourPackages.length > 0 ? (
+            {!loading && filteredTourPackages.length > 0 ? (
               filteredTourPackages.map((tourPackage: tourPackage, index) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
                     <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 xl:h-full">
-                      <div className="sm:h-2/3 w-full pb-4 xl:h-1/2 h-1/2">
+                      <div className="h-1/2 w-full pb-4 sm:h-2/3 xl:h-1/2">
                         <img
                           src={tourPackage.package_image[0]?.image || ""}
                           alt={String(tourPackage.package_image[0]?.id || "")}
                           className="h-full w-full rounded-xl object-cover"
                         />
                       </div>
-                      <div className="flex sm:h-1/3 flex-col justify-between rounded-xl border-[1px] p-4 xl:h-1/2 h-1/2">
+                      <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4 sm:h-1/3 xl:h-1/2">
                         <div>
                           <p className="text-lg font-semibold">{tourPackage.name}</p>
                           <p className="hidden text-xs sm:block">
@@ -222,7 +234,7 @@ function SearchPage() {
                               : tourPackage.description.substring(0, 100) + "..."}
                           </p>
                         </div>
-                        <div className="sm:flex flex-row items-center justify-between gap-4">
+                        <div className="flex-row items-center justify-between gap-4 sm:flex">
                           <div className="flex-row">
                             <p className="text-sm font-semibold">Cheapest Package</p>
                             <p className="text-xs">Price per person</p>
@@ -241,8 +253,22 @@ function SearchPage() {
                 );
               })
             ) : (
-              <div className="col-span-2 flex h-32 items-center justify-center rounded-xl border-[1px] p-4">
+              <div
+                className={
+                  loading
+                    ? `hidden`
+                    : `col-span-2 flex h-32 items-center justify-center rounded-xl border-[1px] p-4`
+                }
+              >
                 <p>No packages found matching your filters</p>
+              </div>
+            )}
+            {loading && (
+              <div className="col-span-full h-screen pb-96">
+                <div className="flex h-full w-full flex-col items-center justify-center">
+                  <span className="loader"></span>
+                  <p className="mt-10 text-lg">Searching</p>
+                </div>
               </div>
             )}
           </div>

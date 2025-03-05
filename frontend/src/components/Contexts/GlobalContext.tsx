@@ -8,6 +8,8 @@ import { jwtDecode } from "jwt-decode";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
 
 interface GlobalState {
+  loading: boolean;
+  loadingMessage: string;
   isAuthorized: boolean | null;
   userData: UserData[] | null;
   packageData: tourPackage[] | null;
@@ -15,10 +17,12 @@ interface GlobalState {
   getUserData: () => Promise<void>;
   refreshToken: () => Promise<void>;
   auth: () => Promise<void>;
-  getPackageData: (id: Number) => Promise<void>;
+  getPackageData: (id: number) => Promise<void>;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
+  loading: false,
+  loadingMessage: "",
   isAuthorized: null,
   userData: null,
   packageData: null,
@@ -26,6 +30,7 @@ export const useGlobalStore = create<GlobalState>((set) => ({
   setIsAuthorized: (value: boolean) => set({ isAuthorized: value }),
 
   getUserData: async () => {
+    set({ loading: true, loadingMessage: "Loading" });
     try {
       const response = await api.get(`/apps/users/customer/profile/`);
       set({ userData: response.data });
@@ -46,10 +51,13 @@ export const useGlobalStore = create<GlobalState>((set) => ({
         title: "404 NOT FOUND",
         description: errorMessage,
       });
+    } finally {
+      set({ loading: false });
     }
   },
 
   refreshToken: async () => {
+    set({ loading: true });
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
     try {
       const res = await api.post("/apps/token/refresh/", {
@@ -64,6 +72,8 @@ export const useGlobalStore = create<GlobalState>((set) => ({
       }
     } catch (error) {
       set({ isAuthorized: false });
+    } finally {
+      set({ loading: false });
     }
   },
 
@@ -86,10 +96,10 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     }
   },
 
-  getPackageData: async (id : Number) => {
+  getPackageData: async (id: number) => {
     try {
       const fetchPkg = await api.get(`apps/package/${id}/`);
-      set({ packageData: fetchPkg.data });
+      set({ packageData: fetchPkg.data, loading: false, loadingMessage: "Fetching package data" });
     } catch (error) {
       const err = error as AxiosError;
       let errorMessage = "An unexpected error occurred.";
@@ -108,5 +118,5 @@ export const useGlobalStore = create<GlobalState>((set) => ({
         description: errorMessage,
       });
     }
-  }
+  },
 }));

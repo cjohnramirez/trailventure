@@ -64,7 +64,7 @@ export default function SearchPageDestination({
                 return (
                   <div
                     key={index}
-                    className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-zinc-900"
+                    className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-teal-500 hover:text-white"
                     onClick={() => {
                       setSelectedDestination(destination.name);
                       setDestination(destination.name);

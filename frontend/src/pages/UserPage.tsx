@@ -16,8 +16,10 @@ function UserPage() {
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
 
   useEffect(() => {
+    useGlobalStore.setState({loading: true, loadingMessage: "Loading data"});
     if (userData && userData[0].date_of_birth) {
       setDateOfBirth(new Date(userData[0].date_of_birth));
+      useGlobalStore.setState({loading: false});
     }
   }, [userData]);
 
