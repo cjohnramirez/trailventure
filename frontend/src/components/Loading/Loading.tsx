@@ -1,4 +1,4 @@
-import "./loading.css"
+import "./Loading.css"
 import { useGlobalStore } from "../Contexts/GlobalContext";
 
 export default function Loading() {
