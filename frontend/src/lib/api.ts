@@ -1,6 +1,8 @@
 import axios from "axios";
 import { ACCESS_TOKEN } from "../constants";
 
+//switch to local when developing and vercel in deployment (every git commit)
+//make sure to makemigrations and migrate before deploying
 const api = axios.create({
   baseURL: import.meta.env.VITE_VERCEL_URL,
 });

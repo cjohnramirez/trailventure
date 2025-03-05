@@ -236,7 +236,7 @@ function PackagePage() {
                     variant={"outline"}
                     className="h-full w-full bg-teal-500 px-10 text-black sm:w-auto"
                     onClick={() => {
-                      navigate("/booking");
+                        navigate(`/booking/${id}/${indexPackage}/${quantity}/${date?.toLocaleDateString().replace(/\//g, "-")}`);
                     }}
                   >
                     Book Now

@@ -29,11 +29,7 @@ class Booking(models.Model):
         User, on_delete=models.CASCADE, related_name="booking", null=True
     )
     num_of_person = models.PositiveIntegerField()
-    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
-    is_confirmed = models.BooleanField(default=False, blank=True)
-    cancel_date = models.DateTimeField(null=True)
     booking_date = models.DateTimeField(auto_now_add=True)
-    created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -41,25 +37,26 @@ class Booking(models.Model):
 
 
 class Transaction(models.Model):
-    additional_fees = models.ForeignKey(
-        AdditionalFees,
-        on_delete=models.CASCADE,
-        related_name="transaction",
-        null=True,
-    )
-    booking = models.ForeignKey(
-        Booking, on_delete=models.CASCADE, related_name="transaction", null=True
-    )
-    currency = models.CharField(max_length=3, blank=True, null=True)
     status_choices = [
         ("pending", "Pending"),
         ("completed", "Completed"),
         ("failed", "Failed"),
     ]
     status = models.CharField(max_length=10, choices=status_choices, default="pending")
+
+    booking = models.ForeignKey(
+        Booking, on_delete=models.CASCADE, related_name="transaction", null=True
+    )
+    additional_fees = models.ForeignKey(
+        AdditionalFees,
+        on_delete=models.CASCADE,
+        related_name="transaction",
+        null=True,
+    )
+    
+    currency = models.CharField(max_length=3, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transfer_date = models.DateTimeField(auto_now_add=True)
-    created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
     def verify_if_confirmed(self):

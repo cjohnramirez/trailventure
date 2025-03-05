@@ -119,4 +119,5 @@ export const useGlobalStore = create<GlobalState>((set) => ({
       });
     }
   },
+
 }));

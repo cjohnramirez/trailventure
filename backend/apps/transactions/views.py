@@ -1,6 +1,6 @@
 import stripe
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from apps.users.permissions import IsCustomer
 from apps.transactions.serializers import *
 from rest_framework.exceptions import ValidationError
@@ -104,3 +104,8 @@ class PackageReviewModifyView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return PackageReview.objects.filter(review_by_user=self.request.user)
+    
+class AdditionalFeesListView(generics.ListAPIView):
+    serializer_class = AdditionalFeesSerializer
+    permission_classes = [AllowAny]
+    queryset = AdditionalFees.objects.all()
