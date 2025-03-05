@@ -29,7 +29,7 @@ function NavBarDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-8 select-none p-2">
         <DropdownMenuGroup>
-          {smallScreen && (
+          {(smallScreen && userData ) && (
             <>
               <DropdownMenuItem>
                 <Link to="/user-page" className="flex gap-2 items-center">
