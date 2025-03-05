@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Search from "../components/NavBar/SearchBar";
 import NavBar from "@/components/NavBar/NavBar";
 import DiscoverSection from "@/components/Home/DiscoverSection";
-import BackgroundImage from "../assets/Home/HomePage.png";
+import BackgroundImage from "../assets/Home/HomePage.webp";
 import { useMediaQuery } from "react-responsive";
 
 function Home() {
