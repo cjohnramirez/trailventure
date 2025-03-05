@@ -64,9 +64,11 @@ function NavBarDropdown() {
           <DropdownMenuItem>
             <Link to="/about-us">About Us</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          {userData ? (<DropdownMenuItem>
             <Link to="/logout">Logout</Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem>) : (<DropdownMenuItem>
+            <Link to="/login">Login</Link>
+          </DropdownMenuItem>)}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
