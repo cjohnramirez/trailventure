@@ -55,13 +55,8 @@ class Transaction(models.Model):
     booking = models.ForeignKey(
         Booking, on_delete=models.CASCADE, related_name="transaction", null=True
     )
-    additional_fees = models.ForeignKey(
-        AdditionalFees,
-        on_delete=models.CASCADE,
-        related_name="transaction",
-        null=True,
-    )
     
+    payment_id = models.CharField(max_length=255, blank=True, null=True)
     currency = models.CharField(max_length=3, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transfer_date = models.DateTimeField(auto_now_add=True)
