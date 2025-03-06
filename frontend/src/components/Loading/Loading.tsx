@@ -1,11 +1,11 @@
 import "./Loading.css"
-import { useGlobalStore } from "../Contexts/GlobalContext";
+import { useGetStore } from "../Contexts/GetContext";
 
 export default function Loading() {
-  const loadingMessage = useGlobalStore((state) => state.loadingMessage);
+  const loadingMessage = useGetStore((state) => state.loadingMessage);
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center">
+    <div className="select-none flex h-screen w-screen flex-col items-center justify-center">
       <span className="loader"></span>
       <p className="mt-10 text-lg font-semibold">{loadingMessage}</p>
     </div>

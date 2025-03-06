@@ -11,11 +11,11 @@ import { Menu } from "lucide-react";
 import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useMediaQuery } from "react-responsive";
-import { useGlobalStore } from "../Contexts/GlobalContext";
+import { useGetStore } from "../Contexts/GetContext";
 
 function NavBarDropdown() {
   const { theme, setTheme } = useTheme();
-  const userData = useGlobalStore((state) => state.userData);
+  const userData = useGetStore((state) => state.userData);
 
   const smallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 

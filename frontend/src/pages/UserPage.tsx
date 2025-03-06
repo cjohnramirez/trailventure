@@ -8,18 +8,18 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Edit } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { useGlobalStore } from "@/components/Contexts/GlobalContext";
+import { useGetStore } from "@/components/Contexts/GetContext";
 
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
-  const userData = useGlobalStore((state) => state.userData) || [];
+  const userData = useGetStore((state) => state.userData) || [];
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
 
   useEffect(() => {
-    useGlobalStore.setState({loading: true, loadingMessage: "Loading data"});
+    useGetStore.setState({loading: true, loadingMessage: "Loading data"});
     if (userData && userData[0].date_of_birth) {
       setDateOfBirth(new Date(userData[0].date_of_birth));
-      useGlobalStore.setState({loading: false});
+      useGetStore.setState({loading: false});
     }
   }, [userData]);
 

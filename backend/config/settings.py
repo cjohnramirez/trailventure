@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-0n_uj=^&dw6lwc)4#0r%227^m49k&c6dlvk68^sppwf6(q5y5#"
-STRIPE_PUBLISHABLE_KEY = "pk_test_51QvhbiKODu0UvT2EWdRAcVNEDgQcwlUIeWUjYJ7HfZeihmckqzQ7dFxIEEbO75JdSwbWX09FBe9LJQul6RFWeaNL00JYIn2R6q"
-STRIPE_SECRET_KEY = "sk_test_51QvhbiKODu0UvT2EA22xFbHY02oI26TylA0CiGet0wsOTqV5WUsap7ksWZn0sPbxqLmYsBy4jSYlv2Mw63Ow7dPF00RqgR9F6Z"
+SECRET_KEY = os.getenv('SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -110,23 +110,23 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 
 #postgresql database (DO NOT DELETE! MIGRATE BEFORE PUSHING TO GIT)
-DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'railway',
-    'USER': 'postgres',
-    'PASSWORD': 'PMDkGQLaXFwStFrDcgDxOdfoFlEeLFrk',
-    'HOST': 'centerbeam.proxy.rlwy.net',
-    'PORT': '58826'
-  }
-}
-
 # DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
+#   'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': 'railway',
+#     'USER': 'postgres',
+#     'PASSWORD': 'PMDkGQLaXFwStFrDcgDxOdfoFlEeLFrk',
+#     'HOST': 'centerbeam.proxy.rlwy.net',
+#     'PORT': '58826'
+#   }
 # }
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
 # Password validation
 

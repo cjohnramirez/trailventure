@@ -23,7 +23,7 @@ class CustomerProfileListView(generics.ListAPIView):
             return CustomerProfile.objects.filter(user=self.request.user)
         return CustomerProfile.objects.none()
 
-class CustomerProfileModifyView(generics.RetrieveUpdateAPIView):
+class CustomerProfileModifyView(generics.UpdateAPIView):
     serializer_class = CustomerProfileSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)

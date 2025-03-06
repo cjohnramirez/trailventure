@@ -7,7 +7,7 @@ import { toast } from "../Error/ErrorSonner";
 import { jwtDecode } from "jwt-decode";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
 
-interface GlobalState {
+interface GetState {
   loading: boolean;
   loadingMessage: string;
   isAuthorized: boolean | null;
@@ -20,7 +20,7 @@ interface GlobalState {
   getPackageData: (id: number) => Promise<void>;
 }
 
-export const useGlobalStore = create<GlobalState>((set) => ({
+export const useGetStore = create<GetState>((set) => ({
   loading: false,
   loadingMessage: "",
   isAuthorized: null,
@@ -65,7 +65,7 @@ export const useGlobalStore = create<GlobalState>((set) => ({
       });
       if (res.status === 200) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
-        await useGlobalStore.getState().getUserData();
+        await useGetStore.getState().getUserData();
         set({ isAuthorized: true });
       } else {
         set({ isAuthorized: false });
@@ -89,9 +89,9 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     const now = Date.now() / 1000;
 
     if (tokenExpiration && tokenExpiration < now) {
-      await useGlobalStore.getState().refreshToken();
+      await useGetStore.getState().refreshToken();
     } else {
-      await useGlobalStore.getState().getUserData();
+      await useGetStore.getState().getUserData();
       set({ isAuthorized: true });
     }
   },
@@ -119,5 +119,4 @@ export const useGlobalStore = create<GlobalState>((set) => ({
       });
     }
   },
-
 }));

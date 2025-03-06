@@ -11,15 +11,15 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { useGlobalStore } from "@/components/Contexts/GlobalContext";
+import { useGetStore } from "@/components/Contexts/GetContext";
 
 function PackagePage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const packageData = useGlobalStore((state) => state.packageData);
-  const getPackageData = useGlobalStore((state) => state.getPackageData);
+  const packageData = useGetStore((state) => state.packageData);
+  const getPackageData = useGetStore((state) => state.getPackageData);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [indexPackage, setIndexPackage] = useState<number>(0);
+  const [typeOfPackage, setTypeOfPackage] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -28,8 +28,8 @@ function PackagePage() {
 
   useEffect(() => {
     if (!packageData) {
-      useGlobalStore.setState({loadingMessage: "Loading package data"});
-      useGlobalStore.setState({ loading: true });
+      useGetStore.setState({loadingMessage: "Loading package data"});
+      useGetStore.setState({ loading: true });
     }
   }, [packageData]);
 
@@ -122,11 +122,11 @@ function PackagePage() {
                     {packageData && packageData[0]?.package_type.map((packageType, index) => {
                       return (
                         <Button
-                          className={`mb-4 flex rounded-2xl border-[1px] lg:mb-0 ${indexPackage == index ? "bg-teal-500 text-black" : ""}`}
+                          className={`mb-4 flex rounded-2xl border-[1px] lg:mb-0 ${typeOfPackage == index ? "bg-teal-500 text-black" : ""}`}
                           variant={"outline"}
                           key={index}
                           onClick={() => {
-                            setIndexPackage(index);
+                            setTypeOfPackage(index);
                           }}
                         >
                           <Package />
@@ -156,7 +156,7 @@ function PackagePage() {
                   <p className="text-xl font-semibold">Package Type Amenities</p>
                   <p>These are amenities that are available for the selected package</p>
                   <div className="grid gap-2 pt-4 lg:grid-cols-2">
-                    {packageData && packageData[0]?.package_type[indexPackage].package_type_amenity.map(
+                    {packageData && packageData[0]?.package_type[typeOfPackage].package_type_amenity.map(
                       (amenity, index) => {
                         return (
                           <div
@@ -227,7 +227,7 @@ function PackagePage() {
                   <div className="mb-4 md:mb-0">
                     <p className="text-2xl font-semibold">
                       PHP{" "}
-                      {Number(packageData && packageData[0]?.package_type[indexPackage].price_per_person) *
+                      {Number(packageData && packageData[0]?.package_type[typeOfPackage].price_per_person) *
                         quantity}
                     </p>
                     <p>Check all required fields before proceeding</p>
@@ -236,7 +236,7 @@ function PackagePage() {
                     variant={"outline"}
                     className="h-full w-full bg-teal-500 px-10 text-black sm:w-auto"
                     onClick={() => {
-                        navigate(`/booking/${id}/${indexPackage}/${quantity}/${date?.toLocaleDateString().replace(/\//g, "-")}`);
+                        navigate(`/booking/${id}/${typeOfPackage}/${quantity}/${date?.toLocaleDateString().replace(/\//g, "-")}`);
                     }}
                   >
                     Book Now
@@ -253,7 +253,7 @@ function PackagePage() {
           <div className="mt-4 h-full rounded-2xl border-[1px] p-8 lg:sticky lg:top-20 lg:mt-0 lg:w-1/3">
             <p className="pb-4 text-xl font-semibold">Package Type Itinerary</p>
             <div>
-              {packageData && packageData[0]?.package_type[indexPackage]?.package_route_point?.map(
+              {packageData && packageData[0]?.package_type[typeOfPackage]?.package_route_point?.map(
                 (routePoints, index) => {
                   return (
                     <div

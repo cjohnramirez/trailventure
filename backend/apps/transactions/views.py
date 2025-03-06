@@ -2,43 +2,53 @@ import stripe
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from apps.users.permissions import IsCustomer
+from apps.packages.models import PackageImage
 from apps.transactions.serializers import *
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-from django.views import View
-from django.http import JsonResponse
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from stripe.error import StripeError
 
 # USER
-class CreateCheckoutSessionView(View):
-    permission_classes = [IsAuthenticated]
+@api_view(['POST'])
+def checkout_session_view(request, pk):
+    try:
+        stripe.api_key = 'sk_test_51QvhbiKODu0UvT2EA22xFbHY02oI26TylA0CiGet0wsOTqV5WUsap7ksWZn0sPbxqLmYsBy4jSYlv2Mw63Ow7dPF00RqgR9F6Z'
+        
+        booking = get_object_or_404(Booking, pk=pk, user=request.user)
+        package = booking.package_type.package
+        package_image = PackageImage.objects.filter(package=package).first()
 
-    def post(self, request, *args, **kwargs):
-        transaction_id = self.kwargs["pk"]
-        transaction = Transaction.objects.get(id=transaction_id)
-        YOUR_DOMAIN = "http://localhost:8000/"
+        YOUR_DOMAIN = "http://localhost:5173/"
+        package_image = PackageImage.objects.filter(package=package).first()
+        image_url = package_image.image if package_image and package_image.image else ""
+
         checkout_session = stripe.checkout.Session.create(
-            payment_method_types=["paypal", "card", "amazon_pay"],
-            line_items=[
-                {
-                    'price_data': {
-                        'currency': transaction.currency.name,
-                        'unit_amount': transaction.amount,
-                        'product_data': {
-                            'name': transaction.booking.Package.name,
-                            'images': [transaction.booking.Package.Package_image.url]
-                        }
+            payment_method_types=["card"],
+            line_items=[{
+                'price_data': {
+                    'currency': booking.currency.lower(),
+                    'unit_amount': int(booking.package_type.price_per_person * 100),
+                    'product_data': {
+                        'name': str(booking.package_type),
+                        'images': [image_url] if image_url else [] 
                     }
                 },
-            ],
+                'quantity': booking.num_of_person,
+            }],
             mode='payment',
-            success_url=YOUR_DOMAIN + '?success=true',
-            cancel_url=YOUR_DOMAIN + '?canceled=true',
+            customer_email=request.user.email,
+            success_url=f"{YOUR_DOMAIN}booking/success",
+            cancel_url=f"{YOUR_DOMAIN}booking/cancelled",
         )
-        return JsonResponse({
-            'id': checkout_session.id
-        })
 
+        return Response({'url': checkout_session.url}, status=status.HTTP_201_CREATED)
+    except StripeError as e:
+        return Response({'error': f"Stripe error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookingListCreateView(generics.ListCreateAPIView):
@@ -50,15 +60,6 @@ class BookingListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         package_id = self.request.data.get("Package")
-        try:
-            package_id = int(package_id)
-        except:
-            raise ValidationError("Invalid Package ID.")
-
-        if Booking.objects.filter(
-            user=self.request.user, package_id=package_id
-        ).exists():
-            raise ValidationError("You cannot book the same Package more than once.")
         serializer.save(user=self.request.user)
 
 

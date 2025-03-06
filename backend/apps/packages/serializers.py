@@ -18,7 +18,7 @@ class PackageTypeAmenitySerializer(serializers.ModelSerializer):
 class PackageTypeListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageType
-        fields = ["name", "price_per_person", "description", "package_type_amenity"]
+        fields = ["id", "name", "price_per_person", "description", "package_type_amenity"]
 
 
 class PackageRoutePointSerializer(serializers.ModelSerializer):
@@ -42,6 +42,7 @@ class PackageTypeSingleSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageType
         fields = [
+            "id",
             "name",
             "price_per_person",
             "description",

@@ -4,7 +4,7 @@ import NavBarDropdown from "./NavBarDropdown";
 import Search from "./SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useGlobalStore } from "../Contexts/GlobalContext";
+import { useGetStore } from "../Contexts/GetContext";
 import DefaultUserProfile from "@/assets/UserPage/defaultProfile.jpg";
 
 interface NavBarInterface {
@@ -13,8 +13,8 @@ interface NavBarInterface {
 }
 
 function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
-  const isAuthorized = useGlobalStore((state) => state.isAuthorized);
-  const userData = useGlobalStore((state) => state.userData) || [];
+  const isAuthorized = useGetStore((state) => state.isAuthorized);
+  const userData = useGetStore((state) => state.userData) || [];
   const navigate = useNavigate();
   const location = useLocation();
   const [atUserPage, setAtUserPage] = useState(location.pathname === "/user-page");

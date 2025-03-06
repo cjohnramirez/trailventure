@@ -1,5 +1,5 @@
 export interface tourPackage {
-  id: Number;
+  id: number;
   name: string;
   description: string;
   address: string;
@@ -17,6 +17,7 @@ interface tourPackageImage {
 }
 
 interface tourPackageType {
+  id: number;
   price_per_person: string;
   name: string;
   package_route_point: tourPackageTypeRoutePoints[];

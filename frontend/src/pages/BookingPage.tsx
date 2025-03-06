@@ -1,4 +1,4 @@
-import { useGlobalStore } from "@/components/Contexts/GlobalContext";
+import { useGetStore } from "@/components/Contexts/GetContext";
 import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -19,6 +19,7 @@ import {
 import { toast } from "@/components/Error/ErrorSonner";
 import { AxiosError } from "axios";
 import api from "@/lib/api";
+import { usePostStore } from "@/components/Contexts/PostContext";
 
 interface AdditionalFees {
   id: number;
@@ -28,9 +29,10 @@ interface AdditionalFees {
 
 function BookingPage() {
   const { tourpackage, tourpackagetype, numofperson } = useParams();
-  const packageData = useGlobalStore((state) => state.packageData) || [];
-  const getPackageData = useGlobalStore((state) => state.getPackageData);
-  //const userData = useGlobalStore((state) => state.userData);
+  const packageData = useGetStore((state) => state.packageData) || [];
+  const getPackageData = useGetStore((state) => state.getPackageData);
+  const userData = useGetStore((state) => state.userData);
+  const postBookingData = usePostStore((state) => state.setBooking);
   const [startUserDate, setStartDate] = useState(new Date());
   const [quantity, setQuantity] = useState(Number(numofperson));
   const [additionalFees, setAdditionalFees] = useState<AdditionalFees[]>([]);
@@ -44,8 +46,6 @@ function BookingPage() {
   const endUserPackageDate = new Date(startUserDate);
   endUserPackageDate.setDate(endUserPackageDate.getDate() + numOfDays);
   const formattedEndUserPackageDate = endUserPackageDate.toLocaleDateString();
-
-  console.log(formattedEndUserPackageDate);
 
   const getAdditionalFees = async () => {
     try {
@@ -91,11 +91,35 @@ function BookingPage() {
 
   useEffect(() => {
     getPackageData(Number(tourpackage));
+    useGetStore.setState({ loading: true, loadingMessage: "Loading Booking Session" });
     getAdditionalFees();
+    useGetStore.setState({ loading: false });
   }, []);
 
   const updateInvoice = () => {
     setTotalPrice((basePrice + siteFeePrice + taxPrice) * quantity);
+  };
+
+  const handleCheckoutButton = async () => {
+    try {
+      await postBookingData({
+        num_of_person: quantity,
+        currency: currency,
+        package_type: packageData[0]?.package_type[Number(tourpackagetype)]?.id,
+        user: userData ? userData[0]?.user.id : 0,
+      });
+
+      const updatedBookingData = usePostStore.getState().booking;
+      if (updatedBookingData) {
+        usePostStore.getState().startCheckout(updatedBookingData.id);
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    }
+  };
+  
+  const handleClick = () => {
+    handleCheckoutButton();
   };
 
   return (
@@ -163,7 +187,7 @@ function BookingPage() {
               </div>
               <div className="flex items-center gap-4 pb-4 md:pb-0">
                 <p className="w-1/2 xl:w-auto">End of package</p>
-                <div className="flex w-1/2 items-center gap-2 rounded-full border-[1px] p-2 px-4 xl:w-auto justify-center">
+                <div className="flex w-1/2 items-center justify-center gap-2 rounded-full border-[1px] p-2 px-4 xl:w-auto">
                   <CalendarIcon size={16} />
                   <p className="text-sm font-medium">{formattedEndUserPackageDate}</p>
                 </div>
@@ -192,16 +216,18 @@ function BookingPage() {
               </div>
             </div>
           </div>
-          <div className="mb-4 mt-4 sm:flex items-center justify-between rounded-2xl border-[1px] p-8 lg:mb-0">
+          <div className="mb-4 mt-4 items-center justify-between rounded-2xl border-[1px] p-8 sm:flex lg:mb-0">
             <div className="">
               <p className="text-xl font-semibold">Package Rules</p>
               <p>Before proceeding, read the rules for this tour package.</p>
             </div>
-            <DropdownMenuSeparator className="sm:block hidden"/>
-            <div className="sm:w-auto w-full">
+            <DropdownMenuSeparator className="hidden sm:block" />
+            <div className="w-full sm:w-auto">
               <Dialog>
-                <DialogTrigger className="sm:w-auto w-full">
-                  <Button variant={"outline"} className="sm:mt-0 mt-4 sm:w-auto w-full">Read Here</Button>
+                <DialogTrigger className="w-full sm:w-auto" asChild>
+                  <Button variant={"outline"} className="mt-4 w-full sm:mt-0 sm:w-auto">
+                    Read Here
+                  </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -213,7 +239,7 @@ function BookingPage() {
             </div>
           </div>
         </div>
-        <aside className="flex-col justify-between rounded-2xl border-[1px] p-8 lg:ml-4 lg:flex lg:w-1/3 lg:mb-0 mb-4">
+        <aside className="mb-4 flex-col justify-between rounded-2xl border-[1px] p-8 lg:mb-0 lg:ml-4 lg:flex lg:w-1/3">
           <div>
             <div className="flex w-full flex-row items-start justify-between pb-4">
               <p className="text-xl font-semibold">Invoice</p>
@@ -263,8 +289,8 @@ function BookingPage() {
                 {Number(totalPrice)}
               </p>
             </div>
-            <Button variant={"outline"} className="w-full">
-              <p>Proceed to Payment</p>
+            <Button variant={"outline"} className="w-full" onClick={handleClick}>
+              <p>Proceed to Checkout</p>
             </Button>
           </div>
         </aside>

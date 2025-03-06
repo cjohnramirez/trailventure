@@ -10,7 +10,7 @@ import PackagePage from "./pages/PackagePage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import UserPage from "./pages/UserPage";
 import BookingPage from "./pages/BookingPage";
-import { useGlobalStore } from "@/components/Contexts/GlobalContext";
+import { useGetStore } from "@/components/Contexts/GetContext";
 import { useEffect } from "react";
 import Loading from "./components/Loading/Loading";
 
@@ -26,8 +26,8 @@ function RegisterAndLogout() {
 }
 
 function App() {
-  const auth = useGlobalStore((state) => state.auth);
-  const loading = useGlobalStore((state) => state.loading);
+  const auth = useGetStore((state) => state.auth);
+  const loading = useGetStore((state) => state.loading);
 
   useEffect(() => {
     auth();
