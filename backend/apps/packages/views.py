@@ -5,6 +5,8 @@ from apps.users.permissions import IsCustomer, IsHost
 from apps.packages.models import *
 from rest_framework.parsers import MultiPartParser, FormParser
 
+class PackageSearchView(generics.ListAPIView):
+    
 
 class PackageListView(generics.ListAPIView):
     serializer_class = PackageListSerializer

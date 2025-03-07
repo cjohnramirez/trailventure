@@ -23,5 +23,10 @@
       "src": "/(.*)",
       "dest": "config/wsgi.py"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "dev": false
+    }
+  }
 }
