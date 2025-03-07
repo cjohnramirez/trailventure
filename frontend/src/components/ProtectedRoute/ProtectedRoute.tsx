@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { ReactNode } from "react";
-import { useGetStore } from "@/components/Contexts/GetContext";
+import { useGetStore } from "@/components/Contexts/AuthContext";
 import { toast } from "@/components/Error/ErrorSonner";
 
 interface ProtectedRouteProps {

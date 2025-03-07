@@ -11,7 +11,7 @@ import { Menu } from "lucide-react";
 import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useMediaQuery } from "react-responsive";
-import { useGetStore } from "../Contexts/GetContext";
+import { useGetStore } from "../Contexts/AuthContext";
 
 function NavBarDropdown() {
   const { theme, setTheme } = useTheme();

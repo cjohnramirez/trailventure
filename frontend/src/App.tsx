@@ -10,7 +10,7 @@ import PackagePage from "./pages/TourPackagePage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import UserPage from "./pages/UserPage";
 import BookingPage from "./pages/BookingPage";
-import { useGetStore } from "@/components/Contexts/GetContext";
+import { useGetStore } from "@/components/Contexts/AuthContext";
 import { useEffect } from "react";
 import Loading from "./components/Loading/Loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

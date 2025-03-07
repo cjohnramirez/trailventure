@@ -7,7 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { useGetStore } from "@/components/Contexts/GetContext";
+import { useGetStore } from "@/components/Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPackage } from "@/api/tourPackageData/fetchPackage";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
