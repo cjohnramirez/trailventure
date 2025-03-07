@@ -1,5 +1,5 @@
 import { useState } from "react";
-import api from "../../lib/api";
+import api from "../../api/api";
 import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 import * as z from "zod";

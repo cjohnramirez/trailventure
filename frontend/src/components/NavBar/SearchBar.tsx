@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { LucideSearch, Search as SearchIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import api from "../../lib/api";
+import api from "../../api/api";
 import SearchDestination from "../SearchBar/SearchDestination";
 import SearchDate from "../SearchBar/SearchDate";
 import SearchPrice from "../SearchBar/SearchPrice";

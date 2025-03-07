@@ -6,6 +6,9 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useGetStore } from "../Contexts/GetContext";
 import DefaultUserProfile from "@/assets/UserPage/defaultProfile.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { UserData } from "@/lib/UserPage/UserData";
+import { fetchUserData } from "@/api/userData/fetchUserData";
 
 interface NavBarInterface {
   isNavBar: boolean;
@@ -13,8 +16,12 @@ interface NavBarInterface {
 }
 
 function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
+  const { data: userData } = useQuery<UserData[]>({
+    queryFn: () => fetchUserData(),
+    queryKey: ["navBarUserData"],
+  });
+
   const isAuthorized = useGetStore((state) => state.isAuthorized);
-  const userData = useGetStore((state) => state.userData) || [];
   const navigate = useNavigate();
   const location = useLocation();
   const [atUserPage, setAtUserPage] = useState(location.pathname === "/user-page");
@@ -62,12 +69,12 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
               ) : (
                 <div className="flex items-center gap-2 p-1">
                   <img
-                    src={userData[0]?.avatar || DefaultUserProfile}
+                    src={userData ? userData[0]?.avatar : DefaultUserProfile}
                     className="aspect-square w-7 rounded-full object-cover"
                     alt="User avatar"
                   />
                   <p className="hidden lg:block">
-                    Welcome, {userData[0]?.user?.username || "user!"}
+                    Welcome, {userData ? userData[0]?.user?.username : "user!"}
                   </p>
                 </div>
               )

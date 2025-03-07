@@ -1,5 +1,5 @@
 import NavBar from "@/components/NavBar/NavBar";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
 import DefaultBanner from "@/assets/UserPage/defaultBanner.jpeg";
 import { siFacebook, siX, siInstagram } from "simple-icons";
@@ -8,20 +8,18 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Edit } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { useGetStore } from "@/components/Contexts/GetContext";
+import { UserData } from "@/lib/UserPage/UserData";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserData } from "@/api/userData/fetchUserData";
 
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
-  const userData = useGetStore((state) => state.userData) || [];
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
 
-  useEffect(() => {
-    useGetStore.setState({loading: true, loadingMessage: "Loading data"});
-    if (userData && userData[0].date_of_birth) {
-      setDateOfBirth(new Date(userData[0].date_of_birth));
-      useGetStore.setState({loading: false});
-    }
-  }, [userData]);
+  const { data: userData } = useQuery<UserData[]>({
+    queryFn: () => fetchUserData(),
+    queryKey: ["userPageUserData"],
+  });
 
   return (
     <div className="w-full">
@@ -31,11 +29,11 @@ function UserPage() {
       <div className="p-8">
         <div className="relative w-full">
           <img
-            src={userData[0]?.banner || DefaultBanner}
+            src={userData?.[0]?.banner || DefaultBanner}
             className="h-full max-h-[300px] w-full rounded-2xl object-cover object-bottom"
           ></img>
           <img
-            src={userData[0]?.avatar || DefaultProfile}
+            src={userData?.[0]?.avatar || DefaultProfile}
             className="absolute left-[90px] top-[120px] z-10 hidden aspect-square w-[250px] rounded-2xl object-cover lg:block"
           ></img>
           <div className="relative top-[-75px] w-full sm:top-[-165px] sm:p-12">
@@ -43,13 +41,13 @@ function UserPage() {
               <div className="flex flex-col md:left-[290px] lg:relative">
                 <div className="flex items-center gap-4">
                   <img
-                    src={userData[0]?.avatar || DefaultProfile}
+                    src={userData?.[0]?.avatar || DefaultProfile}
                     className="block aspect-square w-10 sm:w-20 rounded-full object-cover lg:hidden"
                   ></img>
                   <div>
                     <p className="text-xs sm:text-base">Customer Profile</p>
                     <p className="text-xl sm:text-3xl font-semibold">
-                      {userData[0]?.user?.first_name + " " + userData[0]?.user?.last_name}
+                      {userData?.[0]?.user?.first_name + " " + userData?.[0]?.user?.last_name}
                     </p>
                   </div>
                 </div>
@@ -57,7 +55,7 @@ function UserPage() {
                 <div className="mt-2 flex w-[220px] items-center gap-4 rounded-3xl border-[1px] p-4">
                   <p className="border-r-2 pr-4">Links</p>
                   <div>
-                    <a href={userData[0]?.user?.user_profile_links.facebook} target="_blank">
+                    <a href={userData?.[0]?.user?.user_profile_links.facebook} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -70,7 +68,7 @@ function UserPage() {
                     </a>
                   </div>
                   <div>
-                    <a href={userData[0]?.user?.user_profile_links.twitter} target="_blank">
+                    <a href={userData?.[0]?.user?.user_profile_links.twitter} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -83,7 +81,7 @@ function UserPage() {
                     </a>
                   </div>
                   <div>
-                    <a href={userData[0]?.user?.user_profile_links.instagram} target="_blank">
+                    <a href={userData?.[0]?.user?.user_profile_links.instagram} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -175,25 +173,25 @@ function UserPage() {
                     <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                       First Name
                     </p>
-                    <p className="sm:pl-4">{userData[0]?.user?.first_name}</p>
+                    <p className="sm:pl-4">{userData?.[0]?.user?.first_name}</p>
                   </div>
                   <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
                     <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                       Last Name
                     </p>
-                    <p className="sm:pl-4">{userData[0]?.user?.last_name}</p>
+                    <p className="sm:pl-4">{userData?.[0]?.user?.last_name}</p>
                   </div>
                   <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
                     <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                       Email
                     </p>
-                    <p className="sm:pl-4">{userData[0]?.user?.email}</p>
+                    <p className="sm:pl-4">{userData?.[0]?.user?.email}</p>
                   </div>
                   <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
                     <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                       Date of Birth
                     </p>
-                    <p className="sm:pl-4">{userData[0]?.date_of_birth}</p>
+                    <p className="sm:pl-4">{userData?.[0]?.date_of_birth}</p>
                   </div>
                 </>
               )}

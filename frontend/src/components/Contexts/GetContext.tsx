@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { UserData } from "@/lib/UserPage/UserData";
-import api from "../../lib/api";
+import api from "@/api/api";
 import { REFRESH_TOKEN, ACCESS_TOKEN } from "../../constants";
 import { AxiosError } from "axios";
 import { toast } from "../Error/ErrorSonner";
@@ -17,7 +17,6 @@ interface GetState {
   getUserData: () => Promise<void>;
   refreshToken: () => Promise<void>;
   auth: () => Promise<void>;
-  getPackageData: (id: number) => Promise<void>;
 }
 
 export const useGetStore = create<GetState>((set) => ({
@@ -94,29 +93,5 @@ export const useGetStore = create<GetState>((set) => ({
       await useGetStore.getState().getUserData();
       set({ isAuthorized: true });
     }
-  },
-
-  getPackageData: async (id: number) => {
-    try {
-      const fetchPkg = await api.get(`apps/package/${id}/`);
-      set({ packageData: fetchPkg.data, loading: false, loadingMessage: "Fetching package data" });
-    } catch (error) {
-      const err = error as AxiosError;
-      let errorMessage = "An unexpected error occurred.";
-
-      if (err.response) {
-        errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
-      } else if (err.request) {
-        errorMessage =
-          "Network error: Unable to reach the server. Please check your internet connection.";
-      } else {
-        errorMessage = err.message;
-      }
-
-      toast({
-        title: "404 NOT FOUND",
-        description: errorMessage,
-      });
-    }
-  },
+  }
 }));

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
-import api from "@/lib/api";
+import api from "@/api/api";
 import { AxiosError } from "axios";
 import { toast } from "@/components/Error/ErrorSonner";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";

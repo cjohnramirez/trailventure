@@ -2,7 +2,7 @@ import { Card } from "../ui/card";
 import { MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "../Error/ErrorSonner";
-import api from "../../lib/api";
+import api from "../../api/api";
 import { AxiosError } from "axios";
 
 interface Destination {

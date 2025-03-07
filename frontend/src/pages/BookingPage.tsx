@@ -1,4 +1,3 @@
-import { useGetStore } from "@/components/Contexts/GetContext";
 import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -16,85 +15,75 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { toast } from "@/components/Error/ErrorSonner";
-import { AxiosError } from "axios";
-import api from "@/lib/api";
-import { usePostStore } from "@/components/Contexts/PostContext";
-
-interface AdditionalFees {
-  id: number;
-  tax_paid_percent: string;
-  site_fees_percent: string;
-}
+import { tourPackage } from "@/lib/SearchPage/tourPackage";
+import { fetchPackage } from "@/api/tourPackageData/fetchPackage";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { UserData } from "@/lib/UserPage/UserData";
+import { fetchUserData } from "@/api/userData/fetchUserData";
+import { AdditionalFees } from "@/lib/BookingPage/additionalFees";
+import { postBookingData } from "@/api/bookingData/postBookingData";
+import { postCheckoutData } from "@/api/bookingData/postCheckoutData";
+import { fetchAdditionalFeesData } from "@/api/bookingData/fetchAdditionalFeesData";
 
 function BookingPage() {
-  const { tourpackage, tourpackagetype, numofperson } = useParams();
-  const packageData = useGetStore((state) => state.packageData) || [];
-  const getPackageData = useGetStore((state) => state.getPackageData);
-  const userData = useGetStore((state) => state.userData);
-  const postBookingData = usePostStore((state) => state.setBooking);
+  const { tourpackageId, tourpackagetype, numofperson } = useParams();
+
+  const { data: packageData } = useQuery<tourPackage[]>({
+    queryFn: () => fetchPackage(Number(tourpackageId)),
+    queryKey: ["bookingData", tourpackageId],
+  });
+
+  const { data: userData } = useQuery<UserData[]>({
+    queryFn: () => fetchUserData(),
+    queryKey: ["bookingUserData"],
+  });
+
+  const { data: additionalFees } = useQuery<AdditionalFees[]>({
+    queryFn: () => fetchAdditionalFeesData(),
+    queryKey: ["additionalFeesData"],
+  });
+
+  const { mutateAsync: mutateBookingData } = useMutation({
+    mutationFn: postBookingData,
+  })
+
+  const { mutateAsync: mutateCheckoutData } = useMutation({
+    mutationFn: postCheckoutData,
+  })
+
   const [startUserDate, setStartDate] = useState(new Date());
   const [quantity, setQuantity] = useState(Number(numofperson));
-  const [additionalFees, setAdditionalFees] = useState<AdditionalFees[]>([]);
   const [currency, _setCurrency] = useState<string>("PHP");
   const [totalPrice, setTotalPrice] = useState<Number>(0);
 
-  //sum logic shit
   const packagetype = Number(tourpackagetype);
-  const routePoints = packageData[0]?.package_type[packagetype]?.package_route_point || [];
+  const routePoints = packageData?.[0]?.package_type[packagetype]?.package_route_point || [];
   const numOfDays = routePoints[routePoints.length - 1]?.day;
   const endUserPackageDate = new Date(startUserDate);
   endUserPackageDate.setDate(endUserPackageDate.getDate() + numOfDays);
   const formattedEndUserPackageDate = endUserPackageDate.toLocaleDateString();
-
-  const getAdditionalFees = async () => {
-    try {
-      const additionalFees = await api.get(`/apps/transaction/additional-fees/list`);
-      setAdditionalFees(additionalFees.data);
-    } catch (error) {
-      const err = error as AxiosError;
-      let errorMessage = "An unexpected error occurred.";
-
-      if (err.response) {
-        errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
-      } else if (err.request) {
-        errorMessage =
-          "Network error: Unable to reach the server. Please check your internet connection.";
-      } else {
-        errorMessage = err.message;
-      }
-
-      toast({
-        title: "404 NOT FOUND",
-        description: errorMessage,
-      });
-    }
-  };
-
-  const basePrice = Math.round(
-    +packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person,
-  );
-  const siteFeePrice = Math.round(
-    +additionalFees[0]?.site_fees_percent *
-      0.01 *
-      +packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person,
-  );
-  const taxPrice = Math.round(
-    +additionalFees[0]?.tax_paid_percent *
-      0.01 *
-      +packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person,
-  );
+ 
+  const basePrice = packageData
+    ? Math.round(+packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person)
+    : 0;
+  const siteFeePrice = packageData
+    ? Math.round(
+        +(additionalFees?.[0]?.site_fees_percent ?? 0) *
+          0.01 *
+          +packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person,
+      )
+    : 0;
+  const taxPrice = packageData
+    ? Math.round(
+        +(additionalFees?.[0]?.tax_paid_percent ?? 0) *
+          0.01 *
+          +packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person,
+      )
+    : 0;
 
   useEffect(() => {
     setTotalPrice((basePrice + siteFeePrice + taxPrice) * quantity);
   }, [basePrice, siteFeePrice, taxPrice]);
-
-  useEffect(() => {
-    getPackageData(Number(tourpackage));
-    useGetStore.setState({ loading: true, loadingMessage: "Loading Booking Session" });
-    getAdditionalFees();
-    useGetStore.setState({ loading: false });
-  }, []);
 
   const updateInvoice = () => {
     setTotalPrice((basePrice + siteFeePrice + taxPrice) * quantity);
@@ -102,22 +91,24 @@ function BookingPage() {
 
   const handleCheckoutButton = async () => {
     try {
-      await postBookingData({
+      const bookingResponse = await mutateBookingData({
         num_of_person: quantity,
         currency: currency,
-        package_type: packageData[0]?.package_type[Number(tourpackagetype)]?.id,
+        package_type: packageData?.[0]?.package_type[Number(tourpackagetype)]?.id || 0,
         user: userData ? userData[0]?.user.id : 0,
       });
-
-      const updatedBookingData = usePostStore.getState().booking;
-      if (updatedBookingData) {
-        usePostStore.getState().startCheckout(updatedBookingData.id);
+  
+      if (bookingResponse?.id) {
+        await mutateCheckoutData(bookingResponse.id);
+        console.log("Checkout completed successfully!");
+      } else {
+        console.warn("Booking response did not contain an ID.");
       }
     } catch (error) {
       console.error("Error during checkout:", error);
     }
   };
-  
+
   const handleClick = () => {
     handleCheckoutButton();
   };
@@ -131,18 +122,18 @@ function BookingPage() {
         <div className="flex-col gap-2 lg:flex lg:w-2/3">
           <div className="mb-4 flex flex-col rounded-2xl border-[1px] p-8 lg:mb-0 lg:flex-row lg:items-center xl:p-4">
             <img
-              src={packageData[0]?.package_image[0].image}
+              src={packageData?.[0]?.package_image[0].image}
               className="h-[200px] w-full rounded-2xl object-cover lg:h-auto lg:w-64"
             ></img>
             <div className="lg:mx-8">
-              <h1 className="mt-4 text-2xl font-semibold lg:mt-0">{packageData[0]?.name}</h1>
+              <h1 className="mt-4 text-2xl font-semibold lg:mt-0">{packageData?.[0]?.name}</h1>
               <div className="flex gap-4">
                 <MapPin />
-                <p>{packageData[0]?.address}</p>
+                <p>{packageData?.[0]?.address}</p>
               </div>
               <div className="mt-4 flex gap-4 rounded-2xl border-[1px] p-4">
                 <Package />
-                <p>Package Type: {packageData[0]?.package_type[Number(tourpackagetype)]?.name}</p>
+                <p>Package Type: {packageData?.[0]?.package_type[Number(tourpackagetype)]?.name}</p>
               </div>
             </div>
           </div>
