@@ -1,5 +1,13 @@
-export const formatDate = (dateString : string) => {
-  const [month, day, year] = dateString.split("-");
-  const date = new Date(`${month}-${day}-${year}`);
-  return new Intl.DateTimeFormat('en-CA').format(date); // 'en-CA' gives 'YYYY-MM-DD' format
+export const formatDate = (dateString: string | null | undefined) => {
+  // Handle falsy values and the literal "None" string
+  if (!dateString || dateString === "None") {
+    return ""; 
+  }
+
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return dateString; 
+  }
+
+  return date.toISOString().split("T")[0];
 };
