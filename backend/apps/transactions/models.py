@@ -22,6 +22,13 @@ class AdditionalFees(models.Model):
 
 
 class Booking(models.Model):
+    currency_choices = [
+        ("PHP", "Philippine Peso"),
+        ("USD", "US Dollar"),
+        ("EUR", "Euro"),
+        ("JPY", "Japanese Yen")
+    ]
+
     package_type = models.ForeignKey(
         PackageType, on_delete=models.CASCADE, related_name="booking", null=True
     )
@@ -29,11 +36,8 @@ class Booking(models.Model):
         User, on_delete=models.CASCADE, related_name="booking", null=True
     )
     num_of_person = models.PositiveIntegerField()
-    amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
-    is_confirmed = models.BooleanField(default=False, blank=True)
-    cancel_date = models.DateTimeField(null=True)
     booking_date = models.DateTimeField(auto_now_add=True)
-    created = models.DateTimeField(auto_now_add=True)
+    currency = models.CharField(max_length=20, choices=currency_choices, default="PHP")
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -41,30 +45,22 @@ class Booking(models.Model):
 
 
 class Transaction(models.Model):
-    additional_fees = models.ForeignKey(
-        AdditionalFees,
-        on_delete=models.CASCADE,
-        related_name="transaction",
-        null=True,
-    )
-    booking = models.ForeignKey(
-        Booking, on_delete=models.CASCADE, related_name="transaction", null=True
-    )
-    currency = models.CharField(max_length=3, blank=True, null=True)
     status_choices = [
         ("pending", "Pending"),
         ("completed", "Completed"),
         ("failed", "Failed"),
     ]
     status = models.CharField(max_length=10, choices=status_choices, default="pending")
+
+    booking = models.ForeignKey(
+        Booking, on_delete=models.CASCADE, related_name="transaction", null=True
+    )
+    
+    payment_id = models.CharField(max_length=255, blank=True, null=True)
+    currency = models.CharField(max_length=3, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transfer_date = models.DateTimeField(auto_now_add=True)
-    created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-
-    def verify_if_confirmed(self):
-        if not self.booking.is_confirmed:
-            raise ValidationError("Booking not yet confirmed by the host")
 
     def __str__(self):
         return f"Transaction id: {self.id}"
@@ -93,11 +89,11 @@ class PackageReview(models.Model):
 
     def clean(self):
         if not Booking.objects.filter(
-            user=self.review_by_user, Package=self.Package
+            user=self.review_by_user, package_type=self.transaction.booking.package_type
         ).exists():
             raise ValidationError(
                 "User must have booked this Package before reviewing."
             )
 
     def __str__(self):
-        return f"Package: {self.Package.name}, User: {self.review_by_user.username}"
+        return f"Package: {self.transaction.booking.package_type.name}, User: {self.review_by_user.username}"

@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { Search as SearchIcon } from "lucide-react";
+import { LucideSearch, Search as SearchIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import api from "../../lib/api";
+import api from "../../api/api";
+import SearchDestination from "../SearchBar/SearchDestination";
 import SearchDate from "../SearchBar/SearchDate";
-import SearchLocation from "../SearchBar/SearchLocation";
 import SearchPrice from "../SearchBar/SearchPrice";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useMediaQuery } from "react-responsive";
+import { formatDate } from "@/lib/SearchPage/dataFormatter";
 
 interface forNavBar {
   navBar: boolean;
+  homePage?: boolean;
 }
 
 interface Destination {
@@ -19,7 +22,7 @@ interface Destination {
   Destination: string;
 }
 
-function Search({ navBar }: forNavBar) {
+function Search({ navBar, homePage }: forNavBar) {
   const [destinations, setDestinationsData] = useState([]);
   useEffect(() => {
     getUserData();
@@ -34,16 +37,14 @@ function Search({ navBar }: forNavBar) {
 
   const parsedDestinations: Destination[] = destinations;
 
-  const [firstDate, setFirstDate] = useState<Date>(new Date());
-  const [secondDate, setSecondDate] = useState<Date>(new Date());
+  const [firstDate, setFirstDate] = useState<Date | null>(null);
+  const [secondDate, setSecondDate] = useState<Date | null>(null);
 
-  const [minimumPrice, setMinimumPrice] = useState<number[] | null>([580]);
-  const [maximumPrice, setMaximumPrice] = useState<number[] | null>([12000]);
+  const [minimumPrice, setMinimumPrice] = useState<string | null>(null);
+  const [maximumPrice, setMaximumPrice] = useState<string | null>(null);
 
   const [searchItem, setSearchItem] = useState<string>("");
-  const [selectedDestination, setSelectedDestination] = useState<string | "">(
-    "Set Location",
-  );
+  const [selectedDestination, setSelectedDestination] = useState<string | null>("Set Location");
   const [filteredDestinations, setFilteredDestinations] =
     useState<Destination[]>(parsedDestinations);
 
@@ -60,28 +61,53 @@ function Search({ navBar }: forNavBar) {
     setFilteredDestinations(filteredItems);
   };
 
+  const mediumScreen = useMediaQuery({ query: "(max-width: 1024px)" });
+
+  const destination = selectedDestination === "Set Location" ? "None" : selectedDestination;
+  const startDate = firstDate
+    ? formatDate(firstDate.toLocaleDateString().replace(/\//g, "-"))
+    : "None";
+  const endDate = secondDate
+    ? formatDate(secondDate.toLocaleDateString().replace(/\//g, "-"))
+    : "None";
+  const minPrice = minimumPrice || "None";
+  const maxPrice = maximumPrice || "None";
+
+  const searchUrl = `/search/${destination}/${startDate}/${endDate}/${minPrice}/${maxPrice}/`;
+
   return (
     <div
       className={
-        "gap-4 " +
+        "gap-4" +
         (navBar
-          ? "grid grid-cols-1 rounded-full border-[1px]"
-          : "flex items-center justify-center rounded-full border-[1px] bg-[#f4f4f5] p-2 dark:bg-[#09090b]")
+          ? ""
+          : "flex items-center justify-center rounded-full border-[1px] bg-[#f4f4f5] dark:bg-[#09090b]")
       }
     >
-      <div className={`${navBar ? " " : "flex items-center"} gap-4`}>
+      <div className={`${navBar ? "" : "flex items-center"} gap-4 ${homePage ? "p-2" : ""}`}>
         {navBar ? (
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
-                className={`w-full border-none text-center`}
+                className={`flex h-full w-full ${homePage ? "sm:w-[400px] md:w-[450px] lg:w-full" : ""}`}
               >
-                <p>Search TrailVenture</p>
+                <div className="flex w-full items-center justify-between gap-2">
+                  <div className="rounded-full border-[1px] bg-teal-500 p-2 text-black">
+                    <LucideSearch className="" />
+                  </div>
+                  <p className="w-full pr-8 text-xs sm:pr-10 md:text-sm">Search TrailVenture</p>
+                </div>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="mt-2 flex w-full flex-row gap-4 rounded-full">
-              <SearchDate
+            <PopoverContent
+              className={
+                homePage || mediumScreen
+                  ? `t-2 flex w-[330px] flex-col gap-2 rounded-[20px] md:gap-4`
+                  : `mt-2 flex w-full flex-row gap-4 rounded-full`
+              }
+            >
+              <SearchDestination
                 locPopoverOpen={locPopoverOpen}
                 setLocPopoverOpen={setLocPopoverOpen}
                 selectedDestination={selectedDestination}
@@ -90,17 +116,16 @@ function Search({ navBar }: forNavBar) {
                 filteredDestinations={filteredDestinations}
                 setSelectedDestination={setSelectedDestination}
               />
-              <SearchLocation
+              <SearchDate
                 firstDate={firstDate}
                 secondDate={secondDate}
                 setFirstDate={setFirstDate}
                 setSecondDate={setSecondDate}
               />
               <SearchPrice
-                minimumPrice={minimumPrice}
-                maximumPrice={maximumPrice}
-                setMinimumPrice={setMinimumPrice}
-                setMaximumPrice={setMaximumPrice}
+                state={{ minPrice: minimumPrice, maxPrice: maximumPrice }}
+                setMinPrice={setMinimumPrice}
+                setMaxPrice={setMaximumPrice}
               />
               <div className="w-full">
                 <Button
@@ -108,7 +133,7 @@ function Search({ navBar }: forNavBar) {
                   className="h-full w-full bg-teal-500 text-white dark:text-[#09090b]"
                 >
                   <Link
-                    to={`/search/${selectedDestination}/${firstDate.toLocaleDateString().replace(/\//g, "-")}/${secondDate.toLocaleDateString().replace(/\//g, "-")}/${minimumPrice}/${maximumPrice}`}
+                    to={searchUrl}
                   >
                     <p className="text-md px-2 py-2">Find My Trailventure</p>
                   </Link>
@@ -118,7 +143,7 @@ function Search({ navBar }: forNavBar) {
           </Popover>
         ) : (
           <>
-            <SearchDate
+            <SearchDestination
               locPopoverOpen={locPopoverOpen}
               setLocPopoverOpen={setLocPopoverOpen}
               selectedDestination={selectedDestination}
@@ -127,24 +152,20 @@ function Search({ navBar }: forNavBar) {
               filteredDestinations={filteredDestinations}
               setSelectedDestination={setSelectedDestination}
             />
-            <SearchLocation
+            <SearchDate
               firstDate={firstDate}
               secondDate={secondDate}
               setFirstDate={setFirstDate}
               setSecondDate={setSecondDate}
             />
             <SearchPrice
-              minimumPrice={minimumPrice}
-              maximumPrice={maximumPrice}
-              setMinimumPrice={setMinimumPrice}
-              setMaximumPrice={setMaximumPrice}
+              state={{ minPrice: minimumPrice, maxPrice: maximumPrice }}
+              setMinPrice={setMinimumPrice}
+              setMaxPrice={setMaximumPrice}
             />
-            <Button
-              variant="outline"
-              className="h-full bg-teal-500 text-white dark:text-[#09090b]"
-            >
+            <Button variant="outline" className="h-full bg-teal-500 text-white dark:text-[#09090b]">
               <Link
-                to={`/search/${selectedDestination}/${firstDate.toLocaleDateString().replace(/\//g, "-")}/${secondDate.toLocaleDateString().replace(/\//g, "-")}/${minimumPrice}/${maximumPrice}`}
+                to={searchUrl}
               >
                 {!navBar ? (
                   <p className="text-md px-2 py-2">Find My Trailventure</p>

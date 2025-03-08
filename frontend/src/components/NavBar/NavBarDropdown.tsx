@@ -10,9 +10,14 @@ import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
+import { useMediaQuery } from "react-responsive";
+import { useGetStore } from "../Contexts/AuthContext";
 
 function NavBarDropdown() {
-  const {theme, setTheme} = useTheme();
+  const { theme, setTheme } = useTheme();
+  const userData = useGetStore((state) => state.userData);
+
+  const smallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   return (
     <DropdownMenu>
@@ -22,15 +27,19 @@ function NavBarDropdown() {
           Menu
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-40 p-2 select-none">
+      <DropdownMenuContent className="mr-8 select-none p-2">
         <DropdownMenuGroup>
-          <DropdownMenuItem>Messages</DropdownMenuItem>
-          <DropdownMenuItem>Notifications</DropdownMenuItem>
-          <DropdownMenuItem>Trips</DropdownMenuItem>
-          <DropdownMenuItem>Wishlist</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+          {(smallScreen && userData ) && (
+            <>
+              <DropdownMenuItem>
+                <Link to="/user-page" className="flex gap-2 items-center">
+                  <img src={userData ? userData[0]?.avatar : ""} alt="avatar" className="w-8 h-8 rounded-full" />
+                  <p>{userData && userData[0]?.user?.username}</p>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem>
             <div>
               {theme === "dark" ? (
@@ -55,9 +64,11 @@ function NavBarDropdown() {
           <DropdownMenuItem>
             <Link to="/about-us">About Us</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          {userData ? (<DropdownMenuItem>
             <Link to="/logout">Logout</Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem>) : (<DropdownMenuItem>
+            <Link to="/login">Login</Link>
+          </DropdownMenuItem>)}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

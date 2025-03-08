@@ -3,34 +3,35 @@ import { Button } from "../ui/button";
 import NavBarDropdown from "./NavBarDropdown";
 import Search from "./SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../ProtectedRoute/AuthContext";
-import DefaultUserProfile from "@/assets/userProfile.jpg";
+import { useEffect, useState } from "react";
+import { useGetStore } from "../Contexts/AuthContext";
+import DefaultUserProfile from "@/assets/UserPage/defaultProfile.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { UserData } from "@/lib/UserPage/userData";
+import { fetchUserData } from "@/api/userData/fetchUserData";
 
 interface NavBarInterface {
   isNavBar: boolean;
-  userName?: string;
-  userAvatar?: string;
+  isHomePage?: boolean;
 }
 
-function NavBar({
-  isNavBar,
-  userName = "User!",
-  userAvatar = DefaultUserProfile,
-}: NavBarInterface) {
-  const authContext = useContext(AuthContext);
+function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
+  const { data: userData } = useQuery<UserData[]>({
+    queryFn: () => fetchUserData(),
+    queryKey: ["navBarUserData"],
+  });
+
+  const isAuthorized = useGetStore((state) => state.isAuthorized);
   const navigate = useNavigate();
   const location = useLocation();
-  const [atUserPage, setAtUserPage] = useState(
-    location.pathname === "/user-page",
-  );
+  const [atUserPage, setAtUserPage] = useState(location.pathname === "/user-page");
 
   useEffect(() => {
     setAtUserPage(location.pathname === "/user-page");
   }, [location.pathname]);
 
   const handleAuthClick = () => {
-    if (authContext?.isAuthorized) {
+    if (isAuthorized) {
       const newPath = atUserPage ? "/" : "/user-page";
       navigate(newPath);
     } else {
@@ -39,40 +40,42 @@ function NavBar({
   };
 
   return (
-    <div className="flex z-10 w-full select-none">
-      <div className="flex w-full flex-row items-center justify-between">
-        <p className="title w-1/3 text-4xl font-bold">
+    <div className="z-10 select-none">
+      <div className={isNavBar ? `grid grid-cols-2 grid-rows-2 gap-2 xl:grid-cols-3 xl:grid-rows-1` : `grid grid-cols-2`}>
+        <p className="title flex items-center text-4xl font-bold">
           <Link to="/">TRAILVENTURE</Link>
         </p>
         {!isNavBar ? (
-          <div className="flex w-1/3 items-center gap-2">
-            <div className="flex w-full rounded-full bg-opacity-50 p-2 dark:bg-opacity-50"></div>
+          <div className={`col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1` + (isHomePage ? "hidden" : "")}>
+            <></>
           </div>
         ) : (
-          <div className="w-1/3 max-w-[500px]">
+          <div className="col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1">
             <Search navBar={true} />
           </div>
         )}
-        <div className="w-1/3 flex justify-end gap-2">
+        <div className="flex justify-end gap-2">
           <Button
             variant="outline"
-            className="h-full py-0"
+            className={`hidden h-full sm:block ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
             onClick={handleAuthClick}
           >
-            {authContext?.isAuthorized ? (
+            {isAuthorized ? (
               atUserPage ? (
                 <div className="flex items-center gap-2">
                   <Home />
-                  <p>Go to homepage</p>
+                  <p className="hidden lg:block">Go to homepage</p>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 p-1">
                   <img
-                    src={userAvatar}
-                    className="w-7 rounded-full"
+                    src={userData ? userData[0]?.avatar : DefaultUserProfile}
+                    className="aspect-square w-7 rounded-full object-cover"
                     alt="User avatar"
                   />
-                  <span>Welcome, {userName}</span>
+                  <p className="hidden lg:block">
+                    Welcome, {userData ? userData[0]?.user?.username : "user!"}
+                  </p>
                 </div>
               )
             ) : (

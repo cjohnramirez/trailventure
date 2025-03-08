@@ -1,76 +1,64 @@
-import { MapPin, MapPinned } from "lucide-react";
 import { Button } from "../ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { PopoverContent } from "@/components/ui/popover";
-import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Input } from "../ui/input";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { DropdownMenuSeparator } from "../ui/dropdown-menu";
 
-interface SearchDateProps {
-  locPopoverOpen: boolean;
-  setLocPopoverOpen: (open: boolean) => void;
-  selectedDestination: string | null;
-  searchItem: string;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  filteredDestinations: { name: string; description: string }[];
-  setSelectedDestination: (destination: string) => void;
+interface SearchLocationProps {
+  firstDate: Date | null;
+  secondDate: Date | null;
+  setFirstDate: (date: Date | null) => void;
+  setSecondDate: (date: Date | null) => void;
 }
 
 export default function SearchDate({
-  locPopoverOpen,
-  setLocPopoverOpen,
-  selectedDestination,
-  searchItem,
-  handleInputChange,
-  filteredDestinations,
-  setSelectedDestination,
-}: SearchDateProps) {
+  firstDate,
+  secondDate,
+  setFirstDate,
+  setSecondDate,
+}: SearchLocationProps) {
   return (
-    <Popover open={locPopoverOpen} onOpenChange={setLocPopoverOpen}>
+    <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="flex h-full gap-4 px-6 pr-8 w-full justify-start">
-          <MapPin />
+        <Button variant="outline" className="flex h-full w-full justify-start gap-4 px-6 pr-8">
+          <CalendarIcon />
           <div className="flex h-full flex-col justify-center text-left">
-              <div>
-                <p className="text-md font-bold">Destination</p>
-                <p className="text-xs">
-                  {selectedDestination
-                    ? selectedDestination
-                    : "Enter your Destination"}
-                </p>
-              </div>
+            <div>
+              <p className="text-md font-bold">Date</p>
+              <p className="text-xs">
+                {firstDate?.toLocaleDateString() == null &&
+                secondDate?.toLocaleDateString() == null
+                  ? "Choose your date"
+                  : (firstDate ? firstDate?.toLocaleDateString() : "Start") +
+                    " to " +
+                    (secondDate ? secondDate?.toLocaleDateString() : "End")}
+              </p>
+            </div>
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[400px]">
+      {}
+      <PopoverContent className="w-full flex-row">
         <div className="text-center">
-          <p className="pb-3">Set your destination</p>
+          <p className="pb-3">Set your range of stay</p>
           <DropdownMenuSeparator />
         </div>
-        <div className="pt-2">
-          <Input value={searchItem} onChange={handleInputChange} />
-          <div className="pt-2">
-            {filteredDestinations.map((destination, index) => {
-              if (index > 2) {
-                return null;
+        <div className="flex">
+          <Calendar
+            mode="range"
+            selected={{ from: firstDate || undefined, to: secondDate || undefined }}
+            onSelect={(range) => {
+              if (range) {
+                if (range.from) {
+                  setFirstDate(range.from);
+                }
+                if (range.to) {
+                  setSecondDate(range.to);
+                }
               }
-              return (
-                <div
-                  key={index}
-                  className="flex h-20 cursor-pointer items-center gap-4 rounded-xl p-4 hover:bg-teal-500 hover:text-white"
-                  onClick={() => {
-                    setSelectedDestination(destination.name);
-                    setLocPopoverOpen(false);
-                  }}
-                >
-                  <MapPinned />
-                  <div className="w-5/6">
-                    <p>{destination.name}</p>
-                    <p className="text-xs">{destination.description}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+            }}
+          />
         </div>
       </PopoverContent>
     </Popover>

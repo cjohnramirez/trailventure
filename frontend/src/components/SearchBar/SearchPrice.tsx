@@ -7,98 +7,98 @@ import { Slider } from "../ui/slider";
 import { Input } from "../ui/input";
 
 interface SearchPriceProps {
-  minimumPrice: number[] | null;
-  maximumPrice: number[] | null;
-  setMinimumPrice: (value: number[]) => void;
-  setMaximumPrice: (value: number[]) => void;
+  state: {
+    minPrice: string | null;
+    maxPrice: string | null;
+  };
+  setMinPrice: React.Dispatch<React.SetStateAction<string | null>>;
+  setMaxPrice: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export default function SearchPrice({
-  minimumPrice,
-  maximumPrice,
-  setMinimumPrice,
-  setMaximumPrice,
-}: SearchPriceProps) {
+export default function SearchPrice({ state, setMinPrice, setMaxPrice }: SearchPriceProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className="flex h-full w-full justify-start gap-4 px-6 pr-8"
-        >
+        <Button variant="outline" className="flex h-full w-full justify-start gap-4 px-6 pr-8">
           <PhilippinePeso />
           <div className="flex h-full flex-col justify-center text-left">
             <div>
               <p className="text-md font-bold">Price</p>
               <p className="text-xs">
-                {minimumPrice &&
-                minimumPrice[0] === 580 &&
-                maximumPrice &&
-                maximumPrice[0] === 12000
+                {state.minPrice == null && state.maxPrice == null
                   ? "Enter your budget"
-                  : "PHP " + minimumPrice + " to " + "PHP " + maximumPrice}
+                  : "PHP " +
+                    (state.minPrice ? state.minPrice : " start ") +
+                    " to " +
+                    "PHP " +
+                    (state.maxPrice ? state.maxPrice : " end ")}
               </p>
             </div>
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] md:w-[400px]">
+      <PopoverContent className="sm:w-[400px]">
         <div className="text-center">
           <p className="pb-3">Set your price range</p>
           <DropdownMenuSeparator />
         </div>
-        <div className="flex flex-col gap-8 pb-2 pt-4">
-          <div className="flex items-center gap-4">
-            <p className="hidden sm:block">Minimum</p>
-            <p className="block sm:hidden">Min</p>
-            <Slider
-              defaultValue={[580]}
-              max={12000}
-              step={100}
-              min={580}
-              onValueChange={(e) => {
-                if (e[0] <= maximumPrice![0]) {
-                  setMinimumPrice(e);
-                }
-              }}
-              value={minimumPrice!}
-            />
-            <Input
-              className="w-1/3"
-              onChange={(e) => {
-                if (Number(e.target.value) <= maximumPrice![0]) {
-                  setMinimumPrice([Number(e.target.value)]);
-                }
-              }}
-              value={minimumPrice![0]}
-            ></Input>
-          </div>
-          <div className="flex items-center gap-4">
-            <p className="hidden sm:block">Maximum</p>
-            <p className="block sm:hidden">Max</p>
-            <Slider
-              defaultValue={[50]}
-              max={12000}
-              step={100}
-              min={580}
-              onValueChange={(e) => {
-                if (e[0] >= minimumPrice![0]) {
-                  setMaximumPrice(e);
-                }
-              }}
-              value={maximumPrice!}
-            />
-            <Input
-              className="w-1/3"
-              onChange={(e) => {
-                if (Number(e.target.value) >= minimumPrice![0]) {
-                  setMaximumPrice([Number(e.target.value)]);
-                }
-              }}
-              value={maximumPrice![0]}
-            ></Input>
-          </div>
-        </div>
+        <div className="flex items-center gap-4 py-4">
+        <p>Minimum</p>
+        <Slider
+          value={[Number(state.minPrice) ?? 0]}
+          onValueChange={(value) => {
+            const newMinPrice = value[0];
+            if (newMinPrice <= (Number(state.maxPrice) ?? 100000)) {
+              setMinPrice(newMinPrice.toString());
+            }
+          }}
+          step={500}
+          max={100000}
+        />
+        <Input
+          value={state.minPrice ?? ""}
+          placeholder="Min Price"
+          onChange={(e) => {
+            const newMinPrice = e.target.value ? Number(e.target.value) : 0;
+            if (newMinPrice <= (Number(state.maxPrice) ?? 100000)) {
+              setMinPrice(e.target.value || null);
+            }
+          }}
+          className="w-1/3"
+          type="number"
+          min="0"
+          max="100000"
+        />
+      </div>
+
+      <div className="flex items-center gap-4">
+        <p>Maximum</p>
+        <Slider
+          value={[Number(state.maxPrice) ?? 100000]}
+          onValueChange={(value) => {
+            const newMaxPrice = value[0];
+            if (newMaxPrice >= (Number(state.minPrice) ?? 0)) {
+              setMaxPrice(newMaxPrice.toString());
+            }
+          }}
+          step={500}
+          max={100000}
+        />
+        <Input
+          value={state.maxPrice ?? ""}
+          placeholder="Max Price"
+          onChange={(e) => {
+            const newMaxPrice = e.target.value ? Number(e.target.value) : 100000;
+            if (newMaxPrice >= (Number(state.minPrice) ?? 0)) {
+              setMaxPrice(e.target.value || null); 
+            }
+          }}
+          className="w-1/3"
+          type="number"
+          min="0"
+          max="100000"
+        />
+      </div>
       </PopoverContent>
     </Popover>
   );

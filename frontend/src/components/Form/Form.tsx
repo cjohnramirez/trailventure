@@ -1,6 +1,5 @@
-"use client";
 import { useState } from "react";
-import api from "../../lib/api";
+import api from "../../api/api";
 import { Link, useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
 import * as z from "zod";
@@ -71,7 +70,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
         passwordConfirm: string;
         role?: string;
       };
-      filteredValues.role = "guest";
+      filteredValues.role = "customer";
 
       values = { ...filteredValues };
     }

@@ -18,7 +18,13 @@ class PackageTypeAmenitySerializer(serializers.ModelSerializer):
 class PackageTypeListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageType
-        fields = ["name", "price_per_person", "description", "package_type_amenity"]
+        fields = [
+            "id",
+            "name",
+            "price_per_person",
+            "description",
+            "package_type_amenity",
+        ]
 
 
 class PackageRoutePointSerializer(serializers.ModelSerializer):
@@ -42,6 +48,7 @@ class PackageTypeSingleSerializer(serializers.ModelSerializer):
     class Meta:
         model = PackageType
         fields = [
+            "id",
             "name",
             "price_per_person",
             "description",
@@ -54,10 +61,21 @@ class PackageTypeSingleSerializer(serializers.ModelSerializer):
         return PackageRoutePointSerializer(package_route_points, many=True).data
 
 
+from rest_framework import serializers
+from .models import Package
+from .serializers import (
+    PackageImageSerializer,
+    PackageTypeListSerializer,
+    DestinationSerializer,
+)
+
+
 class PackageListSerializer(serializers.ModelSerializer):
     package_image = PackageImageSerializer(many=True, read_only=True)
     package_type = serializers.SerializerMethodField()
     destination = DestinationSerializer(read_only=True)
+    min_price = serializers.SerializerMethodField()
+    max_price = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
@@ -71,11 +89,25 @@ class PackageListSerializer(serializers.ModelSerializer):
             "end_date",
             "package_image",
             "package_type",
+            "min_price",
+            "max_price",
         ]
 
     def get_package_type(self, obj):
         package_types = obj.package_type.all().order_by("price_per_person")
         return PackageTypeListSerializer(package_types, many=True).data
+
+    def get_min_price(self, obj):
+        package_types = obj.package_type.all()
+        if package_types.exists():
+            return package_types.order_by("price_per_person").first().price_per_person
+        return None
+
+    def get_max_price(self, obj):
+        package_types = obj.package_type.all()
+        if package_types.exists():
+            return package_types.order_by("-price_per_person").first().price_per_person
+        return None
 
 
 class PackageAmenitySerializer(serializers.ModelSerializer):
@@ -107,5 +139,3 @@ class PackageSingleSerializer(serializers.ModelSerializer):
     def get_package_type(self, obj):
         package_types = obj.package_type.all().order_by("price_per_person")
         return PackageTypeSingleSerializer(package_types, many=True).data
-
-

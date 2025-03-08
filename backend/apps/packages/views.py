@@ -4,7 +4,48 @@ from apps.packages.serializers import *
 from apps.users.permissions import IsCustomer, IsHost
 from apps.packages.models import *
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q, Min, Max
+from django.utils.dateparse import parse_date
 
+class PackageSearchView(generics.ListAPIView):
+    queryset = Package.objects.all()
+    serializer_class = PackageListSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Fetch path parameters, defaulting to None if not provided
+        destination = self.kwargs.get('destination', None)
+        start_date = self.kwargs.get('start_date', None)
+        end_date = self.kwargs.get('end_date', None)
+        min_price = self.kwargs.get('min_price', None)
+        max_price = self.kwargs.get('max_price', None)
+        #min_review_score = self.kwargs.get('min_review_score', None)
+
+        # Apply filters only if parameters are provided
+        if destination and destination != 'None':
+            queryset = queryset.filter(destination__name__icontains=destination)
+
+        if start_date != 'None' and end_date != 'None':
+            queryset = queryset.filter(
+                Q(start_date__gte=parse_date(start_date)) &
+                Q(end_date__lte=parse_date(end_date))
+            )
+
+        if min_price != 'None' or max_price != 'None':
+            queryset = queryset.annotate(
+                min_price_per_person=Min('package_type__price_per_person'),
+                max_price_per_person=Max('package_type__price_per_person')
+            )
+            if min_price != 'None':
+                queryset = queryset.filter(min_price_per_person__gte=float(min_price))
+            if max_price != 'None':
+                queryset = queryset.filter(max_price_per_person__lte=float(max_price))
+
+        # if min_review_score != 'None':
+        #     queryset = queryset.filter(review_score__gte=float(min_review_score))
+
+        return queryset
 
 class PackageListView(generics.ListAPIView):
     serializer_class = PackageListSerializer
