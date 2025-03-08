@@ -54,7 +54,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           disabled={false}
           proximity={80}
           inactiveZone={0.01}
-          className="rounded-full"
+          className="hidden lg:block rounded-full"
           variant={"white"}
         />
         <Comp

@@ -8,6 +8,7 @@ from apps.transactions.models import *
 from apps.users.models import *
 
 admin.site.register(User)
+admin.site.register(UserProfileLinks)
 admin.site.register(HostProfile)
 admin.site.register(CustomerProfile)
 
