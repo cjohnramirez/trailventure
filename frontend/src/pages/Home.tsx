@@ -12,16 +12,18 @@ function Home() {
   const [forNavBar, setforNavBar] = useState(true);
 
   const checkSectionInView = () => {
-    const section = document.getElementById("section1");
-    if (!section) return;
+    const sections = document.querySelectorAll("#showsection");
+    if (!sections.length) return;
 
-    const { top, bottom } = section.getBoundingClientRect();
+    let inView = false;
+    sections.forEach((section) => {
+      const { top, bottom } = section.getBoundingClientRect();
+      if (top < 0 && bottom >= 0) {
+        inView = true;
+      }
+    });
 
-    if (top < 0 && bottom >= 0) {
-      setforNavBar(false);
-    } else {
-      setforNavBar(true);
-    }
+    setforNavBar(!inView);
   };
 
   useEffect(() => {
@@ -54,14 +56,14 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="mt-[-90px] px-8" id="section1">
+      <div className="mt-[-90px] px-8" id="showsection">
         <DiscoverSection />
       </div>
-      <div className="px-8" id="section1">
+      <div className="px-8" id="showsection">
         <div className="flex flex-col justify-center">
           <div className="leading-none">
             <p className="relative text-center text-[40px] font-extrabold leading-none md:text-[40px] lg:text-[70px]">
-              CHOOSE ME? AHAHAHAHA
+              CHOOSE US
             </p>
             <p className="pb-12 pt-4 text-center font-semibold md:pb-20">
               Your No.1 Tour Package Booking Platform
@@ -94,7 +96,7 @@ function Home() {
           </div>
         </div>
       </div>
-      <div>
+      <div id="showsection">
         <Footer />
       </div>
     </div>

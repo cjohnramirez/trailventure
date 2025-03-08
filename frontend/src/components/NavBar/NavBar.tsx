@@ -16,12 +16,14 @@ interface NavBarInterface {
 }
 
 function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
+  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false; 
+
   const { data: userData } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
     queryKey: ["navBarUserData"],
+    enabled: isAuthorized,
   });
 
-  const isAuthorized = useGetStore((state) => state.isAuthorized);
   const navigate = useNavigate();
   const location = useLocation();
   const [atUserPage, setAtUserPage] = useState(location.pathname === "/user-page");
@@ -79,7 +81,7 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
                 </div>
               )
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 py-2">
                 <User />
                 <p>Login</p>
               </div>

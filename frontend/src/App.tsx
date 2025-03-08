@@ -14,6 +14,7 @@ import { useGetStore } from "@/components/Contexts/AuthContext";
 import { useEffect } from "react";
 import Loading from "./components/Loading/Loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import HostDashboardPage from "./pages/HostDashboardPage";
 
 function Logout() {
   localStorage.clear();
@@ -30,7 +31,7 @@ const queryClient = new QueryClient();
 
 function App() {
   const auth = useGetStore((state) => state.auth);
-  // const loading = useGetStore((state) => state.loading);
+  const role = useGetStore((state) => state.role);
 
   useEffect(() => {
     auth();
@@ -40,34 +41,42 @@ function App() {
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <Routes>
-          <Route
-            path="/user-page"
-            element={
-              <ProtectedRoute>
-                <UserPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/booking/:tourpackageId/:tourpackagetype/:numofperson/:booking-date"
-            element={
-              <ProtectedRoute>
-                <BookingPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/about-us" element={<AboutUs />} />
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/search/:location/:startdate/:enddate/:startprice/:endprice/:pageNumber"
-            element={<SearchPage />}
-          />
-          <Route path="/package/:id" element={<PackagePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/register" element={<RegisterAndLogout />} />
-          <Route path="*" element={<NotFound />} />
-          <Route path="/loading" element={<Loading />} />
+          {role === "customer" || role === null ? (
+            <>
+              <Route
+                path="/user-page"
+                element={
+                  <ProtectedRoute allowedRoles={["customer"]}>
+                    <UserPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/booking/:tourpackageId/:tourpackagetype/:numofperson/:booking-date"
+                element={
+                  <ProtectedRoute allowedRoles={["customer"]}>
+                    <BookingPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/" element={<Home />} />
+              <Route
+                path="/search/:location/:startdate/:enddate/:startprice/:endprice/:pageNumber"
+                element={<SearchPage />}
+              />
+              <Route path="/package/:id" element={<PackagePage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/register" element={<RegisterAndLogout />} />
+              <Route path="*" element={<NotFound />} />
+              <Route path="/loading" element={<Loading />} />
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<HostDashboardPage />} />
+            </>
+          )}
         </Routes>
       </QueryClientProvider>
     </BrowserRouter>

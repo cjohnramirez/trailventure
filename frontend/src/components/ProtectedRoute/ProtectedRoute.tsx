@@ -1,17 +1,18 @@
-import { Navigate, useNavigate } from "react-router-dom";
-import { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+import { ReactNode, useEffect } from "react";
 import { useGetStore } from "@/components/Contexts/AuthContext";
 import { toast } from "@/components/Error/ErrorSonner";
 
 interface ProtectedRouteProps {
   children: ReactNode;
+  allowedRoles?: string[]; 
 }
 
-function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthorized } = useGetStore();
+function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
+  const { isAuthorized, role } = useGetStore();
   const navigate = useNavigate();
 
-  if (!isAuthorized) {
+  useEffect(() => {
     if (isAuthorized === false) {
       toast({
         title: "Login / Sign Up Required",
@@ -21,10 +22,27 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
           onClick: () => navigate("/login"),
         },
       });
+    } else if (isAuthorized && allowedRoles.length > 0 && !allowedRoles.includes(role ?? "")) {
+      toast({
+        title: "Access Denied",
+        description: "You do not have permission to access this page.",
+        button: {
+          label: "Go to Home",
+          onClick: () => navigate("/"),
+        },
+      });
     }
+  }, [isAuthorized, role, allowedRoles, navigate]);
+
+  if (isAuthorized === null) {
+    return <div>Loading...</div>;
   }
 
-  return isAuthorized ? <>{children}</> : <Navigate to={window.location.pathname} />;
+  if (!isAuthorized || (allowedRoles.length > 0 && !allowedRoles.includes(role ?? ""))) {
+    return null;
+  }
+
+  return <>{children}</>;
 }
 
 export default ProtectedRoute;

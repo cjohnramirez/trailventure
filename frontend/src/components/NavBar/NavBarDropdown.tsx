@@ -11,11 +11,21 @@ import { Menu } from "lucide-react";
 import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useMediaQuery } from "react-responsive";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserData } from "@/api/userData/fetchUserData";
+import { UserData } from "@/lib/UserPage/userData";
 import { useGetStore } from "../Contexts/AuthContext";
 
 function NavBarDropdown() {
   const { theme, setTheme } = useTheme();
-  const userData = useGetStore((state) => state.userData);
+
+  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false; 
+
+  const { data: userData } = useQuery<UserData[]>({
+    queryFn: () => fetchUserData(),
+    queryKey: ["navBarDropdownUserData"],
+    enabled: isAuthorized,
+  });
 
   const smallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 

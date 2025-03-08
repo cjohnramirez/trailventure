@@ -86,6 +86,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
       if (isLogin) {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+
         setTimeout(() => {
           window.location.href = "/";
         }, 1000);

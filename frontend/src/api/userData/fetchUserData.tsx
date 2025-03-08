@@ -1,5 +1,4 @@
 import { AxiosError } from "axios";
-import { toast } from "@/components/Error/ErrorSonner";
 import api from "@/api/api";
 
 export const fetchUserData = async () => {
@@ -11,19 +10,12 @@ export const fetchUserData = async () => {
     let errorMessage = "An unexpected error occurred.";
 
     if (err.response) {
-      errorMessage = `Error ${err.response.status}: ${
-        err.response.data || "Something went wrong"
-      }`;
+      errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
     } else if (err.request) {
       errorMessage =
         "Network error: Unable to reach the server. Please check your internet connection.";
     }
-
-    toast({
-      title: "404 NOT FOUND",
-      description: errorMessage,
-    });
   }
 
   return [];
-}
+};

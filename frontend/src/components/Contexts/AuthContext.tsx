@@ -7,20 +7,22 @@ interface GetState {
   loading: boolean;
   loadingMessage: string;
   isAuthorized: boolean | null;
+  role: "host" | "customer" | null;
   setIsAuthorized: (value: boolean) => void;
+  setRole: (role: "host" | "customer" | null) => void; 
   refreshToken: () => Promise<void>;
   auth: () => Promise<void>;
+  isHost: () => boolean;
+  isCustomer: () => boolean;
 }
 
 export const useGetStore = create<GetState>((set) => ({
   loading: false,
   loadingMessage: "",
   isAuthorized: null,
-  userData: null,
-  packageData: null,
-
+  role: null,
   setIsAuthorized: (value: boolean) => set({ isAuthorized: value }),
-
+  setRole: (role: "host" | "customer" | null) => set({ role }),
   refreshToken: async () => {
     set({ loading: true });
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
@@ -29,10 +31,10 @@ export const useGetStore = create<GetState>((set) => ({
         refresh: refreshToken,
       });
       if (res.status === 200) {
-        localStorage.setItem(ACCESS_TOKEN, res.data.access);
         set({ isAuthorized: true });
+        localStorage.setItem(ACCESS_TOKEN, res.data.access);
       } else {
-        set({ isAuthorized: false });
+        set({ isAuthorized: false});
       }
     } catch (error) {
       set({ isAuthorized: false });
@@ -55,7 +57,9 @@ export const useGetStore = create<GetState>((set) => ({
     if (tokenExpiration && tokenExpiration < now) {
       await useGetStore.getState().refreshToken();
     } else {
-      set({ isAuthorized: true });
+      set({ isAuthorized: true, role: decoded.role });
     }
-  }
+  },
+  isHost: (): boolean => useGetStore.getState().role === "host",
+  isCustomer: (): boolean => useGetStore.getState().role === "customer",
 }));
