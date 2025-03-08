@@ -6,13 +6,13 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { DropdownMenuSeparator } from "../ui/dropdown-menu";
 
 interface SearchLocationProps {
-  firstDate: Date;
-  secondDate: Date;
-  setFirstDate: (date: Date) => void;
-  setSecondDate: (date: Date) => void;
+  firstDate: Date | null;
+  secondDate: Date | null;
+  setFirstDate: (date: Date | null) => void;
+  setSecondDate: (date: Date | null) => void;
 }
 
-export default function SearchLocation({
+export default function SearchDate({
   firstDate,
   secondDate,
   setFirstDate,
@@ -21,23 +21,18 @@ export default function SearchLocation({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className="flex h-full w-full justify-start gap-4 px-6 pr-8 "
-        >
+        <Button variant="outline" className="flex h-full w-full justify-start gap-4 px-6 pr-8">
           <CalendarIcon />
           <div className="flex h-full flex-col justify-center text-left">
             <div>
               <p className="text-md font-bold">Date</p>
               <p className="text-xs">
-                {firstDate.toLocaleDateString() ===
-                  new Date().toLocaleDateString() &&
-                secondDate.toLocaleDateString() ===
-                  new Date().toLocaleDateString()
+                {firstDate?.toLocaleDateString() == null &&
+                secondDate?.toLocaleDateString() == null
                   ? "Choose your date"
-                  : firstDate.toLocaleDateString() +
+                  : (firstDate ? firstDate?.toLocaleDateString() : "Start") +
                     " to " +
-                    secondDate.toLocaleDateString()}
+                    (secondDate ? secondDate?.toLocaleDateString() : "End")}
               </p>
             </div>
           </div>
@@ -52,7 +47,7 @@ export default function SearchLocation({
         <div className="flex">
           <Calendar
             mode="range"
-            selected={{ from: firstDate, to: secondDate }}
+            selected={{ from: firstDate || undefined, to: secondDate || undefined }}
             onSelect={(range) => {
               if (range) {
                 if (range.from) {

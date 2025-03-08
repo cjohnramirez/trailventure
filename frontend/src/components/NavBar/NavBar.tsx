@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useGetStore } from "../Contexts/AuthContext";
 import DefaultUserProfile from "@/assets/UserPage/defaultProfile.jpg";
 import { useQuery } from "@tanstack/react-query";
-import { UserData } from "@/lib/UserPage/UserData";
+import { UserData } from "@/lib/UserPage/userData";
 import { fetchUserData } from "@/api/userData/fetchUserData";
 
 interface NavBarInterface {

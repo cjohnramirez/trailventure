@@ -1,19 +1,18 @@
 import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
-import api from "@/api/api";
-import { AxiosError } from "axios";
-import { toast } from "@/components/Error/ErrorSonner";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
 import SearchPageDate from "@/components/SearchPage/SearchPageDate";
 import SearchPageDestination from "@/components/SearchPage/SearchPageDestination";
 import SearchPagePrice from "@/components/SearchPage/SearchPagePrice";
 import SearchPageReview from "@/components/SearchPage/SearchPageReview";
 import { useMediaQuery } from "react-responsive";
-import "../components/Loading/Loading.css";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSearchData } from "@/api/searchData/fetchSearchData";
+import { fetchDestinationData } from "@/api/searchData/fetchDestinationData";
 
 interface Destination {
   description: string;
@@ -25,76 +24,52 @@ interface Destination {
 function SearchPage() {
   const { location, startdate, enddate, startprice, endprice } = useParams();
 
-  const [tourPackages, setTourPackages] = useState<tourPackage[]>([]);
-  const [destinations, setDestinations] = useState<Destination[]>([]);
-  const [filteredTourPackages, setFilteredTourPackages] = useState<tourPackage[]>([]);
-  const [_isFiltered, setIsFiltered] = useState(false);
-  const [searchItem, setSearchItem] = useState<string>("");
-  const [filteredDestinations, setFilteredDestinations] = useState<Destination[]>([]);
-
-  const [startDate, setStartDate] = useState<string>(startdate || "");
-  const [endDate, setEndDate] = useState<string>(enddate || "");
-  const [minPrice, setMinPrice] = useState<string>(startprice || "");
-  const [maxPrice, setMaxPrice] = useState<string>(endprice || "");
-  const [destination, setDestination] = useState<string>(location || "");
-  const [reviewScore, setReviewScore] = useState<string>("");
-
-  const [loading, setLoading] = useState(true);
+  const [startDate, setStartDate] = useState<string | null>(startdate || null);
+  const [endDate, setEndDate] = useState<string | null>(enddate || null);
+  const [minPrice, setMinPrice] = useState<string | null>(startprice || null);
+  const [maxPrice, setMaxPrice] = useState<string | null>(endprice || null);
+  const [destination, setDestination] = useState<string | null>(location || null);
+  const [reviewScore, setReviewScore] = useState<string | null>(null);
+  const [pageRefresh, setPageRefresh] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await getPackageData();
-      applyFilters();
-      setLoading(false);
-    };
-    fetchData();
+    setPageRefresh(true);
   }, []);
 
-  useEffect(() => {
-    if (tourPackages.length > 0) {
-      setLoading(true);
-      applyFilters();
-      setLoading(false);
-    }
-  }, [tourPackages]);
+  const { data: searchData, isLoading, refetch } = useQuery<tourPackage[]>({
+    queryFn: () =>
+      fetchSearchData({
+        destination: destination === "Set Location" ? "None" : destination || "None",
+        start_date: startdate || "None",
+        end_date: enddate || "None",
+        min_price: Number(minPrice) || "None",
+        max_price: Number(maxPrice) || "None",
+      }),
+    queryKey: ["searchData", location, startdate, enddate, startprice, endprice],
+    refetchOnWindowFocus: false,
+    enabled: pageRefresh,
+  });
 
-  const getPackageData = async () => {
-    try {
-      const response = await api.get("apps/destination/list/");
-      setDestinations(response.data);
+  console.log(destination, startdate, enddate, minPrice, maxPrice);
+  console.log(searchData);
 
-      const fetchPackage = await api.get("apps/package/list/");
-      setTourPackages(fetchPackage.data);
-    } catch (error) {
-      const err = error as AxiosError;
-      let errorMessage = "An unexpected error occurred.";
+  const { data: destinations } = useQuery<Destination[]>({
+    queryFn: () => fetchDestinationData(),
+    queryKey: ["searchDestinationData"],
+  });
 
-      if (err.response) {
-        errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
-      } else if (err.request) {
-        errorMessage =
-          "Network error: Unable to reach the server. Please check your internet connection.";
-      } else {
-        errorMessage = err.message;
-      }
-
-      toast({
-        title: "404 NOT FOUND",
-        description: errorMessage,
-      });
-    }
-  };
+  const [searchItem, setSearchItem] = useState<string>("None");
+  const [filteredDestinations, setFilteredDestinations] = useState<Destination[]>([]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
 
-    const filteredItems = destinations.filter((destination) => {
+    const filteredItems = destinations?.filter((destination) => {
       return destination.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
-    setFilteredDestinations(filteredItems);
+    setFilteredDestinations(filteredItems || []);
   };
 
   const [selectedDestination, setSelectedDestination] = useState<string>("Set Location");
@@ -105,49 +80,16 @@ function SearchPage() {
   const altReviewScores: string[] = ["Excellent", "Great", "Good", "Bad", "Terrible"];
 
   const applyFilters = () => {
-    const filteredResults = tourPackages.filter((tourPackage: tourPackage) => {
-      if (startDate && new Date(tourPackage.start_date) < new Date(startDate)) {
-        return false;
-      }
-      if (endDate && new Date(tourPackage.end_date) > new Date(endDate)) {
-        return false;
-      }
-      if (
-        minPrice &&
-        tourPackage.package_type[0]?.price_per_person &&
-        Number(tourPackage.package_type[0].price_per_person) < Number(minPrice)
-      ) {
-        return false;
-      }
-      if (
-        maxPrice &&
-        tourPackage.package_type[0]?.price_per_person &&
-        Number(tourPackage.package_type[0].price_per_person) > Number(maxPrice)
-      ) {
-        return false;
-      }
-      if (destination && tourPackage.destination.name !== destination) {
-        return false;
-      }
-      if (reviewScore) {
-        // Add review score filtering logic here if needed
-      }
-      return true;
-    });
-
-    setFilteredTourPackages(filteredResults);
-    setIsFiltered(true);
+    refetch();
   };
 
   const resetFilters = () => {
-    setStartDate("");
-    setEndDate("");
-    setMinPrice("");
-    setMaxPrice("");
-    setDestination("");
-    setReviewScore("");
-    setFilteredTourPackages(tourPackages);
-    setIsFiltered(false);
+    setStartDate(null);
+    setEndDate(null);
+    setMinPrice(null);
+    setMaxPrice(null);
+    setDestination(null);
+    setReviewScore(null);
     setSelectedDestination("Set Location");
   };
 
@@ -206,22 +148,19 @@ function SearchPage() {
           <div className="justify-between sm:flex">
             <p className="pb-2 text-xl font-semibold sm:pb-0">Search Results</p>
             <div className="rounded-2xl border-[1px] px-8 py-2">
-              <p className="text-sm">
-                Found {filteredTourPackages.length} search result
-                {filteredTourPackages.length !== 1 ? "s" : ""}
-              </p>
+              <p className="text-sm">Found {searchData?.length} search result</p>
             </div>
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
-            {!loading && filteredTourPackages.length > 0 ? (
-              filteredTourPackages.map((tourPackage: tourPackage, index) => {
+            {!isLoading && searchData && searchData.length > 0 ? (
+              searchData?.map((tourPackage: tourPackage, index) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
                     <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 xl:h-full">
                       <div className="h-1/2 w-full pb-4 sm:h-2/3 xl:h-1/2">
                         <img
-                          src={tourPackage.package_image[0]?.image || ""}
-                          alt={String(tourPackage.package_image[0]?.id || "")}
+                          src={tourPackage.package_image[0]?.image || "None"}
+                          alt={String(tourPackage.package_image[0]?.id || "None")}
                           className="h-full w-full rounded-xl object-cover"
                         />
                       </div>
@@ -243,7 +182,7 @@ function SearchPage() {
                             <p className="p-2 text-sm font-semibold">
                               PHP{" "}
                               {Math.floor(Number(tourPackage.package_type[0]?.price_per_person)) ||
-                                ""}
+                                "None"}
                             </p>
                           </div>
                         </div>
@@ -255,7 +194,7 @@ function SearchPage() {
             ) : (
               <div
                 className={
-                  loading
+                  isLoading
                     ? `hidden`
                     : `col-span-2 flex h-32 items-center justify-center rounded-xl border-[1px] p-4`
                 }
@@ -263,7 +202,7 @@ function SearchPage() {
                 <p>No packages found matching your filters</p>
               </div>
             )}
-            {loading && (
+            {isLoading && (
               <div className="col-span-full h-screen pb-96">
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <span className="loader"></span>

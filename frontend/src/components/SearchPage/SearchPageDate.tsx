@@ -3,11 +3,11 @@ import { Calendar as CalendarIcon } from "lucide-react";
 
 interface Props {
   state: {
-    startDate: string;
-    endDate: string;
+    startDate: string | null;
+    endDate: string | null;
   };
-  setStartDate: React.Dispatch<React.SetStateAction<string>>;
-  setEndDate: React.Dispatch<React.SetStateAction<string>>;
+  setStartDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setEndDate: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export default function SearchPageDate({ state, setStartDate, setEndDate }: Props) {
@@ -27,10 +27,14 @@ export default function SearchPageDate({ state, setStartDate, setEndDate }: Prop
           if (range) {
             const { from, to } = range;
             if (from) {
-              setStartDate(from.toLocaleDateString() || "")
+              setStartDate(from.toLocaleDateString() || null);
+            } else {
+              setStartDate(null);
             }
             if (to) {
-              setEndDate(to.toLocaleDateString() || "")
+              setEndDate(to.toLocaleDateString() || null);
+            } else {
+              setEndDate(null);
             }
           }
         }}

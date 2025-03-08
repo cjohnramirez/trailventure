@@ -2,10 +2,10 @@ import { MapPinned } from "lucide-react";
 import { Button } from "../ui/button";
 
 interface SearchPageReviewProps {
-  reviewScore: string;
-  setReviewScore: React.Dispatch<React.SetStateAction<string>>;
-  altReviewScores: string[];
-  reviewScores: string[];
+  reviewScore: string | null;
+  setReviewScore: React.Dispatch<React.SetStateAction<string | null>>;
+  altReviewScores: string[] | null;
+  reviewScores: string[] | null;
 }
 
 export default function SearchPageReview({ reviewScore, setReviewScore, altReviewScores, reviewScores }: SearchPageReviewProps) {
@@ -17,7 +17,7 @@ export default function SearchPageReview({ reviewScore, setReviewScore, altRevie
           <p>Review Score</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4">
-          {reviewScores.map((review, index) => {
+          {reviewScores?.map((review, index) => {
             return (
               <Button
                 id={review.toString()}
@@ -29,7 +29,7 @@ export default function SearchPageReview({ reviewScore, setReviewScore, altRevie
                 }}
               >
                 <p className="text-left">
-                  {altReviewScores[index]} +{reviewScores[index]}
+                  {altReviewScores?.[index]} +{reviewScores[index]}
                 </p>
               </Button>
             );

@@ -12,7 +12,7 @@ interface Destination {
 }
 
 interface SearchPageDestinationProps {
-  state: string;
+  state: string | null;
   locPopoverOpen: boolean;
   selectedDestination: string;
   setLocPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,7 +20,7 @@ interface SearchPageDestinationProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   filteredDestinations: Destination[];
   setSelectedDestination: React.Dispatch<React.SetStateAction<string>>;
-  setDestination: React.Dispatch<React.SetStateAction<string>>;
+  setDestination: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export default function SearchPageDestination({

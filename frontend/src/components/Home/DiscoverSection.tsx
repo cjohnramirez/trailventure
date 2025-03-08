@@ -1,9 +1,7 @@
+import { fetchDestinationData } from "@/api/searchData/fetchDestinationData";
 import { Card } from "../ui/card";
 import { MapPin } from "lucide-react";
-import { useState, useEffect } from "react";
-import { toast } from "../Error/ErrorSonner";
-import api from "../../api/api";
-import { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 interface Destination {
   description: string;
@@ -13,36 +11,10 @@ interface Destination {
 }
 
 function DiscoverSection() {
-  const [destinations, setDestinationsData] = useState([]);
-  useEffect(() => {
-    getUserData();
-  }, []);
-
-  const getUserData = async () => {
-    try {
-      const response = await api.get("apps/destination/list/");
-      setDestinationsData(response.data);
-    } catch (error) {
-      const err = error as AxiosError;
-      let errorMessage = "An unexpected error occurred.";
-
-      if (err.response) {
-        errorMessage = `Error ${err.response.status}: ${err.response.data || "Something went wrong"}`;
-      } else if (err.request) {
-        errorMessage =
-          "Network error: Unable to reach the server. Please check your internet connection.";
-      } else {
-        errorMessage = "Server error. ";
-      }
-
-      toast({
-        title: "404 NOT FOUND",
-        description: errorMessage
-      });
-    }
-  };
-
-  const parsedDestinations: Destination[] = destinations;
+  const { data: destinations } = useQuery<Destination[]>({
+    queryFn: () => fetchDestinationData(),
+    queryKey: ["discoverDestinationData"],
+  });
 
   return (
     <div className="flex flex-col justify-center py-10 md:py-20">
@@ -55,7 +27,7 @@ function DiscoverSection() {
         </p>
       </div>
       <div className="mx-auto grid max-w-[1200px] gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4 ">
-        {parsedDestinations.slice(0, 6).map((destination, index) => {
+        {destinations && destinations.slice(0, 6).map((destination, index) => {
           const gridClasses = [
             "md:col-span-1 md:row-span-2",
             "md:col-span-1 md:row-span-1",
