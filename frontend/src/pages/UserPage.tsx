@@ -41,7 +41,7 @@ function UserPage() {
               <div className="flex flex-col md:left-[290px] lg:relative">
                 <div className="flex items-center gap-4">
                   <img
-                    src={userData?.[0]?.avatar || DefaultProfile}
+                    src={"https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar || DefaultProfile}
                     className="block aspect-square w-10 sm:w-20 rounded-full object-cover lg:hidden"
                   ></img>
                   <div>

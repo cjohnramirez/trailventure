@@ -21,6 +21,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { formatDate } from "@/lib/SearchPage/dataFormatter";
 
 interface Destination {
   description: string;
@@ -71,7 +72,7 @@ function SearchPage() {
 
   useEffect(() => {
     refetch();
-  }, [pageNumber])
+  }, [pageNumber]);
 
   console.log(pageNumber);
 
@@ -101,7 +102,20 @@ function SearchPage() {
 
   const altReviewScores: string[] = ["Excellent", "Great", "Good", "Bad", "Terrible"];
 
+  const searchDestination = selectedDestination === "Set Location" ? "None" : selectedDestination;
+  const formattedStartDate = startDate
+    ? formatDate(startDate.replace(/\//g, "-"))
+    : "None";
+  const formattedEndDate = endDate
+    ? formatDate(endDate.replace(/\//g, "-"))
+    : "None";
+  const minimumPrice = minPrice || "None";
+  const maximumPrice = maxPrice || "None";
+
   const applyFilters = () => {
+    navigate(
+      `/search/${searchDestination || "None"}/${formattedStartDate || "None"}/${formattedEndDate || "None"}/${minimumPrice || "None"}/${maximumPrice || "None"}/1`,
+    );
     refetch();
   };
 
@@ -109,15 +123,15 @@ function SearchPage() {
     const newPageNumber = pageNumber + 1;
     setPageNumber(newPageNumber);
     navigate(
-      `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`
+      `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`,
     );
   };
 
   const decrementPageNumber = () => {
     const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
-    setPageNumber(newPageNumber);  
+    setPageNumber(newPageNumber);
     navigate(
-      `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`
+      `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`,
     );
   };
 
@@ -129,6 +143,8 @@ function SearchPage() {
     setDestination(null);
     setReviewScore(null);
     setSelectedDestination("Set Location");
+    setPageNumber(1);
+    navigate(`/search/None/None/None/None/None/1`);
   };
 
   const largeScreen = useMediaQuery({ query: "(max-width: 1280px)" });
@@ -198,7 +214,7 @@ function SearchPage() {
                   <PaginationPrevious onClick={decrementPageNumber} />
                 </PaginationItem>
                 <PaginationItem>
-                  <span className="text-sm pr-4">Page {pageNumber}</span>
+                  <span className="pr-4 text-sm">Page {pageNumber}</span>
                 </PaginationItem>
                 <PaginationItem>
                   <PaginationNext onClick={incrementPageNumber} />
