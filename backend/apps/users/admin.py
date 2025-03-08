@@ -12,9 +12,6 @@ admin.site.register(UserProfileLinks)
 admin.site.register(HostProfile)
 admin.site.register(CustomerProfile)
 
-admin.site.register(DestinationType)
-admin.site.register(Country)
-admin.site.register(City)
 admin.site.register(Destination)
 
 admin.site.register(AdditionalFees)

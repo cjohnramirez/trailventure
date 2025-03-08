@@ -16,7 +16,6 @@ class CreateUserView(generics.CreateAPIView):
 class CustomerProfileListView(generics.ListAPIView):
     serializer_class = CustomerProfileSerializer
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         if self.request.user:
@@ -26,7 +25,6 @@ class CustomerProfileListView(generics.ListAPIView):
 class CustomerProfileModifyView(generics.UpdateAPIView):
     serializer_class = CustomerProfileSerializer
     permission_classes = [IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         return CustomerProfile.objects.filter(user=self.request.user )

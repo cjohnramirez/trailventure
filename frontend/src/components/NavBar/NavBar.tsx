@@ -69,7 +69,7 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
               ) : (
                 <div className="flex items-center gap-2 p-1">
                   <img
-                    src={userData ? userData[0]?.avatar : DefaultUserProfile}
+                    src={userData ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar : DefaultUserProfile}
                     className="aspect-square w-7 rounded-full object-cover"
                     alt="User avatar"
                   />

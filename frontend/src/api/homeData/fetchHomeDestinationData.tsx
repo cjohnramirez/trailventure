@@ -1,13 +1,11 @@
 import api from "@/api/api";
 import { AxiosError } from "axios";
 import { toast } from "@/components/Error/ErrorSonner";
-import { searchQuery } from "@/lib/SearchPage/searchQuery";
 
-export const fetchSearchData = async (props : searchQuery) => {
+export const fetchHomeDestinationData = async () => {
     try {
-      const searchData = await api.get(`/apps/package/${props.destination}/${props.start_date}/${props.end_date}/${props.min_price}/${props.max_price}/?page=${props.page}`);
-      console.log(searchData.request.responseURL);
-      return searchData.data || [];
+      const homeDestinationData = await api.get(`/apps/destination/list/forhome/`);
+      return homeDestinationData.data || [];
     } catch (error) {
       const err = error as AxiosError;
       let errorMessage = "An unexpected error occurred.";
@@ -20,6 +18,11 @@ export const fetchSearchData = async (props : searchQuery) => {
       } else {
         errorMessage = err.message;
       }
+
+      toast({
+        title: "404 NOT FOUND",
+        description: errorMessage,
+      });
     }
 
     return [];

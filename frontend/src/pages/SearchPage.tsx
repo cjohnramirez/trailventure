@@ -1,7 +1,7 @@
 import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
@@ -13,6 +13,14 @@ import { useMediaQuery } from "react-responsive";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSearchData } from "@/api/searchData/fetchSearchData";
 import { fetchDestinationData } from "@/api/searchData/fetchDestinationData";
+import { searchData } from "@/lib/SearchPage/tourPackage";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface Destination {
   description: string;
@@ -22,21 +30,31 @@ interface Destination {
 }
 
 function SearchPage() {
-  const { location, startdate, enddate, startprice, endprice } = useParams();
+  const { location, startdate, enddate, startprice, endprice, pagenumber } = useParams();
+  const navigate = useNavigate();
 
   const [startDate, setStartDate] = useState<string | null>(startdate || null);
   const [endDate, setEndDate] = useState<string | null>(enddate || null);
-  const [minPrice, setMinPrice] = useState<string | null>(startprice || null);
-  const [maxPrice, setMaxPrice] = useState<string | null>(endprice || null);
+  const [minPrice, setMinPrice] = useState<string | null>(
+    startprice === "None" ? null : startprice || null,
+  );
+  const [maxPrice, setMaxPrice] = useState<string | null>(
+    endprice === "None" ? null : endprice || null,
+  );
   const [destination, setDestination] = useState<string | null>(location || null);
   const [reviewScore, setReviewScore] = useState<string | null>(null);
   const [pageRefresh, setPageRefresh] = useState<boolean>(false);
+  const [pageNumber, setPageNumber] = useState<number>(Number(pagenumber) || 1);
 
   useEffect(() => {
     setPageRefresh(true);
   }, []);
 
-  const { data: searchData, isLoading, refetch } = useQuery<tourPackage[]>({
+  const {
+    data: searchData,
+    isLoading,
+    refetch,
+  } = useQuery<searchData>({
     queryFn: () =>
       fetchSearchData({
         destination: destination === "Set Location" ? "None" : destination || "None",
@@ -44,14 +62,18 @@ function SearchPage() {
         end_date: enddate || "None",
         min_price: Number(minPrice) || "None",
         max_price: Number(maxPrice) || "None",
+        page: pageNumber,
       }),
     queryKey: ["searchData", location, startdate, enddate, startprice, endprice],
     refetchOnWindowFocus: false,
     enabled: pageRefresh,
   });
 
-  console.log(destination, startdate, enddate, minPrice, maxPrice);
-  console.log(searchData);
+  useEffect(() => {
+    refetch();
+  }, [pageNumber])
+
+  console.log(pageNumber);
 
   const { data: destinations } = useQuery<Destination[]>({
     queryFn: () => fetchDestinationData(),
@@ -83,6 +105,22 @@ function SearchPage() {
     refetch();
   };
 
+  const incrementPageNumber = () => {
+    const newPageNumber = pageNumber + 1;
+    setPageNumber(newPageNumber);
+    navigate(
+      `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`
+    );
+  };
+
+  const decrementPageNumber = () => {
+    const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
+    setPageNumber(newPageNumber);  
+    navigate(
+      `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`
+    );
+  };
+
   const resetFilters = () => {
     setStartDate(null);
     setEndDate(null);
@@ -94,6 +132,8 @@ function SearchPage() {
   };
 
   const largeScreen = useMediaQuery({ query: "(max-width: 1280px)" });
+
+  console.log(searchData && searchData);
 
   return (
     <>
@@ -146,20 +186,38 @@ function SearchPage() {
         </aside>
         <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5">
           <div className="justify-between sm:flex">
-            <p className="pb-2 text-xl font-semibold sm:pb-0">Search Results</p>
-            <div className="rounded-2xl border-[1px] px-8 py-2">
-              <p className="text-sm">Found {searchData?.length} search result</p>
+            <div className="flex w-1/2 items-center gap-4">
+              <p className="pb-2 text-xl font-semibold sm:pb-0">Search Results</p>
+              <div className="rounded-2xl border-[1px] px-8 py-2">
+                <p className="text-sm">Found {searchData?.results?.length} search result</p>
+              </div>
             </div>
+            <Pagination className="flex w-1/2 justify-end">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious onClick={decrementPageNumber} />
+                </PaginationItem>
+                <PaginationItem>
+                  <span className="text-sm pr-4">Page {pageNumber}</span>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext onClick={incrementPageNumber} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
-            {!isLoading && searchData && searchData.length > 0 ? (
-              searchData?.map((tourPackage: tourPackage, index) => {
+            {!isLoading && searchData && searchData?.results?.length > 0 ? (
+              searchData.results.map((tourPackage: tourPackage, index) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
                     <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 xl:h-full">
                       <div className="h-1/2 w-full pb-4 sm:h-2/3 xl:h-1/2">
                         <img
-                          src={tourPackage.package_image[0]?.image || "None"}
+                          src={
+                            "https://res.cloudinary.com/dch6eenk5/" +
+                              tourPackage.package_image[0]?.image || "None"
+                          }
                           alt={String(tourPackage.package_image[0]?.id || "None")}
                           className="h-full w-full rounded-xl object-cover"
                         />

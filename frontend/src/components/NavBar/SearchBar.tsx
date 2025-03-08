@@ -73,7 +73,7 @@ function Search({ navBar, homePage }: forNavBar) {
   const minPrice = minimumPrice || "None";
   const maxPrice = maximumPrice || "None";
 
-  const searchUrl = `/search/${destination}/${startDate}/${endDate}/${minPrice}/${maxPrice}/`;
+  const searchUrl = `/search/${destination}/${startDate}/${endDate}/${minPrice}/${maxPrice}/1`;
 
   return (
     <div

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from cloudinary.models import CloudinaryField
 
 class User(AbstractUser):
     ADMIN = "admin"
@@ -55,8 +55,8 @@ class CustomerProfile(models.Model):
     gender = models.CharField(max_length=15, choices=GENDER_CHOICES, null=True)
     date_of_birth = models.DateField(null=True)
     phone_number = models.CharField(max_length=15)
-    avatar = models.ImageField(upload_to="users_avatar/", null=True)
-    banner = models.ImageField(upload_to="users_banner/", null=True)
+    avatar = CloudinaryField("image")
+    banner = CloudinaryField("image")
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 
@@ -70,7 +70,7 @@ class HostProfile(models.Model):
     )
     company_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15)
-    company_logo = models.ImageField(upload_to="company_logo/")
+    company_logo = CloudinaryField("image")
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 

@@ -20,29 +20,36 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Cloudinary imports
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
-STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
-STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
-STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+SECRET_KEY = os.getenv("SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.getenv("CLOUDINARY_API_SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#ALLOWED_HOSTS = ['.vercel.app', '.now.sh' ,'127.0.0.1', 'localhost']
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['.vercel.app', '.now.sh' ,'127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["*"]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 MEDIA_URL = "/media/"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        'rest_framework.authentication.SessionAuthentication',
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -67,6 +74,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
+    "cloudinary",
     "django_extensions",
     "apps.destinations",
     "apps.packages",
@@ -77,7 +85,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -112,7 +120,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 
-#postgresql database (DO NOT DELETE! MIGRATE BEFORE PUSHING TO GIT)
+# postgresql database (DO NOT DELETE! MIGRATE BEFORE PUSHING TO GIT)
 # DATABASES = {
 #   'default': {
 #     'ENGINE': 'django.db.backends.postgresql',
@@ -163,10 +171,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/' 
+STATIC_URL = "static/"
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build", "static")
 
 
 # Default primary key field type
@@ -176,4 +184,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+
+cloudinary.config(
+    cloud_name="dch6eenk5", api_key=CLOUDINARY_API_KEY, api_secret=CLOUDINARY_API_SECRET
+)
+
+

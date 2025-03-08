@@ -1,7 +1,7 @@
-import { fetchDestinationData } from "@/api/searchData/fetchDestinationData";
 import { Card } from "../ui/card";
 import { MapPin } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { fetchHomeDestinationData } from "@/api/homeData/fetchHomeDestinationData";
 
 interface Destination {
   description: string;
@@ -12,7 +12,7 @@ interface Destination {
 
 function DiscoverSection() {
   const { data: destinations } = useQuery<Destination[]>({
-    queryFn: () => fetchDestinationData(),
+    queryFn: () => fetchHomeDestinationData(),
     queryKey: ["discoverDestinationData"],
   });
 
@@ -27,7 +27,7 @@ function DiscoverSection() {
         </p>
       </div>
       <div className="mx-auto grid max-w-[1200px] gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4 ">
-        {destinations && destinations.slice(0, 6).map((destination, index) => {
+        {Array.isArray(destinations) && destinations.map((destination, index) => {
           const gridClasses = [
             "md:col-span-1 md:row-span-2",
             "md:col-span-1 md:row-span-1",
@@ -41,7 +41,7 @@ function DiscoverSection() {
             >
               <div className="sm:block flex flex-col h-full">
                 <img
-                  src={destination.image}
+                  src={"https://res.cloudinary.com/dch6eenk5/" + destination.image}
                   className="sm:h-full w-full rounded-lg object-cover h-4/5"
                   alt={`${destination.image} image`}
                 ></img>

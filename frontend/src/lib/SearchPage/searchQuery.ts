@@ -4,4 +4,5 @@ export interface searchQuery {
   end_date: string | "None";
   min_price: number | "None";
   max_price: number | "None";
+  page: number | "None";
 }

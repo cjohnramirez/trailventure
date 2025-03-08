@@ -1,20 +1,24 @@
 from rest_framework import generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from apps.packages.serializers import *
-from apps.users.permissions import IsCustomer, IsHost
+from apps.users.permissions import IsHost
 from apps.packages.models import *
-from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q, Min, Max
 from django.utils.dateparse import parse_date
+from rest_framework.pagination import PageNumberPagination
+
+class PackagePagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size' 
 
 class PackageSearchView(generics.ListAPIView):
     queryset = Package.objects.all()
     serializer_class = PackageListSerializer
+    pagination_class = PackagePagination 
 
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # Fetch path parameters, defaulting to None if not provided
         destination = self.kwargs.get('destination', None)
         start_date = self.kwargs.get('start_date', None)
         end_date = self.kwargs.get('end_date', None)
@@ -22,7 +26,6 @@ class PackageSearchView(generics.ListAPIView):
         max_price = self.kwargs.get('max_price', None)
         #min_review_score = self.kwargs.get('min_review_score', None)
 
-        # Apply filters only if parameters are provided
         if destination and destination != 'None':
             queryset = queryset.filter(destination__name__icontains=destination)
 
@@ -129,18 +132,15 @@ class PackageImageListView(generics.ListAPIView):
     serializer_class = PackageImageSerializer
     permission_classes = [AllowAny]
     queryset = PackageImage.objects.all()
-    parser_classes = (MultiPartParser, FormParser)
 
 
 class PackageImageCreateView(generics.CreateAPIView):
     serializer_class = PackageImageSerializer
     permission_classes = [IsHost]
     queryset = PackageImage.objects.all()
-    parser_classes = (MultiPartParser, FormParser)
 
 
 class PackageImageModifyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PackageImageSerializer
     permission_classes = [IsHost]
     queryset = PackageImage.objects.all()
-    parser_classes = (MultiPartParser, FormParser)

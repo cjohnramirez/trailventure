@@ -49,7 +49,7 @@ function App() {
             }
           />
           <Route
-            path="/booking/:tourpackageId/:tourpackagetype/:numofperson/:booking-date/"
+            path="/booking/:tourpackageId/:tourpackagetype/:numofperson/:booking-date"
             element={
               <ProtectedRoute>
                 <BookingPage />
@@ -59,7 +59,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/" element={<Home />} />
           <Route
-            path="/search/:location/:startdate/:enddate/:startprice/:endprice"
+            path="/search/:location/:startdate/:enddate/:startprice/:endprice/:pageNumber"
             element={<SearchPage />}
           />
           <Route path="/package/:id" element={<PackagePage />} />

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, Edit } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { UserData } from "@/lib/UserPage/UserData";
+import { UserData } from "@/lib/UserPage/userData";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserData } from "@/api/userData/fetchUserData";
 
@@ -29,11 +29,11 @@ function UserPage() {
       <div className="p-8">
         <div className="relative w-full">
           <img
-            src={userData?.[0]?.banner || DefaultBanner}
+            src={"https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.banner || DefaultBanner}
             className="h-full max-h-[300px] w-full rounded-2xl object-cover object-bottom"
           ></img>
           <img
-            src={userData?.[0]?.avatar || DefaultProfile}
+            src={"https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar || DefaultProfile}
             className="absolute left-[90px] top-[120px] z-10 hidden aspect-square w-[250px] rounded-2xl object-cover lg:block"
           ></img>
           <div className="relative top-[-75px] w-full sm:top-[-165px] sm:p-12">

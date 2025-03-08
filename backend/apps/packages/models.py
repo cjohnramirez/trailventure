@@ -1,8 +1,8 @@
 from django.db import models
 from apps.destinations.models import Destination
+from cloudinary.models import CloudinaryField
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-
 User = get_user_model()
 
 
@@ -45,7 +45,7 @@ class PackageAmenity(models.Model):
 
 
 class PackageImage(models.Model):
-    image = models.ImageField(upload_to="package_images/")
+    image = CloudinaryField("image")
     created = models.DateTimeField(auto_now_add=True)
     package = models.ForeignKey(
         Package, related_name="package_image", on_delete=models.CASCADE, null=True

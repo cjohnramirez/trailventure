@@ -96,7 +96,7 @@ function PackagePage() {
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                     <div>
                       <img
-                        src={image.image}
+                        src={"https://res.cloudinary.com/dch6eenk5/" + image.image}
                         alt={`${tourpackage[0]?.name} image ${index}`}
                         className="h-96 w-full rounded-xl object-cover"
                       />

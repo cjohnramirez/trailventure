@@ -18,7 +18,7 @@ import {
 import { tourPackage } from "@/lib/SearchPage/tourPackage";
 import { fetchPackage } from "@/api/tourPackageData/fetchPackage";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { UserData } from "@/lib/UserPage/UserData";
+import { UserData } from "@/lib/UserPage/userData";
 import { fetchUserData } from "@/api/userData/fetchUserData";
 import { AdditionalFees } from "@/lib/BookingPage/additionalFees";
 import { postBookingData } from "@/api/bookingData/postBookingData";
@@ -118,11 +118,11 @@ function BookingPage() {
       <nav className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
         <NavBar isNavBar={true} />
       </nav>
-      <main className="flex-row px-8 lg:flex">
+      <main className="flex-row px-8 lg:flex pb-8">
         <div className="flex-col gap-2 lg:flex lg:w-2/3">
           <div className="mb-4 flex flex-col rounded-2xl border-[1px] p-8 lg:mb-0 lg:flex-row lg:items-center xl:p-4">
             <img
-              src={packageData?.[0]?.package_image[0].image}
+              src={"https://res.cloudinary.com/dch6eenk5/" + packageData?.[0]?.package_image[0].image}
               className="h-[200px] w-full rounded-2xl object-cover lg:h-auto lg:w-64"
             ></img>
             <div className="lg:mx-8">

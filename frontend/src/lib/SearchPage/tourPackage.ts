@@ -1,3 +1,10 @@
+export interface searchData {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: tourPackage[];
+}
+
 export interface tourPackage {
   id: number;
   name: string;
