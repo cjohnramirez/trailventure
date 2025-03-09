@@ -29,11 +29,11 @@ function UserPage() {
       <div className="p-8">
         <div className="relative w-full">
           <img
-            src={"https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.banner || DefaultBanner}
+            src={userData && userData[0]?.avatar ? "https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.banner : DefaultBanner}
             className="h-full max-h-[300px] w-full rounded-2xl object-cover object-bottom"
           ></img>
           <img
-            src={"https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar || DefaultProfile}
+            src={userData && userData[0]?.avatar ? "https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar : DefaultProfile}
             className="absolute left-[90px] top-[120px] z-10 hidden aspect-square w-[250px] rounded-2xl object-cover lg:block"
           ></img>
           <div className="relative top-[-75px] w-full sm:top-[-165px] sm:p-12">
@@ -41,7 +41,7 @@ function UserPage() {
               <div className="flex flex-col md:left-[290px] lg:relative">
                 <div className="flex items-center gap-4">
                   <img
-                    src={"https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar || DefaultProfile}
+                    src={userData && userData[0]?.avatar ? "https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar : DefaultProfile}
                     className="block aspect-square w-10 sm:w-20 rounded-full object-cover lg:hidden"
                   ></img>
                   <div>
@@ -55,7 +55,7 @@ function UserPage() {
                 <div className="mt-2 flex w-[220px] items-center gap-4 rounded-3xl border-[1px] p-4">
                   <p className="border-r-2 pr-4">Links</p>
                   <div>
-                    <a href={userData?.[0]?.user?.user_profile_links.facebook} target="_blank">
+                    <a href={userData?.[0]?.user?.user_profile_links?.facebook || ""} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -68,7 +68,7 @@ function UserPage() {
                     </a>
                   </div>
                   <div>
-                    <a href={userData?.[0]?.user?.user_profile_links.twitter} target="_blank">
+                    <a href={userData?.[0]?.user?.user_profile_links?.twitter || ""} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -81,7 +81,7 @@ function UserPage() {
                     </a>
                   </div>
                   <div>
-                    <a href={userData?.[0]?.user?.user_profile_links.instagram} target="_blank">
+                    <a href={userData?.[0]?.user?.user_profile_links?.instagram || ""} target="_blank">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"

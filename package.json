@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "jwt-decode": "^4.0.0",
-    "react-anchor-link-smooth-scroll": "^1.0.12"
+    "react-anchor-link-smooth-scroll": "^1.0.12",
+    "react-simple-star-rating": "^5.1.7"
   }
 }

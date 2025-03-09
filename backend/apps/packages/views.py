@@ -13,6 +13,7 @@ class PackagePagination(PageNumberPagination):
 
 class PackageSearchView(generics.ListAPIView):
     queryset = Package.objects.all()
+    permission_classes = [AllowAny]
     serializer_class = PackageListSerializer
     pagination_class = PackagePagination 
 

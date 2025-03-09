@@ -10,13 +10,30 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { useGetStore } from "@/components/Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPackage } from "@/api/tourPackageData/fetchPackage";
-import { tourPackage } from "@/lib/SearchPage/tourPackage";
+import { tourPackage } from "@/lib/TourPackagePage/tourpackage";
+import { tourPackageReviews } from "@/lib/TourPackagePage/tourPackageReview";
+import { fetchPackageReviews } from "@/api/tourPackageData/fetchPackageReviews";
+import { Rating } from "react-simple-star-rating";
+import { fetchOwnPackageReviews } from "@/api/tourPackageData/fetchOwnPackageReviews";
 
 function PackagePage() {
   const { id } = useParams();
   const { data: tourpackage } = useQuery<tourPackage[]>({
     queryFn: () => fetchPackage(Number(id)),
-    queryKey: ["packageData", id],
+    queryKey: ["tourPackageData", id],
+  });
+
+  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
+
+  const { data: tourPackageReviews } = useQuery<tourPackageReviews[]>({
+    queryFn: () => fetchPackageReviews(Number(id)),
+    queryKey: ["tourPackageReviews", id],
+  });
+
+  const { data: ownTourPackageReviews } = useQuery<tourPackageReviews[]>({
+    queryFn: () => fetchOwnPackageReviews(Number(id)),
+    queryKey: ["ownTourPackageReviews", id],
+    enabled: isAuthorized,
   });
 
   const navigate = useNavigate();
@@ -258,9 +275,125 @@ function PackagePage() {
               </div>
             </div>
             <div className="rounded-2xl border-[1px] p-8">
-              <p className="pb-4 text-xl font-semibold" id="reviews">
-                Reviews
-              </p>
+              <div className="flex items-center justify-between pb-4">
+                <p className="text-xl font-semibold" id="reviews">
+                  Reviews
+                </p>
+                <Button variant={"outline"}>
+                  <p>Add Comment</p>
+                </Button>
+              </div>
+              {isAuthorized ? (
+                <>
+                  <DropdownMenuSeparator />
+                  <p className="my-4">Your Comments</p>
+                  <div
+                    className={
+                      ownTourPackageReviews &&
+                      ownTourPackageReviews.length > 0 &&
+                      ownTourPackageReviews[0]?.review_by_user?.user?.length !== 0
+                        ? "grid grid-cols-2 grid-rows-1 gap-4"
+                        : ""
+                    }
+                  >
+                    {ownTourPackageReviews &&
+                    ownTourPackageReviews.length > 0 &&
+                    ownTourPackageReviews[0]?.review_by_user.user.length !== 0 ? (
+                      ownTourPackageReviews.map((review, index) => {
+                        return (
+                          <div key={index} className="rounded-xl border-[1px] p-4">
+                            <div className="flex items-center justify-between pb-4">
+                              <div className="flex items-center gap-4">
+                                <img
+                                  src={`https://res.cloudinary.com/dch6eenk5/${review.review_by_user.customer_profile[0]?.avatar}`}
+                                  alt="avatar"
+                                  className="h-6 w-6 rounded-full"
+                                />
+                                <p>{review.review_by_user.user}</p>
+                              </div>
+                              <div>
+                                <Rating
+                                  initialValue={review.rating}
+                                  disableFillHover={true}
+                                  size={20}
+                                  SVGstyle={{ display: "inline" }}
+                                  allowFraction={true}
+                                  fillColor={"#16baa8"}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <p>{review.comment}</p>
+                            </div>
+                            <div className="pt-4 text-right">
+                              <p>{new Date(review.created).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="flex w-full items-center justify-center rounded-xl border-[1px] p-4">
+                        <p>No reviews yet</p>
+                      </div>
+                    )}
+                  </div>
+                  <DropdownMenuSeparator className="mt-4" />
+                  <p className="my-4">Other Comments</p>
+                </>
+              ) : (
+                <></>
+              )}
+
+              <div
+                className={
+                  tourPackageReviews &&
+                  tourPackageReviews.length > 0 &&
+                  tourPackageReviews[0]?.review_by_user?.user.length !== 0
+                    ? "grid grid-cols-2 grid-rows-1 gap-4"
+                    : ""
+                }
+              >
+                {tourPackageReviews &&
+                tourPackageReviews.length > 0 &&
+                tourPackageReviews[0]?.review_by_user.user.length !== 0 ? (
+                  tourPackageReviews.map((review, index) => {
+                    return (
+                      <div key={index} className="rounded-xl border-[1px] p-4">
+                        <div className="flex items-center justify-between pb-4">
+                          <div className="flex items-center gap-4">
+                            <img
+                              src={`https://res.cloudinary.com/dch6eenk5/${review.review_by_user.customer_profile[0]?.avatar}`}
+                              alt="avatar"
+                              className="h-6 w-6 rounded-full"
+                            />
+                            <p>{review.review_by_user.user}</p>
+                          </div>
+                          <div>
+                            <Rating
+                              initialValue={review.rating}
+                              disableFillHover={true}
+                              size={20}
+                              SVGstyle={{ display: "inline" }}
+                              allowFraction={true}
+                              fillColor={"#16baa8"}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <p>{review.comment}</p>
+                        </div>
+                        <div className="pt-4 text-right">
+                          <p>{new Date(review.created).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="flex w-full items-center justify-center rounded-xl border-[1px] p-4">
+                    <p>No reviews yet</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="mt-4 h-full rounded-2xl border-[1px] p-8 lg:sticky lg:top-20 lg:mt-0 lg:w-1/3">

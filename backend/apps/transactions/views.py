@@ -2,7 +2,7 @@ import stripe
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from apps.users.permissions import IsCustomer
-from apps.packages.models import PackageImage
+from apps.packages.models import PackageImage, Package
 from apps.transactions.models import Booking, Transaction
 from apps.transactions.serializers import *
 from rest_framework.exceptions import ValidationError
@@ -116,7 +116,6 @@ def process_transaction(session_id):
                 'amount': amount_total,
                 'currency': currency,
                 'booking': booking,
-                'additional_fees': 2, #change if there are errors
             }
         )
 
@@ -164,6 +163,33 @@ class TransactionModifyView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
 
+class PackageReviewListView(generics.ListAPIView):
+    serializer_class = PackageReviewSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        pk = self.kwargs.get('id')
+        package_type = PackageType.objects.filter(package=pk)
+        booking = Booking.objects.filter(package_type__in=package_type)
+        transaction = Transaction.objects.filter(booking__in=booking)
+        if self.request.user.is_authenticated:
+            package_reviews = PackageReview.objects.filter(transaction__in=transaction).exclude(review_by_user=self.request.user)
+        else:
+            package_reviews = PackageReview.objects.filter(transaction__in=transaction)
+        return package_reviews
+    
+class OwnPackageReviewListView(generics.ListAPIView):
+    serializer_class = PackageReviewSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        pk = self.kwargs.get('id')
+        package_type = PackageType.objects.filter(package=pk)
+        booking = Booking.objects.filter(package_type__in=package_type, user=self.request.user)
+        transaction = Transaction.objects.filter(booking__in=booking)
+        own_package_reviews = PackageReview.objects.filter(transaction__in=transaction)
+        return own_package_reviews
+
 
 class PackageReviewCreateView(generics.ListCreateAPIView):
     serializer_class = PackageReviewSerializer
@@ -192,4 +218,4 @@ class PackageReviewModifyView(generics.RetrieveUpdateDestroyAPIView):
 class AdditionalFeesListView(generics.ListAPIView):
     serializer_class = AdditionalFeesSerializer
     permission_classes = [AllowAny]
-    queryset = AdditionalFees.objects.all()
+    queryset = AdditionalFees.objects

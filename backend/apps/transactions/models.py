@@ -61,6 +61,9 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transfer_date = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    additional_fees = models.ForeignKey(
+        AdditionalFees, on_delete=models.CASCADE, related_name="booking", null=True, blank=True, default=2
+    )
 
     def __str__(self):
         return f"Transaction id: {self.id}"
@@ -73,7 +76,7 @@ class PackageReview(models.Model):
     review_by_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="package_review", null=True
     )
-    transaction = models.ForeignKey(
+    transaction = models.OneToOneField(
         Transaction, on_delete=models.CASCADE, related_name="package_review", null=True
     )
     comment = models.TextField()
@@ -88,12 +91,13 @@ class PackageReview(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     def clean(self):
+        if not self.transaction or not self.transaction.booking:
+            raise ValidationError("Transaction or Booking is missing.")
+        booking = self.transaction.booking
         if not Booking.objects.filter(
-            user=self.review_by_user, package_type=self.transaction.booking.package_type
+            user=self.review_by_user, package_type=booking.package_type
         ).exists():
-            raise ValidationError(
-                "User must have booked this Package before reviewing."
-            )
+            raise ValidationError("User must have booked this Package before reviewing.")
 
     def __str__(self):
         return f"Package: {self.transaction.booking.package_type.name}, User: {self.review_by_user.username}"

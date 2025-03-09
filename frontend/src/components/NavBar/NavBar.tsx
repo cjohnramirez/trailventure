@@ -5,10 +5,10 @@ import Search from "./SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useGetStore } from "../Contexts/AuthContext";
-import DefaultUserProfile from "@/assets/UserPage/defaultProfile.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { UserData } from "@/lib/UserPage/userData";
 import { fetchUserData } from "@/api/userData/fetchUserData";
+import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
 
 interface NavBarInterface {
   isNavBar: boolean;
@@ -71,12 +71,12 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
               ) : (
                 <div className="flex items-center gap-2 p-1">
                   <img
-                    src={userData ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar : DefaultUserProfile}
-                    className="aspect-square w-7 rounded-full object-cover"
-                    alt="User avatar"
+                  src={userData && userData[0]?.avatar ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar : DefaultProfile}
+                  className="aspect-square w-7 rounded-full object-cover"
+                  alt="User avatar"
                   />
                   <p className="hidden lg:block">
-                    Welcome, {userData ? userData[0]?.user?.username : "user!"}
+                  Welcome, {userData ? userData[0]?.user?.username : "user!"}
                   </p>
                 </div>
               )
