@@ -47,3 +47,14 @@ export const postDeletedBooking = async (id: number) => {
 
   return [];
 };
+
+export const fetchSuccessfulBooking = async (id: number) => {
+  try {
+    const response = await api.get(`/apps/transaction/booking/successful/${id}/`);
+    return response.data || [];
+  } catch (error) {
+    console.error("Error:", error);
+  }
+
+  return [];
+};

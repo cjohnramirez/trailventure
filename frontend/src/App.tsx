@@ -16,6 +16,7 @@ import Loading from "./components/Loading/Loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HostDashboardPage from "./pages/HostDashboardPage";
 import BookingCancelled from "./components/BookingPage/BookingCancelled";
+import BookingSuccessful from "./components/BookingPage/BookingSuccessful";
 
 function Logout() {
   localStorage.clear();
@@ -65,6 +66,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={["customer"]}>
                     <BookingCancelled />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/booking/success/:id/"
+                element={
+                  <ProtectedRoute allowedRoles={["customer"]}>
+                    <BookingSuccessful />
                   </ProtectedRoute>
                 }
               />

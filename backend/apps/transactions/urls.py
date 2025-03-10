@@ -6,6 +6,7 @@ urlpatterns = [
   path("booking/list/", views.BookingListView.as_view()),
   path("booking/modify/", views.BookingModifyView.as_view()),
   path("booking/cancelled/<int:pk>/", views.cancel_booking_view, name="cancel_booking"),
+  path("booking/successful/<int:pk>/", views.success_booking_view, name="sucesss_booking"),
   path("transaction/list-create/<int:id>/", views.TransactionListCreateView.as_view()),
   path("transaction/modify/", views.TransactionModifyView.as_view()),
   path("checkout/session/<int:pk>/", views.checkout_session_view),

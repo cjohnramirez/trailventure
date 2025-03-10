@@ -27,6 +27,7 @@ const BookingCancelled = () => {
               <p>Booking ID: {deletedBooking.booking.id}</p>
               <p>Package Name: {deletedBooking.booking.package_type.package.name}</p>
               <p>Package Type: {deletedBooking.booking.package_type.name}</p>
+              <p>Start Date: {deletedBooking.booking.start_date}</p>
               <p>Qty: {deletedBooking.booking.num_of_person}</p>
             </div>
             <Button variant={"outline"} className="w-full" onClick={() => window.location.replace("/")}>

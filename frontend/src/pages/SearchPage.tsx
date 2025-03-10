@@ -196,23 +196,23 @@ function SearchPage() {
           </Button>
         </aside>
         <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5">
-          <div className="justify-between sm:flex">
-            <div className="flex w-1/2 items-center gap-4">
-              <p className="pb-2 text-xl font-semibold sm:pb-0">Search Results</p>
+          <div className="justify-between lg:flex">
+            <div className="xl:flex md:pb-0 pb-4 lg:w-1/2 items-center gap-4">
+              <p className="pb-2 text-xl font-semibold xl:pb-0 sm:text-left text-center">Search Results</p>
               <div className="rounded-2xl border-[1px] px-8 py-2">
-                <p className="text-sm">Found {searchData?.results?.length} search result</p>
+                <p className="text-sm sm:text-left text-center">Found {searchData?.results?.length} search result</p>
               </div>
             </div>
-            <Pagination className="flex w-1/2 justify-end">
+            <Pagination className="flex lg:w-1/2 lg:justify-end select-none">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious onClick={decrementPageNumber} />
+                  <PaginationPrevious onClick={decrementPageNumber} className="cursor-pointer"/>
                 </PaginationItem>
                 <PaginationItem>
                   <span className="pr-4 text-sm">Page {pageNumber}</span>
                 </PaginationItem>
                 <PaginationItem>
-                  <PaginationNext onClick={incrementPageNumber} />
+                  <PaginationNext onClick={incrementPageNumber} className="cursor-pointer" />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
@@ -245,7 +245,7 @@ function SearchPage() {
                         <div className="flex-row items-center justify-between gap-4 sm:flex">
                           <div className="flex-row">
                             <p className="text-sm font-semibold">Cheapest Package</p>
-                            <p className="text-xs">Price per person</p>
+                            <p className="text-xs sm:pb-0 pb-2">Price per person</p>
                           </div>
                           <div className="rounded-xl border-[1px]">
                             <p className="p-2 text-sm font-semibold">

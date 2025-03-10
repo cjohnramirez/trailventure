@@ -50,7 +50,7 @@ def checkout_session_view(request, pk):
             },
             mode="payment",
             customer_email=request.user.email,
-            success_url=f"{YOUR_DOMAIN}booking/success/",
+            success_url=f"{YOUR_DOMAIN}booking/success/{booking.id}/",
             cancel_url=f"{YOUR_DOMAIN}booking/cancelled/{booking.id}/",
         )
 
@@ -72,6 +72,20 @@ def cancel_booking_view(request, pk):
         
         return Response(
             {"message": "Booking cancelled successfully.", "booking": serialized_data},
+            status=status.HTTP_200_OK,
+        )
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def success_booking_view(request, pk):
+    try:
+        booking = get_object_or_404(Booking, pk=pk, user=request.user)
+        serialized_data = BookingSerializer(booking).data 
+        
+        return Response(
+            {"message": "Booking done successfully.", "booking": serialized_data},
             status=status.HTTP_200_OK,
         )
     except Exception as e:
