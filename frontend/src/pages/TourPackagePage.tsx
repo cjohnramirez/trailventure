@@ -31,13 +31,15 @@ function PackagePage() {
     queryKey: ["tourPackageReviews", id],
   });
 
-  const { data: ownTourPackageReviews, refetch } = useQuery<tourPackageReviews[]>({
+  const { data: ownTourPackageReviews, refetch: ownTourPackageReviewsRefetch } = useQuery<
+    tourPackageReviews[]
+  >({
     queryFn: () => fetchOwnPackageReviews(Number(id)),
     queryKey: ["ownTourPackageReviews", id],
     enabled: isAuthorized,
   });
 
-  const { data: ownTransactions } = useQuery({
+  const { data: ownTransactions, refetch: ownTransactionRefetch } = useQuery({
     queryFn: () => fetchTransactions(Number(id)),
     queryKey: ["ownTransactions"],
     enabled: isAuthorized,
@@ -49,12 +51,12 @@ function PackagePage() {
   const [typeOfPackage, setTypeOfPackage] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
   const [isAllowedToComment, setIsAllowedToComment] = useState(false);
-  const [isAllowedToBook, setIsAllowedToBook] = useState(false);
+  const [isAllowedToBook, setIsAllowedToBook] = useState(true);
   const { openConfirmation } = useConfirmationStore();
   const [transactionId, setTransactionId] = useState<number>(0);
 
   if (commentDialogOpen == false) {
-    refetch();
+    ownTourPackageReviewsRefetch();
   }
 
   useEffect(() => {
@@ -67,17 +69,18 @@ function PackagePage() {
   }, [tourpackage]);
 
   useEffect(() => {
-    if (ownTransactions && ownTransactions.length > 0 && ownTransactions[0].booking.id == id) {
-      setIsAllowedToComment(true);
+    ownTransactionRefetch();
+  }, [id, ownTransactionRefetch]);
+
+  useEffect(() => {
+    if (ownTransactions && ownTransactions.length > 0) {
+      const booking = ownTransactions[0].booking.id;
+      const isBookingEqualToId = booking === Number(id);
+      setIsAllowedToBook(!isBookingEqualToId);
+      setIsAllowedToComment(isBookingEqualToId);
       setTransactionId(ownTransactions[0].id);
     }
-    if (ownTransactions && ownTransactions[0].booking.id != id) {
-      setIsAllowedToBook(true);
-    }
-    console.log("can comment: ", isAllowedToComment)
-    console.log("can book: ", isAllowedToBook)
-    console.log(ownTransactions)
-  }, [isAllowedToComment, ownTransactions]);
+  }, [ownTransactions, isAllowedToComment, isAllowedToBook, id]);
 
   function handleBooking() {
     if (!isAllowedToBook) {

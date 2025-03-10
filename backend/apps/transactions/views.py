@@ -250,9 +250,9 @@ class PackageReviewCreateView(generics.ListCreateAPIView):
         return PackageReview.objects.filter(review_by_user=self.request.user)
 
     def perform_create(self, serializer):
-        package_id = self.request.data.get("Package")
+        package_id = self.request.data.get("package")
         if PackageReview.objects.filter(
-            review_by_user=self.request.user, package_id=package_id
+            review_by_user=self.request.user, transaction__booking__package_type__package=package_id
         ).exists():
             raise ValidationError("You have already reviewed this Package.")
         serializer.save(review_by_user=self.request.user)
