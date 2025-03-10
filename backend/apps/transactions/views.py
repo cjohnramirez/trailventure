@@ -136,7 +136,6 @@ class BookingListCreateView(generics.ListCreateAPIView):
         return Booking.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        package_id = self.request.data.get("Package")
         serializer.save(user=self.request.user)
 
 
@@ -162,7 +161,17 @@ class TransactionModifyView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
+    
+#see all reviews by a user
+class OwnAllPackageReviewListView(generics.ListAPIView):
+    serializer_class = PackageReviewSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        package_reviews = PackageReview.objects.filter(review_by_user=self.request.user)
+        return package_reviews
+
+#see all reviews in a package, except the user's own
 class PackageReviewListView(generics.ListAPIView):
     serializer_class = PackageReviewSerializer
     permission_classes = [AllowAny]
@@ -178,6 +187,7 @@ class PackageReviewListView(generics.ListAPIView):
             package_reviews = PackageReview.objects.filter(transaction__in=transaction)
         return package_reviews
     
+#see all reviews in a package made by a user
 class OwnPackageReviewListView(generics.ListAPIView):
     serializer_class = PackageReviewSerializer
     permission_classes = [AllowAny]

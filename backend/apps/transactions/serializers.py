@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.transactions.models import *
-from apps.users.serializers import ReviewByUserSerializer, CustomerProfileForReviewByUserSerializer
+from apps.users.serializers import ReviewByUserSerializer, UserSerializerReduced
+from apps.packages.serializers import PackageTypeSingleSerializer
 
 class AdditionalFeesSerializer(serializers.ModelSerializer):
   class Meta:
@@ -13,6 +14,9 @@ class TransactionSerializer(serializers.ModelSerializer):
     fields = "__all__"
 
 class BookingSerializer(serializers.ModelSerializer):
+  user = UserSerializerReduced(read_only=True)
+  package_type = PackageTypeSingleSerializer(read_only=True)
+
   class Meta:
     model = Booking
     fields = "__all__" 

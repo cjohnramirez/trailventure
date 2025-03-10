@@ -15,15 +15,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { tourPackage } from "@/lib/SearchPage/tourPackage";
-import { fetchPackage } from "@/api/tourPackageData/fetchPackage";
+import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
+import { fetchPackage } from "@/api/tourPackageData";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { UserData } from "@/lib/UserPage/userData";
-import { fetchUserData } from "@/api/userData/fetchUserData";
+import { fetchUserData } from "@/api/userData";
 import { AdditionalFees } from "@/lib/BookingPage/additionalFees";
-import { postBookingData } from "@/api/bookingData/postBookingData";
-import { postCheckoutData } from "@/api/bookingData/postCheckoutData";
-import { fetchAdditionalFeesData } from "@/api/bookingData/fetchAdditionalFeesData";
+import { postCheckoutData, postBookingData, fetchAdditionalFeesData } from "@/api/bookingData";
 
 function BookingPage() {
   const { tourpackageId, tourpackagetype, numofperson } = useParams();
@@ -35,7 +33,7 @@ function BookingPage() {
 
   const { data: userData } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
-    queryKey: ["bookingUserData"],
+    queryKey: ["userData"],
   });
 
   const { data: additionalFees } = useQuery<AdditionalFees[]>({

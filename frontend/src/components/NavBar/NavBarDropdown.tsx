@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useMediaQuery } from "react-responsive";
 import { useQuery } from "@tanstack/react-query";
-import { fetchUserData } from "@/api/userData/fetchUserData";
+import { fetchUserData } from "@/api/userData";
 import { UserData } from "@/lib/UserPage/userData";
 import { useGetStore } from "../Contexts/AuthContext";
 
@@ -23,7 +23,7 @@ function NavBarDropdown() {
 
   const { data: userData } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
-    queryKey: ["navBarDropdownUserData"],
+    queryKey: ["userData"],
     enabled: isAuthorized,
   });
 

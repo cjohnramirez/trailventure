@@ -1,7 +1,7 @@
 import { Card } from "../ui/card";
 import { MapPin } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchHomeDestinationData } from "@/api/homeData/fetchHomeDestinationData";
+import { fetchHomeDestinationData } from "@/api/homeData";
 
 interface Destination {
   description: string;

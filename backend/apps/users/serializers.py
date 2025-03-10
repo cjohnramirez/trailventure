@@ -24,6 +24,15 @@ class UserProfileLinksSerializer(serializers.ModelSerializer):
         model = UserProfileLinks
         fields = ["facebook", "twitter", "instagram"]
 
+class UserSerializerReduced(serializers.ModelSerializer):
+    class Meta: 
+        model = User
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name"
+        ]
 
 class UserSerializer(serializers.ModelSerializer):
     user_profile_links = UserProfileLinksSerializer(read_only=True)

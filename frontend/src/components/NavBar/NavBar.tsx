@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useGetStore } from "../Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { UserData } from "@/lib/UserPage/userData";
-import { fetchUserData } from "@/api/userData/fetchUserData";
+import { fetchUserData } from "@/api/userData";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
 
 interface NavBarInterface {
@@ -20,7 +20,7 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
 
   const { data: userData } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
-    queryKey: ["navBarUserData"],
+    queryKey: ["userData"],
     enabled: isAuthorized,
   });
 

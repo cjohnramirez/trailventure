@@ -9,12 +9,12 @@ import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { useGetStore } from "@/components/Contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { fetchPackage } from "@/api/tourPackageData/fetchPackage";
-import { tourPackage } from "@/lib/TourPackagePage/tourpackage";
+import { fetchPackage } from "@/api/tourPackageData";
+import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
 import { tourPackageReviews } from "@/lib/TourPackagePage/tourPackageReview";
-import { fetchPackageReviews } from "@/api/tourPackageData/fetchPackageReviews";
+import { fetchPackageReviews } from "@/api/tourPackageData";
 import { Rating } from "react-simple-star-rating";
-import { fetchOwnPackageReviews } from "@/api/tourPackageData/fetchOwnPackageReviews";
+import { fetchOwnPackageReviews } from "@/api/tourPackageData";
 
 function PackagePage() {
   const { id } = useParams();

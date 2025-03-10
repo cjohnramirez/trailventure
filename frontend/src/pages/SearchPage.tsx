@@ -4,16 +4,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { tourPackage } from "@/lib/TourPackagePage/tourpackage";
+import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
 import SearchPageDate from "@/components/SearchPage/SearchPageDate";
 import SearchPageDestination from "@/components/SearchPage/SearchPageDestination";
 import SearchPagePrice from "@/components/SearchPage/SearchPagePrice";
 import SearchPageReview from "@/components/SearchPage/SearchPageReview";
 import { useMediaQuery } from "react-responsive";
 import { useQuery } from "@tanstack/react-query";
-import { fetchSearchData } from "@/api/searchData/fetchSearchData";
-import { fetchDestinationData } from "@/api/searchData/fetchDestinationData";
-import { searchData } from "@/lib/TourPackagePage/tourpackage";
+import { fetchSearchData, fetchDestinationData } from "@/api/searchData";
+import { searchData } from "@/lib/TourPackagePage/tourPackage";
 import {
   Pagination,
   PaginationContent,

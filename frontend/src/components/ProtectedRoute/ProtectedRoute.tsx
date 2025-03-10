@@ -23,6 +23,7 @@ function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
         },
       });
     } else if (isAuthorized && allowedRoles.length > 0 && !allowedRoles.includes(role ?? "")) {
+      navigate("")
       toast({
         title: "Access Denied",
         description: "You do not have permission to access this page.",
