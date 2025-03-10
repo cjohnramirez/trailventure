@@ -38,7 +38,7 @@ function PackagePage() {
   });
 
   const { data: ownTransactions } = useQuery({
-    queryFn: () => fetchTransactions(),
+    queryFn: () => fetchTransactions(Number(id)),
     queryKey: ["ownTransactions"],
     enabled: isAuthorized,
   });
@@ -71,9 +71,12 @@ function PackagePage() {
       setIsAllowedToComment(true);
       setTransactionId(ownTransactions[0].id);
     }
-    if (ownTransactions && ownTransactions.length > 0 && ownTransactions[0].booking.id != id) {
-      setIsAllowedToBook(false);
+    if (ownTransactions && ownTransactions[0].booking.id != id) {
+      setIsAllowedToBook(true);
     }
+    console.log("can comment: ", isAllowedToComment)
+    console.log("can book: ", isAllowedToBook)
+    console.log(ownTransactions)
   }, [isAllowedToComment, ownTransactions]);
 
   function handleBooking() {

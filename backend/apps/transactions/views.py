@@ -178,8 +178,22 @@ class TransactionListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        booking = Booking.objects.filter(user=self.request.user)
-        return Transaction.objects.filter(booking__in=booking)
+        id = self.kwargs.get('id')
+        print(f"Package ID: {id}")  # Debugging
+
+        if id is None:
+            return Transaction.objects.none()
+
+        booking_qs = Booking.objects.filter(
+            user=self.request.user, 
+            package_type__package=id
+        )
+        print(f"Bookings found: {booking_qs}")  # Debugging
+
+        transaction_qs = Transaction.objects.filter(booking__in=booking_qs).distinct()
+        print(f"Transactions found: {transaction_qs}")  # Debugging
+
+        return transaction_qs
 
 
 class TransactionModifyView(generics.RetrieveUpdateDestroyAPIView):
@@ -236,9 +250,9 @@ class PackageReviewCreateView(generics.ListCreateAPIView):
         return PackageReview.objects.filter(review_by_user=self.request.user)
 
     def perform_create(self, serializer):
-        package_id = self.request.data.get("package")
+        package_id = self.request.data.get("Package")
         if PackageReview.objects.filter(
-            review_by_user=self.request.user, transaction__booking__package_type__package_id=package_id
+            review_by_user=self.request.user, package_id=package_id
         ).exists():
             raise ValidationError("You have already reviewed this Package.")
         serializer.save(review_by_user=self.request.user)

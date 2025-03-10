@@ -16,8 +16,8 @@ export const fetchOwnPackageReviews = async (id: number) => {
   return fetchPackageReviews.data || [];
 };
 
-export const fetchTransactions = async () => {
-  const fetchTransactions = await api.get(`apps/transaction/transaction/list-create/`);
+export const fetchTransactions = async (id : number) => {
+  const fetchTransactions = await api.get(`apps/transaction/transaction/list-create/${id}/`);
   return fetchTransactions.data || [];
 };
 
