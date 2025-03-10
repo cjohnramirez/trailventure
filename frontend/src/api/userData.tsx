@@ -11,6 +11,6 @@ export const fetchUserData = async () => {
 };
 
 export const fetchUserBooking = async () => {
-  const fetchUserBooking = await api.get(`/apps/transaction/booking/list-create`);
+  const fetchUserBooking = await api.get(`/apps/transaction/booking/list/`);
   return fetchUserBooking.data || [];
 };

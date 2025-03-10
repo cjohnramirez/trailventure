@@ -24,14 +24,12 @@ import { AdditionalFees } from "@/lib/BookingPage/additionalFees";
 import { postCheckoutData, postBookingData, fetchAdditionalFeesData } from "@/api/bookingData";
 
 function BookingPage() {
-  const { tourpackageId, tourpackagetype, numofperson } = useParams();
+  const { tourpackageId, tourpackagetype, numofperson, startdate } = useParams();
 
   const { data: packageData } = useQuery<tourPackage[]>({
     queryFn: () => fetchPackage(Number(tourpackageId)),
     queryKey: ["bookingData", tourpackageId],
   });
-
-  console.log(packageData)
 
   const { data: userData } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
@@ -45,45 +43,81 @@ function BookingPage() {
 
   const { mutateAsync: mutateBookingData } = useMutation({
     mutationFn: postBookingData,
-  })
+  });
 
   const { mutateAsync: mutateCheckoutData } = useMutation({
     mutationFn: postCheckoutData,
-  })
+  });
 
-  const [startUserDate, setStartDate] = useState(new Date());
-  const [quantity, setQuantity] = useState(Number(numofperson));
+  const [startUserDate, setStartDate] = useState<Date>(new Date());
+  const [endUserDate, setEndDate] = useState<string>("");
+  const [quantity, setQuantity] = useState(Number(numofperson) || 1);
   const [currency, _setCurrency] = useState<string>("PHP");
-  const [totalPrice, setTotalPrice] = useState<Number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [packageTypeId, setPackageTypeId] = useState<number>(tourpackagetype ? Number(tourpackagetype) : 0);
 
-  const packagetype = Number(tourpackagetype);
-  const routePoints = packageData?.[0]?.package_type[packagetype]?.package_route_point || [];
-  const numOfDays = routePoints[routePoints.length - 1]?.day;
-  const endUserPackageDate = new Date(startUserDate);
-  endUserPackageDate.setDate(startUserDate.getDate() + numOfDays);
-  const formattedEndUserPackageDate = endUserPackageDate.toLocaleDateString();
- 
-  const basePrice = packageData
-    ? Math.round(+packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person)
-    : 0;
-  const siteFeePrice = packageData
-    ? Math.round(
-        +(additionalFees?.[0]?.site_fees_percent ?? 0) *
-          0.01 *
-          +packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person,
-      )
-    : 0;
-  const taxPrice = packageData
-    ? Math.round(
-        +(additionalFees?.[0]?.tax_paid_percent ?? 0) *
-          0.01 *
-          +packageData[0]?.package_type[Number(tourpackagetype)]?.price_per_person,
-      )
-    : 0;
+  const packagetype = Number(tourpackagetype) || 0;
+  const numOfDays =
+    packageData && packageData[0]?.package_type[packagetype]?.package_route_point.length > 0
+      ? packageData[0]?.package_type[packagetype]?.package_route_point[
+          packageData[0]?.package_type[packagetype]?.package_route_point.length - 1
+        ]?.day || 0
+      : 0;
 
+  // Calculate end date based on start date and number of days
+  const calculateEndDate = (start: Date, days: number) => {
+    const end = new Date(start);
+    end.setDate(end.getDate() + days);
+    return end.toLocaleDateString();
+  };
+
+  // Initialize dates when data is available
+  useEffect(() => {
+    if (startdate) {
+      const parsedStartDate = new Date(startdate);
+      if (!isNaN(parsedStartDate.getTime())) {
+        setStartDate(parsedStartDate);
+      }
+    }
+  }, [startdate]);
+
+  // Update end date whenever start date or numOfDays changes
+  useEffect(() => {
+    setEndDate(calculateEndDate(startUserDate, numOfDays));
+  }, [startUserDate, numOfDays]);
+
+  // Calculate prices
+  const basePrice =
+    packageData && packageData[0]?.package_type[packagetype]
+      ? Math.round(+packageData[0]?.package_type[packagetype]?.price_per_person)
+      : 0;
+
+  const siteFeePrice =
+    packageData && packageData[0]?.package_type[packagetype] && additionalFees?.[0]
+      ? Math.round(
+          +(additionalFees[0]?.site_fees_percent ?? 0) *
+            0.01 *
+            +packageData[0]?.package_type[packagetype]?.price_per_person,
+        )
+      : 0;
+
+  const taxPrice =
+    packageData && packageData[0]?.package_type[packagetype] && additionalFees?.[0]
+      ? Math.round(
+          +(additionalFees[0]?.tax_paid_percent ?? 0) *
+            0.01 *
+            +packageData[0]?.package_type[packagetype]?.price_per_person,
+        )
+      : 0;
+
+  // Update total price whenever individual prices or quantity changes
   useEffect(() => {
     setTotalPrice((basePrice + siteFeePrice + taxPrice) * quantity);
-  }, [basePrice, siteFeePrice, taxPrice]);
+  }, [basePrice, siteFeePrice, taxPrice, quantity]);
+
+  useEffect(() => {
+    setPackageTypeId(packageData?.[0]?.package_type?.[packagetype]?.id || 0);
+  }, [packageData]);
 
   const updateInvoice = () => {
     setTotalPrice((basePrice + siteFeePrice + taxPrice) * quantity);
@@ -94,13 +128,13 @@ function BookingPage() {
       const bookingResponse = await mutateBookingData({
         num_of_person: quantity,
         currency: currency,
-        package_type: packageData?.[0]?.package_type[Number(tourpackagetype)]?.id || 0,
+        package_type: packageTypeId,
         user: userData ? userData[0]?.user.id : 0,
+        start_date: startUserDate.toISOString().split("T")[0],
       });
-  
+
       if (bookingResponse?.id) {
         await mutateCheckoutData(bookingResponse.id);
-        console.log("Checkout completed successfully!");
       } else {
         console.warn("Booking response did not contain an ID.");
       }
@@ -109,31 +143,36 @@ function BookingPage() {
     }
   };
 
-  const handleClick = () => {
-    handleCheckoutButton();
-  };
-
   return (
     <>
       <nav className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
         <NavBar isNavBar={true} />
       </nav>
-      <main className="flex-row px-8 lg:flex pb-8">
+      <main className="flex-row px-8 pb-8 lg:flex">
         <div className="flex-col gap-2 lg:flex lg:w-2/3">
           <div className="mb-4 flex flex-col rounded-2xl border-[1px] p-8 lg:mb-0 lg:flex-row lg:items-center xl:p-4">
             <img
-              src={"https://res.cloudinary.com/dch6eenk5/" + packageData?.[0]?.package_image[0].image}
+              src={
+                packageData?.[0]?.package_image[0]
+                  ? "https://res.cloudinary.com/dch6eenk5/" + packageData[0].package_image[0].image
+                  : "/api/placeholder/320/200"
+              }
+              alt={packageData?.[0]?.name || "Tour Package"}
               className="h-[200px] w-full rounded-2xl object-cover lg:h-auto lg:w-64"
-            ></img>
+            />
             <div className="lg:mx-8">
-              <h1 className="mt-4 text-2xl font-semibold lg:mt-0">{packageData?.[0]?.name}</h1>
+              <h1 className="mt-4 text-2xl font-semibold lg:mt-0">
+                {packageData?.[0]?.name || "Loading package details..."}
+              </h1>
               <div className="flex gap-4">
                 <MapPin />
-                <p>{packageData?.[0]?.address}</p>
+                <p>{packageData?.[0]?.address || "Address not available"}</p>
               </div>
               <div className="mt-4 flex gap-4 rounded-2xl border-[1px] p-4">
                 <Package />
-                <p>Package Type: {packageData?.[0]?.package_type[Number(tourpackagetype)]?.name}</p>
+                <p>
+                  Package Type: {packageData?.[0]?.package_type[packagetype]?.name || "Standard"}
+                </p>
               </div>
             </div>
           </div>
@@ -145,12 +184,12 @@ function BookingPage() {
             <DropdownMenuSeparator />
             <div className="gap-4 pt-4 md:grid xl:grid-cols-3">
               <div className="flex items-center gap-4 pb-4 md:pb-0">
-                <p className="w-1/2 xl:w-auto">Start of package</p>
+                <p className="w-1/2 xl:w-auto">Start</p>
                 <Popover>
                   <PopoverTrigger asChild className="w-1/2 xl:w-auto">
                     <div className="w-1/2">
                       <Button variant={"outline"} className="flex w-full xl:w-auto">
-                        <CalendarIcon />
+                        <CalendarIcon className="mr-2" />
                         <p className="text-md">{startUserDate.toLocaleDateString()}</p>
                       </Button>
                     </div>
@@ -161,24 +200,25 @@ function BookingPage() {
                       selected={startUserDate}
                       onSelect={(date) => {
                         if (date) {
-                          setStartDate(new Date(date));
+                          setStartDate(date);
                         }
                       }}
                       disabled={{
                         before: new Date(),
-                        after: packageData
-                          ? new Date(packageData && packageData[0]?.end_date)
-                          : new Date(),
+                        after:
+                          packageData && packageData[0]?.end_date
+                            ? new Date(packageData[0].end_date)
+                            : undefined,
                       }}
                     />
                   </PopoverContent>
                 </Popover>
               </div>
               <div className="flex items-center gap-4 pb-4 md:pb-0">
-                <p className="w-1/2 xl:w-auto">End of package</p>
+                <p className="w-1/2 xl:w-auto">End</p>
                 <div className="flex w-1/2 items-center justify-center gap-2 rounded-full border-[1px] p-2 px-4 xl:w-auto">
                   <CalendarIcon size={16} />
-                  <p className="text-sm font-medium">{formattedEndUserPackageDate}</p>
+                  <p className="text-sm font-medium">{endUserDate}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 pb-4 md:pb-0">
@@ -187,13 +227,14 @@ function BookingPage() {
                   type="number"
                   className="w-1/2 rounded-2xl border-[1px] p-[5px] pl-4 text-center xl:w-28"
                   value={quantity}
+                  min={1}
                   onChange={(e) => {
                     const newQuantity = Number(e.target.value);
                     if (newQuantity >= 1) {
                       setQuantity(newQuantity);
                     }
                   }}
-                ></Input>
+                />
               </div>
               <div className="col-start-2 hidden items-center justify-end xl:flex">
                 <p>Update your changes</p>
@@ -246,7 +287,6 @@ function BookingPage() {
             <div className="flex justify-between py-4">
               <p>Base Price</p>
               <p>
-                {" "}
                 {currency + " "}
                 {basePrice}
               </p>
@@ -275,10 +315,10 @@ function BookingPage() {
               <p>Total Price</p>
               <p>
                 {currency + " "}
-                {Number(totalPrice)}
+                {totalPrice}
               </p>
             </div>
-            <Button variant={"outline"} className="w-full" onClick={handleClick}>
+            <Button variant={"outline"} className="w-full" onClick={handleCheckoutButton}>
               <p>Proceed to Checkout</p>
             </Button>
           </div>

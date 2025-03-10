@@ -7,14 +7,16 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { useGetStore } from "@/components/Contexts/AuthContext";
+import { useGetStore } from "@/components/Contexts/AuthStore";
 import { useQuery } from "@tanstack/react-query";
-import { fetchPackage } from "@/api/tourPackageData";
+import { fetchPackage, fetchTransactions } from "@/api/tourPackageData";
 import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
 import { tourPackageReviews } from "@/lib/TourPackagePage/tourPackageReview";
 import { fetchPackageReviews } from "@/api/tourPackageData";
 import { Rating } from "react-simple-star-rating";
 import { fetchOwnPackageReviews } from "@/api/tourPackageData";
+import CommentDialog from "@/components/BookingPage/BookingAddComment";
+import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 
 function PackagePage() {
   const { id } = useParams();
@@ -24,7 +26,6 @@ function PackagePage() {
   });
 
   const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
-
   const { data: tourPackageReviews } = useQuery<tourPackageReviews[]>({
     queryFn: () => fetchPackageReviews(Number(id)),
     queryKey: ["tourPackageReviews", id],
@@ -36,18 +37,68 @@ function PackagePage() {
     enabled: isAuthorized,
   });
 
-  const navigate = useNavigate();
+  const { data: ownTransactions } = useQuery({
+    queryFn: () => fetchTransactions(),
+    queryKey: ["ownTransactions"],
+    enabled: isAuthorized,
+  });
 
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const navigate = useNavigate();
+  const [date, setDate] = useState<Date>(new Date());
+  const [commentDialogOpen, setCommentDialogOpen] = useState(false);
   const [typeOfPackage, setTypeOfPackage] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
+  const [isAllowedToComment, setIsAllowedToComment] = useState(false);
+  const [isAllowedToBook, setIsAllowedToBook] = useState(false);
+  const { openConfirmation } = useConfirmationStore();
 
   useEffect(() => {
     if (!tourpackage) {
       useGetStore.setState({ loadingMessage: "Loading package data" });
       useGetStore.setState({ loading: true });
+    } else {
+      useGetStore.setState({ loading: false });
     }
   }, [tourpackage]);
+  
+  useEffect(() => {
+    if (ownTransactions && ownTransactions.length > 0 && ownTransactions[0].booking.id == id) {
+      setIsAllowedToComment(true);
+    }
+    if (ownTransactions && ownTransactions.length > 0 && ownTransactions[0].booking.id != id) {
+      setIsAllowedToBook(false);
+    }
+  }, [isAllowedToComment, ownTransactions]);
+
+  function handleBooking() {
+    if (!isAllowedToBook) {
+      openConfirmation({
+        title: "Booking Not Allowed",
+        description: "You have already booked this package",
+        cancelLabel: "Cancel",
+        actionLabel: "Go to Home",
+        onAction: () => {
+          navigate("/");
+        },
+        onCancel: () => {},
+      });
+    } else if (isAuthorized) {
+      navigate(
+        `/booking/${id}/${typeOfPackage}/${quantity}/${date.toLocaleDateString().replace(/\//g, "-")}`,
+      );
+    } else {
+      openConfirmation({
+        title: "Login / Sign Up Required",
+        description: "You must login or sign up in order to access this page",
+        cancelLabel: "Cancel",
+        actionLabel: "Go to Login",
+        onAction: () => {
+          navigate("/login");
+        },
+        onCancel: () => {},
+      });
+    }
+  }
 
   return (
     <div id="main">
@@ -201,7 +252,12 @@ function PackagePage() {
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button variant={"outline"} className="p-6">
-                          <p>{date?.toLocaleDateString()}</p>
+                          <p>
+                            {date
+                              ? date.toLocaleDateString()
+                              : tourpackage &&
+                                new Date(tourpackage[0]?.start_date).toLocaleDateString()}
+                          </p>
                           <CalendarIcon />
                         </Button>
                       </PopoverTrigger>
@@ -209,11 +265,9 @@ function PackagePage() {
                         <Calendar
                           mode="single"
                           selected={date}
-                          onSelect={setDate}
+                          onSelect={(day) => day && setDate(day)}
                           disabled={{
-                            before: tourpackage
-                              ? new Date(tourpackage && tourpackage[0]?.start_date)
-                              : new Date(),
+                            before: new Date(),
                             after: tourpackage
                               ? new Date(tourpackage && tourpackage[0]?.end_date)
                               : new Date(),
@@ -264,9 +318,7 @@ function PackagePage() {
                     variant={"outline"}
                     className="h-full w-full bg-teal-500 px-10 text-black sm:w-auto"
                     onClick={() => {
-                      navigate(
-                        `/booking/${id}/${typeOfPackage}/${quantity}/${date?.toLocaleDateString().replace(/\//g, "-")}`,
-                      );
+                      handleBooking();
                     }}
                   >
                     Book Now
@@ -279,7 +331,10 @@ function PackagePage() {
                 <p className="text-xl font-semibold" id="reviews">
                   Reviews
                 </p>
-                <Button variant={"outline"}>
+                <Button
+                  variant={"outline"}
+                  onClick={() => setCommentDialogOpen(!commentDialogOpen)}
+                >
                   <p>Add Comment</p>
                 </Button>
               </div>
@@ -440,6 +495,12 @@ function PackagePage() {
           </div>
         </div>
       </div>
+      <CommentDialog
+        commentDialogOpen={commentDialogOpen}
+        setCommentDialogOpen={setCommentDialogOpen}
+        isAuthorized={isAuthorized}
+        isAllowedToComment={isAllowedToComment}
+      />
     </div>
   );
 }

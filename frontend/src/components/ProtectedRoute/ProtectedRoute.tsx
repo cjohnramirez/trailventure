@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ReactNode, useEffect } from "react";
-import { useGetStore } from "@/components/Contexts/AuthContext";
-import { toast } from "@/components/Error/ErrorSonner";
+import { useGetStore } from "@/components/Contexts/AuthStore";
+import useConfirmationStore from "../Contexts/ConfirmationStore";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -10,27 +10,28 @@ interface ProtectedRouteProps {
 
 function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
   const { isAuthorized, role } = useGetStore();
+  const { openConfirmation } = useConfirmationStore()
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthorized === false) {
       navigate("/access-denied");
-      toast({
+      openConfirmation({
         title: "Login / Sign Up Required",
         description: "You must login or sign up in order to access this page",
-        button: {
-          label: "Go to Login",
-          onClick: () => navigate("/login"),
-        },
+        cancelLabel: "Cancel",
+        actionLabel: "Go to Login",
+        onAction: () => { () => navigate("/login") },
+        onCancel: () => { },
       });
     } else if (isAuthorized && allowedRoles.length > 0 && !allowedRoles.includes(role ?? "")) {
-      toast({
+      openConfirmation({
         title: "Access Denied",
         description: "You do not have permission to access this page.",
-        button: {
-          label: "Go to Home",
-          onClick: () => navigate("/"),
-        },
+        cancelLabel: "Cancel",
+        actionLabel: "Go to Home",
+        onAction: () => { },
+        onCancel: () => { () => navigate("/") },
       });
     }
   }, [isAuthorized, role, allowedRoles, navigate]);

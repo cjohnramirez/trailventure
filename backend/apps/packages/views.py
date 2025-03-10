@@ -32,7 +32,7 @@ class PackageSearchView(generics.ListAPIView):
 
         if start_date != 'None' and end_date != 'None':
             queryset = queryset.filter(
-                Q(start_date__gte=parse_date(start_date)) &
+                Q(start_date__gte=parse_date(start_date)) and
                 Q(end_date__lte=parse_date(end_date))
             )
 

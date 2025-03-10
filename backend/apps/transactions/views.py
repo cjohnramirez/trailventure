@@ -12,11 +12,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from stripe.error import StripeError
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 
 # USER
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def checkout_session_view(request, pk):
     try:
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -49,14 +50,29 @@ def checkout_session_view(request, pk):
             },
             mode="payment",
             customer_email=request.user.email,
-            success_url=f"{YOUR_DOMAIN}booking/success",
-            cancel_url=f"{YOUR_DOMAIN}booking/cancelled",
+            success_url=f"{YOUR_DOMAIN}booking/success/",
+            cancel_url=f"{YOUR_DOMAIN}booking/cancelled/{booking.id}/",
         )
 
         return Response({"url": checkout_session.url}, status=status.HTTP_201_CREATED)
     except StripeError as e:
         return Response(
             {"error": f"Stripe error: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
+        )
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def cancel_booking_view(request, pk):
+    try:
+        booking = get_object_or_404(Booking, pk=pk, user=request.user)
+        serialized_data = BookingSerializer(booking).data 
+        booking.delete() 
+        
+        return Response(
+            {"message": "Booking cancelled successfully.", "booking": serialized_data},
+            status=status.HTTP_200_OK,
         )
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -129,6 +145,16 @@ def process_transaction(session_id):
 
 
 class BookingListCreateView(generics.ListCreateAPIView):
+    serializer_class = BookingCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Booking.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class BookingListView(generics.ListAPIView):
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
 
@@ -152,7 +178,8 @@ class TransactionListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Transaction.objects.filter(user=self.request.user)
+        booking = Booking.objects.filter(user=self.request.user)
+        return Transaction.objects.filter(booking__in=booking)
 
 
 class TransactionModifyView(generics.RetrieveUpdateDestroyAPIView):

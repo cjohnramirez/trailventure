@@ -37,6 +37,7 @@ class Booking(models.Model):
     )
     num_of_person = models.PositiveIntegerField()
     booking_date = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateField(null=True, blank=True)
     currency = models.CharField(max_length=20, choices=currency_choices, default="PHP")
     modified = models.DateTimeField(auto_now=True)
 

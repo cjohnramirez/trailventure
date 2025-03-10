@@ -3,4 +3,5 @@ export interface PostBooking {
   currency: string;
   package_type: number;
   user: number;
+  start_date: string;
 }

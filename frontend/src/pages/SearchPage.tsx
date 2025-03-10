@@ -73,8 +73,6 @@ function SearchPage() {
     refetch();
   }, [pageNumber]);
 
-  console.log(pageNumber);
-
   const { data: destinations } = useQuery<Destination[]>({
     queryFn: () => fetchDestinationData(),
     queryKey: ["searchDestinationData"],
@@ -147,8 +145,6 @@ function SearchPage() {
   };
 
   const largeScreen = useMediaQuery({ query: "(max-width: 1280px)" });
-
-  console.log(searchData && searchData);
 
   return (
     <>

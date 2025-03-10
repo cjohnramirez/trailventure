@@ -1,5 +1,5 @@
 import "./Loading.css"
-import { useGetStore } from "../Contexts/AuthContext";
+import { useGetStore } from "../Contexts/AuthStore";
 
 export default function Loading() {
   const loadingMessage = useGetStore((state) => state.loadingMessage);

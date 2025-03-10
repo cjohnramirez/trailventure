@@ -6,30 +6,19 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loginSchema, registerSchema } from "@/lib/Form/loginRegisterSchema";
 import { loginRegisterFields } from "@/lib/Form/loginRegisterFields";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LoginPageImage from "../../assets/Form/LoginPage.jpg";
-import { toast } from "../../components/Error/ErrorSonner";
+import useConfirmationStore from "../Contexts/ConfirmationStore";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
   const [_loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { openConfirmation } = useConfirmationStore();
 
   const isLogin = method === "login";
   const name = isLogin ? "Login" : "Register";
@@ -58,8 +47,6 @@ function HomeForm({ route, method }: { route: string; method: string }) {
       });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    setLoading(true);
-
     if ("passwordConfirm" in values) {
       const { passwordConfirm, ...filteredValues } = values as {
         username: string;
@@ -78,9 +65,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
     try {
       const res = await api.post(
         route,
-        isLogin
-          ? { username: values.username, password: values.password }
-          : values,
+        isLogin ? { username: values.username, password: values.password } : values,
       );
 
       if (isLogin) {
@@ -90,22 +75,27 @@ function HomeForm({ route, method }: { route: string; method: string }) {
         setTimeout(() => {
           window.location.href = "/";
         }, 1000);
-        toast({
+        openConfirmation({
           title: "Login Successful!",
           description: "Redirecting to homepage...",
-          button: {
-            label: "Go immediately!",
-            onClick: () => navigate("/"),
-          },
+          cancelLabel: "Go immediately!",
+          actionLabel: "Delete",
+          onAction: () => {},
+          onCancel: () => {},
         });
-
       } else {
         navigate("/login");
       }
     } catch (error) {
-      toast({
-        title: "Login Failed!",
-        description: "Invalid username or password. Try again"
+      openConfirmation({
+        title: "Login Failed",
+        description: "Incorrect username or password",
+        cancelLabel: "Cancel",
+        actionLabel: "Go to Home",
+        onAction: () => {
+          navigate("/");
+        },
+        onCancel: () => {},
       });
     } finally {
       setLoading(false);
@@ -114,25 +104,18 @@ function HomeForm({ route, method }: { route: string; method: string }) {
     setLoading(false);
   };
 
-  const formFields = isLogin
-    ? loginRegisterFields.login
-    : loginRegisterFields.register;
+  const formFields = isLogin ? loginRegisterFields.login : loginRegisterFields.register;
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-[800px] items-center p-4 md:flex md:h-screen md:max-h-[700px]">
         <div className="hidden h-full w-1/2 md:block">
-          <img
-            src={LoginPageImage}
-            className="h-full w-full rounded-lg object-cover"
-          />
+          <img src={LoginPageImage} className="h-full w-full rounded-lg object-cover" />
         </div>
         <div className="md:w-1/2">
           <div className="flex h-full flex-col justify-center">
             <CardHeader className="px-8">
-              <CardTitle>
-                {isLogin ? "Login to Proceed" : "Create an Account"}
-              </CardTitle>
+              <CardTitle>{isLogin ? "Login to Proceed" : "Create an Account"}</CardTitle>
               <CardDescription>
                 {isLogin ? (
                   <div>

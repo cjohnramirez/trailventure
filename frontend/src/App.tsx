@@ -10,12 +10,12 @@ import PackagePage from "./pages/TourPackagePage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import UserPage from "./pages/UserPage";
 import BookingPage from "./pages/BookingPage";
-import { useGetStore } from "@/components/Contexts/AuthContext";
+import { useGetStore } from "@/components/Contexts/AuthStore";
 import { useEffect } from "react";
 import Loading from "./components/Loading/Loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HostDashboardPage from "./pages/HostDashboardPage";
-import AccessDenied from "./components/Error/AccessDenied";
+import BookingCancelled from "./components/BookingPage/BookingCancelled";
 
 function Logout() {
   localStorage.clear();
@@ -53,10 +53,18 @@ function App() {
                 }
               />
               <Route
-                path="/booking/:tourpackageId/:tourpackagetype/:numofperson/:booking-date"
+                path="/booking/:tourpackageId/:tourpackagetype/:numofperson/:startdate/"
                 element={
                   <ProtectedRoute allowedRoles={["customer"]}>
                     <BookingPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/booking/cancelled/:id/"
+                element={
+                  <ProtectedRoute allowedRoles={["customer"]}>
+                    <BookingCancelled />
                   </ProtectedRoute>
                 }
               />
@@ -71,7 +79,6 @@ function App() {
               <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<RegisterAndLogout />} />
               <Route path="*" element={<NotFound />} />
-              <Route path="/access-denied" element={<AccessDenied />} />
               <Route path="/loading" element={<Loading />} />
             </>
           ) : (

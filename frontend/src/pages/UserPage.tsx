@@ -20,7 +20,7 @@ import { Booking } from "@/lib/BookingPage/booking";
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
-
+  
   const { data: userData } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
     queryKey: ["userData"],
@@ -39,8 +39,6 @@ function UserPage() {
   if (isUserBookingLoading || isUserReviewLoading) {
     return <Loading />;
   }
-
-  console.log(userBooking);
 
   return (
     <div className="w-full">

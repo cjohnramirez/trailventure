@@ -14,7 +14,7 @@ import { useMediaQuery } from "react-responsive";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserData } from "@/api/userData";
 import { UserData } from "@/lib/UserPage/userData";
-import { useGetStore } from "../Contexts/AuthContext";
+import { useGetStore } from "../Contexts/AuthStore";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
 
 function NavBarDropdown() {

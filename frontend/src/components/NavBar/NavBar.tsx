@@ -4,7 +4,7 @@ import NavBarDropdown from "./NavBarDropdown";
 import Search from "./SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useGetStore } from "../Contexts/AuthContext";
+import { useGetStore } from "../Contexts/AuthStore";
 import { useQuery } from "@tanstack/react-query";
 import { UserData } from "@/lib/UserPage/userData";
 import { fetchUserData } from "@/api/userData";

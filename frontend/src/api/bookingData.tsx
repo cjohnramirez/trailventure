@@ -11,24 +11,39 @@ export const postCheckoutData = async (bookingId: number) => {
   window.location.href = response.data.url;
 };
 
-
 export const postBookingData = async (userBooking: PostBooking) => {
-  const response = await api.post(
-    `/apps/transaction/booking/list-create`,
-    {
-      num_of_person: userBooking.num_of_person,
-      currency: userBooking.currency,
-      package_type: userBooking.package_type,
-      user: userBooking.user,
-    },
-    {
-      headers: { "Content-Type": "application/json" },
-    },
-  );
-  return response.data;
+  try {
+    const response = await api.post(
+      `/apps/transaction/booking/list-create/`,
+      {
+        num_of_person: userBooking.num_of_person,
+        currency: userBooking.currency,
+        package_type: userBooking.package_type,
+        user: userBooking.user,
+        start_date: userBooking.start_date,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+    return response.data || [];
+  } catch (error) {
+    return [];
+  }
 };
 
 export const fetchAdditionalFeesData = async () => {
-  const additionalFees = await api.get(`/apps/transaction/additional-fees/list`);
+  const additionalFees = await api.get(`/apps/transaction/additional-fees/list/`);
   return additionalFees.data || [];
+};
+
+export const postDeletedBooking = async (id: number) => {
+  try {
+    const response = await api.get(`/apps/transaction/booking/cancelled/${id}/`);
+    return response.data || [];
+  } catch (error) {
+    console.error("Error:", error);
+  }
+
+  return [];
 };
