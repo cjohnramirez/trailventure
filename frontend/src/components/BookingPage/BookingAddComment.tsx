@@ -11,15 +11,18 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 import { useNavigate } from "react-router-dom";
+import { Textarea } from "../ui/textarea";
+import { postComment } from "@/api/tourPackageData";
+import { useMutation } from "@tanstack/react-query";
 
 interface CommentDialogProps {
   commentDialogOpen: boolean;
   setCommentDialogOpen: Dispatch<SetStateAction<boolean>>;
   isAuthorized: boolean;
   isAllowedToComment: boolean;
+  transactionId: number;
 }
 
 export default function CommentDialog({
@@ -27,16 +30,22 @@ export default function CommentDialog({
   setCommentDialogOpen,
   isAuthorized,
   isAllowedToComment,
+  transactionId,
 }: CommentDialogProps) {
   const [wordCount, setWordCount] = useState(0);
-  const [_rating, setRating] = useState(0);
+  const [commentText, setCommentText] = useState("");
+  const [rating, setRating] = useState(0);
   const [firstPageOpen, setFirstPageOpen] = useState(true);
   const { openConfirmation } = useConfirmationStore();
   const navigate = useNavigate();
 
+  const { mutateAsync: mutateCommentData } = useMutation({
+    mutationFn: postComment,
+  });
+
   useEffect(() => {
     setFirstPageOpen(false);
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!isAuthorized && !firstPageOpen) {
@@ -65,16 +74,38 @@ export default function CommentDialog({
     }
   }, [commentDialogOpen]);
 
+  const handleCreateComment = async () => {
+    const request = await mutateCommentData({
+      comment: commentText,
+      rating: rating,
+      transaction: transactionId,
+    });
+    if (request.status === 400) {
+      openConfirmation({
+        title: "Not Allowed",
+        description: "You have already reviewed this package",
+        cancelLabel: "Cancel",
+        actionLabel: "Go to Home",
+        onAction: () => {
+          navigate("/");
+        },
+        onCancel: () => {},
+      });
+    }
+    setCommentDialogOpen(false);
+  };
+
   return (
-    isAuthorized && isAllowedToComment && (
+    isAuthorized &&
+    isAllowedToComment && (
       <Dialog open={commentDialogOpen} onOpenChange={setCommentDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle asChild>
-              <p>Add Comment</p>
+              <p>Add Review</p>
             </DialogTitle>
             <DialogDescription asChild>
-              <p>Write your comment about the package</p>
+              <p>Write your review about the package</p>
             </DialogDescription>
           </DialogHeader>
           <div>
@@ -85,10 +116,13 @@ export default function CommentDialog({
                 {wordCount} / 255
               </p>
             </div>
-            <Input
+            <Textarea
               placeholder="Enter your comment"
               maxLength={255}
-              onChange={(e) => setWordCount(e.target.value.length)}
+              onChange={(e) => {
+                setWordCount(e.target.value.length);
+                setCommentText(e.target.value);
+              }}
             />
             <DropdownMenuSeparator className="my-4" />
             <div className="flex items-center gap-4">
@@ -111,6 +145,7 @@ export default function CommentDialog({
                 type="submit"
                 variant={"outline"}
                 className="bg-teal-500 text-white dark:text-black"
+                onClick={handleCreateComment}
               >
                 Submit
               </Button>

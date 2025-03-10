@@ -31,7 +31,7 @@ function PackagePage() {
     queryKey: ["tourPackageReviews", id],
   });
 
-  const { data: ownTourPackageReviews } = useQuery<tourPackageReviews[]>({
+  const { data: ownTourPackageReviews, refetch } = useQuery<tourPackageReviews[]>({
     queryFn: () => fetchOwnPackageReviews(Number(id)),
     queryKey: ["ownTourPackageReviews", id],
     enabled: isAuthorized,
@@ -51,6 +51,11 @@ function PackagePage() {
   const [isAllowedToComment, setIsAllowedToComment] = useState(false);
   const [isAllowedToBook, setIsAllowedToBook] = useState(false);
   const { openConfirmation } = useConfirmationStore();
+  const [transactionId, setTransactionId] = useState<number>(0);
+
+  if (commentDialogOpen == false) {
+    refetch();
+  }
 
   useEffect(() => {
     if (!tourpackage) {
@@ -60,10 +65,11 @@ function PackagePage() {
       useGetStore.setState({ loading: false });
     }
   }, [tourpackage]);
-  
+
   useEffect(() => {
     if (ownTransactions && ownTransactions.length > 0 && ownTransactions[0].booking.id == id) {
       setIsAllowedToComment(true);
+      setTransactionId(ownTransactions[0].id);
     }
     if (ownTransactions && ownTransactions.length > 0 && ownTransactions[0].booking.id != id) {
       setIsAllowedToBook(false);
@@ -331,6 +337,13 @@ function PackagePage() {
                 <p className="text-xl font-semibold" id="reviews">
                   Reviews
                 </p>
+                <CommentDialog
+                  commentDialogOpen={commentDialogOpen}
+                  setCommentDialogOpen={setCommentDialogOpen}
+                  isAuthorized={isAuthorized}
+                  isAllowedToComment={isAllowedToComment}
+                  transactionId={transactionId}
+                />
                 <Button
                   variant={"outline"}
                   onClick={() => setCommentDialogOpen(!commentDialogOpen)}
@@ -495,12 +508,6 @@ function PackagePage() {
           </div>
         </div>
       </div>
-      <CommentDialog
-        commentDialogOpen={commentDialogOpen}
-        setCommentDialogOpen={setCommentDialogOpen}
-        isAuthorized={isAuthorized}
-        isAllowedToComment={isAllowedToComment}
-      />
     </div>
   );
 }
