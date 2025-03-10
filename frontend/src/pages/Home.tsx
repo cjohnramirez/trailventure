@@ -70,13 +70,13 @@ function Home() {
             </p>
           </div>
         </div>
-        <div className="mx-auto grid max-w-[1200px] grid-cols-3 grid-rows-2 gap-4">
+        <div className="mx-auto flex flex-col md:grid max-w-[1200px] md:grid-cols-3 sm:grid-rows-2 gap-4">
           <div className="flex flex-col justify-center col-span-1 rounded-2xl border-[1px] p-8 shadow-lg">
             <Calendar size={64} strokeWidth={1} className="mb-4" />
             <p className="text-2xl font-semibold">Hassle-Free Booking</p>
             <p>A fast, easy, and worry-free tour package booking process.</p>
           </div>
-          <div className="col-span-1 row-span-2 rounded-2xl border-[1px] shadow-lg">
+          <div className="col-span-1 row-span-2 rounded-2xl border-[1px] shadow-lg sm:block hidden">
             <img src={personHiking} className="object-cover h-full rounded-2xl"></img>
           </div>
           <div className="flex flex-col justify-center col-span- rounded-2xl border-[1px] p-8 shadow-lg">

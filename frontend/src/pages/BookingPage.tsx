@@ -31,6 +31,8 @@ function BookingPage() {
     queryKey: ["bookingData", tourpackageId],
   });
 
+  console.log(packageData)
+
   const { data: userData } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
     queryKey: ["userData"],
@@ -58,7 +60,7 @@ function BookingPage() {
   const routePoints = packageData?.[0]?.package_type[packagetype]?.package_route_point || [];
   const numOfDays = routePoints[routePoints.length - 1]?.day;
   const endUserPackageDate = new Date(startUserDate);
-  endUserPackageDate.setDate(endUserPackageDate.getDate() + numOfDays);
+  endUserPackageDate.setDate(startUserDate.getDate() + numOfDays);
   const formattedEndUserPackageDate = endUserPackageDate.toLocaleDateString();
  
   const basePrice = packageData
@@ -163,9 +165,7 @@ function BookingPage() {
                         }
                       }}
                       disabled={{
-                        before: packageData
-                          ? new Date(packageData && packageData[0]?.start_date)
-                          : new Date(),
+                        before: new Date(),
                         after: packageData
                           ? new Date(packageData && packageData[0]?.end_date)
                           : new Date(),

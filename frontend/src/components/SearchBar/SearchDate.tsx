@@ -47,7 +47,7 @@ export default function SearchDate({
         <div className="flex">
           <Calendar
             mode="range"
-            selected={{ from: firstDate || undefined, to: secondDate || undefined }}
+            selected={{ from: firstDate || new Date(), to: secondDate || undefined }}
             onSelect={(range) => {
               if (range) {
                 if (range.from) {
@@ -58,6 +58,11 @@ export default function SearchDate({
                 }
               }
             }}
+            disabled={
+              {
+                before: new Date(),
+              }
+            }
           />
         </div>
       </PopoverContent>

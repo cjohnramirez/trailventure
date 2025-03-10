@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import Loading from "./components/Loading/Loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HostDashboardPage from "./pages/HostDashboardPage";
+import AccessDenied from "./components/Error/AccessDenied";
 
 function Logout() {
   localStorage.clear();
@@ -70,6 +71,7 @@ function App() {
               <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<RegisterAndLogout />} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/access-denied" element={<AccessDenied />} />
               <Route path="/loading" element={<Loading />} />
             </>
           ) : (

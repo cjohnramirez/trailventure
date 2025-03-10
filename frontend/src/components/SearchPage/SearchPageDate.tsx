@@ -20,7 +20,7 @@ export default function SearchPageDate({ state, setStartDate, setEndDate }: Prop
       <Calendar
         mode="range"
         selected={{
-          from: state.startDate ? new Date(state.startDate) : undefined,
+          from: state.startDate ? new Date(state.startDate) : new Date(),
           to: state.endDate ? new Date(state.endDate) : undefined,
         }}
         onSelect={(range) => {
@@ -37,6 +37,9 @@ export default function SearchPageDate({ state, setStartDate, setEndDate }: Prop
               setEndDate(null);
             }
           }
+        }}
+        disabled={{
+          before: new Date(),
         }}
         className="pt-8"
       />

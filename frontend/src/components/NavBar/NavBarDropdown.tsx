@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserData } from "@/api/userData";
 import { UserData } from "@/lib/UserPage/userData";
 import { useGetStore } from "../Contexts/AuthContext";
+import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
 
 function NavBarDropdown() {
   const { theme, setTheme } = useTheme();
@@ -43,7 +44,7 @@ function NavBarDropdown() {
             <>
               <DropdownMenuItem>
                 <Link to="/user-page" className="flex gap-2 items-center">
-                  <img src={userData ? userData[0]?.avatar : ""} alt="avatar" className="w-8 h-8 rounded-full" />
+                  <img src={userData && userData[0]?.avatar ? userData[0]?.avatar : DefaultProfile} alt="avatar" className="w-8 h-8 rounded-full" />
                   <p>{userData && userData[0]?.user?.username}</p>
                 </Link>
               </DropdownMenuItem>

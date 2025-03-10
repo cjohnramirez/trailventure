@@ -14,6 +14,7 @@ function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (isAuthorized === false) {
+      navigate("/access-denied");
       toast({
         title: "Login / Sign Up Required",
         description: "You must login or sign up in order to access this page",
@@ -23,7 +24,6 @@ function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
         },
       });
     } else if (isAuthorized && allowedRoles.length > 0 && !allowedRoles.includes(role ?? "")) {
-      navigate("")
       toast({
         title: "Access Denied",
         description: "You do not have permission to access this page.",
