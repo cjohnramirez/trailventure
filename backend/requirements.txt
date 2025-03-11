@@ -24,3 +24,5 @@ tzdata==2025.1
 urllib3==2.3.0
 virtualenv==20.29.2
 whitenoise==6.9.0
+cloudinary==1.42.2
+six==1.17.0
