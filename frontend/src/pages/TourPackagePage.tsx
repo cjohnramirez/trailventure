@@ -397,6 +397,7 @@ function PackagePage() {
                                   SVGstyle={{ display: "inline" }}
                                   allowFraction={true}
                                   fillColor={"#16baa8"}
+                                  allowHover={false}
                                 />
                               </div>
                             </div>

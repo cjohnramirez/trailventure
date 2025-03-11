@@ -18,7 +18,7 @@ const BookingSuccessful = () => {
   });
 
   return (
-    <div className="h-screen">
+    <div className="h-screen p-8">
       {successfulBooking ? (
         <div className="flex h-full flex-col items-center justify-center">
           <Confetti width={width} height={height} tweenDuration={1000} className="-z-10" />
