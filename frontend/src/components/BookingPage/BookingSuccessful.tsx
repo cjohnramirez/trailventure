@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
+import Loading from "../Loading/Loading";
 
 const BookingSuccessful = () => {
   const { width, height } = useWindowSize();
@@ -44,7 +45,7 @@ const BookingSuccessful = () => {
           </div>
         </div>
       ) : (
-        <p>Loading booking details...</p>
+        <Loading loadingMessage="Loading Successful Transaction" />
       )}
     </div>
   );

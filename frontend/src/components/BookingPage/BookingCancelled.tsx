@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CircleX } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { Button } from "../ui/button";
+import Loading from "../Loading/Loading";
 
 const BookingCancelled = () => {
   const { id } = useParams();
@@ -36,7 +37,7 @@ const BookingCancelled = () => {
           </div>
         </div>
       ) : (
-        <p>Loading booking details...</p>
+        <Loading loadingMessage="Loading Failed Transaction"/>
       )}
     </div>
   );

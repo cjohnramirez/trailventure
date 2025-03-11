@@ -26,7 +26,7 @@ def checkout_session_view(request, pk):
         package = booking.package_type.package
         package_image = PackageImage.objects.filter(package=package).first()
 
-        YOUR_DOMAIN = "https://trailventure-main.vercel.app"  # change this in production
+        YOUR_DOMAIN = "https://trailventure-main.vercel.app/"  # change this in production
         package_image = PackageImage.objects.filter(package=package).first()
         image_url = package_image.image if package_image and package_image.image else ""
 
