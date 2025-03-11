@@ -26,7 +26,7 @@ def checkout_session_view(request, pk):
         package = booking.package_type.package
         package_image = PackageImage.objects.filter(package=package).first()
 
-        YOUR_DOMAIN = "https://trailventure-main.vercel.app/"  # change this in production
+        YOUR_DOMAIN = "http://localhost:5173/"  # change this in production
         package_image = PackageImage.objects.filter(package=package).first()
         image_url = package_image.image if package_image and package_image.image else ""
 
@@ -98,10 +98,12 @@ def stripe_webhook(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     payload = request.body
     
+    # First check if the header exists
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     if not sig_header:
         print("Stripe signature header missing")
         return HttpResponse(status=401)
+        
     event = None
 
     try:

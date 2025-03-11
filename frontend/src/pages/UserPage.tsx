@@ -20,8 +20,8 @@ import { Booking } from "@/lib/BookingPage/booking";
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
-  
-  const { data: userData } = useQuery<UserData[]>({
+
+  const { data: userData, isLoading: isUserDataLoading } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
     queryKey: ["userData"],
   });
@@ -36,8 +36,8 @@ function UserPage() {
     queryKey: ["userComment"],
   });
 
-  if (isUserBookingLoading || isUserReviewLoading) {
-    return <Loading />;
+  if (isUserDataLoading || isUserBookingLoading || isUserReviewLoading) {
+    return <Loading loadingMessage="Loading User Data" />;
   }
 
   return (
@@ -241,7 +241,7 @@ function UserPage() {
             <div className="my-4 max-w-[1300px] rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0 xl:my-0">
               <p className="mb-4 text-lg font-semibold">Your Booking</p>
               {userBooking && userBooking.length > 0 ? (
-                userBooking.map((booking, index) => (
+                userBooking.map((booking: Booking, index: number) => (
                   <div key={index} className="mb-4 rounded-xl border-[1px] p-4">
                     <div className="flex items-center gap-4">
                       <img
@@ -293,9 +293,9 @@ function UserPage() {
                   : ""
               }
             >
-              {UserReview &&
-              UserReview.length > 0 &&
-              UserReview[0]?.review_by_user.user.length !== 0 ? (
+              { UserReview &&
+                UserReview.length > 0 &&
+                UserReview[0]?.review_by_user.user.length !== 0 ? (
                 UserReview.map((review, index) => {
                   return (
                     <div key={index} className="rounded-xl border-[1px] p-4">

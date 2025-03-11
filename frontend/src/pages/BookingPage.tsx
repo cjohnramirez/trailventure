@@ -22,16 +22,18 @@ import { UserData } from "@/lib/UserPage/userData";
 import { fetchUserData } from "@/api/userData";
 import { AdditionalFees } from "@/lib/BookingPage/additionalFees";
 import { postCheckoutData, postBookingData, fetchAdditionalFeesData } from "@/api/bookingData";
+import Loading from "@/components/Loading/Loading";
+import "@/components/Loading/LoadingSpinner.css"
 
 function BookingPage() {
   const { tourpackageId, tourpackagetype, numofperson, startdate } = useParams();
 
-  const { data: packageData } = useQuery<tourPackage[]>({
+  const { data: packageData, isLoading: isPackageDataLoading } = useQuery<tourPackage[]>({
     queryFn: () => fetchPackage(Number(tourpackageId)),
     queryKey: ["bookingData", tourpackageId],
   });
 
-  const { data: userData } = useQuery<UserData[]>({
+  const { data: userData, isLoading: isUserDataLoading  } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
     queryKey: ["userData"],
   });
@@ -41,11 +43,11 @@ function BookingPage() {
     queryKey: ["additionalFeesData"],
   });
 
-  const { mutateAsync: mutateBookingData } = useMutation({
+  const { mutateAsync: mutateBookingData, isPending: isMutateBookingDataLoading } = useMutation({
     mutationFn: postBookingData,
   });
 
-  const { mutateAsync: mutateCheckoutData } = useMutation({
+  const { mutateAsync: mutateCheckoutData, isPending: isMutateCheckoutDataLoading } = useMutation({
     mutationFn: postCheckoutData,
   });
 
@@ -122,6 +124,10 @@ function BookingPage() {
   const updateInvoice = () => {
     setTotalPrice((basePrice + siteFeePrice + taxPrice) * quantity);
   };
+
+  if (isPackageDataLoading || isUserDataLoading) {
+    return <Loading loadingMessage="Loading Booking Data"/>
+  }
 
   const handleCheckoutButton = async () => {
     try {
@@ -319,6 +325,10 @@ function BookingPage() {
               </p>
             </div>
             <Button variant={"outline"} className="w-full" onClick={handleCheckoutButton}>
+              {
+                isMutateBookingDataLoading || isMutateCheckoutDataLoading ? 
+                <div className="loadertiny"></div> : null
+              }
               <p>Proceed to Checkout</p>
             </Button>
           </div>

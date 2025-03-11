@@ -88,7 +88,7 @@ function App() {
               <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<RegisterAndLogout />} />
               <Route path="*" element={<NotFound />} />
-              <Route path="/loading" element={<Loading />} />
+              <Route path="/loading" element={<Loading loadingMessage="Loading TrailVenture"/>} />
             </>
           ) : (
             <>

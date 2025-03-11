@@ -45,6 +45,7 @@ function SearchPage() {
   const [reviewScore, setReviewScore] = useState<string | null>(null);
   const [pageRefresh, setPageRefresh] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(Number(pagenumber) || 1);
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setPageRefresh(true);
@@ -52,8 +53,8 @@ function SearchPage() {
 
   const {
     data: searchData,
-    isLoading,
     refetch,
+    isLoading,
   } = useQuery<searchData>({
     queryFn: () =>
       fetchSearchData({
@@ -64,14 +65,10 @@ function SearchPage() {
         max_price: Number(maxPrice) || "None",
         page: pageNumber,
       }),
-    queryKey: ["searchData", location, startdate, enddate, startprice, endprice],
+    queryKey: ["searchData", location, startdate, enddate, startprice, endprice, pageNumber],
     refetchOnWindowFocus: false,
     enabled: pageRefresh,
   });
-
-  useEffect(() => {
-    refetch();
-  }, [pageNumber]);
 
   const { data: destinations } = useQuery<Destination[]>({
     queryFn: () => fetchDestinationData(),
@@ -100,12 +97,8 @@ function SearchPage() {
   const altReviewScores: string[] = ["Excellent", "Great", "Good", "Bad", "Terrible"];
 
   const searchDestination = selectedDestination === "Set Location" ? "None" : selectedDestination;
-  const formattedStartDate = startDate
-    ? formatDate(startDate.replace(/\//g, "-"))
-    : "None";
-  const formattedEndDate = endDate
-    ? formatDate(endDate.replace(/\//g, "-"))
-    : "None";
+  const formattedStartDate = startDate ? formatDate(startDate.replace(/\//g, "-")) : "None";
+  const formattedEndDate = endDate ? formatDate(endDate.replace(/\//g, "-")) : "None";
   const minimumPrice = minPrice || "None";
   const maximumPrice = maxPrice || "None";
 
@@ -118,18 +111,22 @@ function SearchPage() {
 
   const incrementPageNumber = () => {
     const newPageNumber = pageNumber + 1;
+    setIsPageLoading(true); // Set loading state to true
     setPageNumber(newPageNumber);
     navigate(
       `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`,
     );
+    setIsPageLoading(false);
   };
 
   const decrementPageNumber = () => {
     const newPageNumber = pageNumber > 1 ? pageNumber - 1 : 1;
+    setIsPageLoading(true); // Set loading state to true
     setPageNumber(newPageNumber);
     navigate(
       `/search/${location}/${startdate}/${enddate}/${startprice}/${endprice}/${newPageNumber}`,
     );
+    setIsPageLoading(false);
   };
 
   const resetFilters = () => {
@@ -197,16 +194,20 @@ function SearchPage() {
         </aside>
         <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5">
           <div className="justify-between lg:flex">
-            <div className="xl:flex md:pb-0 pb-4 lg:w-1/2 items-center gap-4">
-              <p className="pb-2 text-xl font-semibold xl:pb-0 sm:text-left text-center">Search Results</p>
+            <div className="items-center gap-4 pb-4 md:pb-0 lg:w-1/2 xl:flex">
+              <p className="pb-2 text-center text-xl font-semibold sm:text-left xl:pb-0">
+                Search Results
+              </p>
               <div className="rounded-2xl border-[1px] px-8 py-2">
-                <p className="text-sm sm:text-left text-center">Found {searchData?.results?.length} search result</p>
+                <p className="text-center text-sm sm:text-left">
+                  Found {searchData?.results?.length} search result
+                </p>
               </div>
             </div>
-            <Pagination className="flex lg:w-1/2 lg:justify-end select-none">
+            <Pagination className="flex select-none lg:w-1/2 lg:justify-end">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious onClick={decrementPageNumber} className="cursor-pointer"/>
+                  <PaginationPrevious onClick={decrementPageNumber} className="cursor-pointer" />
                 </PaginationItem>
                 <PaginationItem>
                   <span className="pr-4 text-sm">Page {pageNumber}</span>
@@ -218,7 +219,7 @@ function SearchPage() {
             </Pagination>
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
-            {!isLoading && searchData && searchData?.results?.length > 0 ? (
+            {!isLoading && !isPageLoading && searchData && searchData?.results?.length > 0 ? (
               searchData.results.map((tourPackage: tourPackage, index) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
@@ -245,7 +246,7 @@ function SearchPage() {
                         <div className="flex-row items-center justify-between gap-4 sm:flex">
                           <div className="flex-row">
                             <p className="text-sm font-semibold">Cheapest Package</p>
-                            <p className="text-xs sm:pb-0 pb-2">Price per person</p>
+                            <p className="pb-2 text-xs sm:pb-0">Price per person</p>
                           </div>
                           <div className="rounded-xl border-[1px]">
                             <p className="p-2 text-sm font-semibold">
@@ -263,7 +264,7 @@ function SearchPage() {
             ) : (
               <div
                 className={
-                  isLoading
+                  isLoading || isPageLoading
                     ? `hidden`
                     : `col-span-2 flex h-32 items-center justify-center rounded-xl border-[1px] p-4`
                 }
@@ -271,7 +272,7 @@ function SearchPage() {
                 <p>No packages found matching your filters</p>
               </div>
             )}
-            {isLoading && (
+            {(isLoading || isPageLoading) && (
               <div className="col-span-full h-screen pb-96">
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <span className="loader"></span>

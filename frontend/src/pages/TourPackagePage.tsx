@@ -17,21 +17,29 @@ import { Rating } from "react-simple-star-rating";
 import { fetchOwnPackageReviews } from "@/api/tourPackageData";
 import CommentDialog from "@/components/BookingPage/BookingAddComment";
 import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
+import Loading from "@/components/Loading/Loading";
 
 function PackagePage() {
   const { id } = useParams();
-  const { data: tourpackage } = useQuery<tourPackage[]>({
+  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
+  const navigate = useNavigate();
+
+  // Fetch tour package data
+  const { data: tourpackage, isLoading: tourPackageLoading } = useQuery<tourPackage[]>({
     queryFn: () => fetchPackage(Number(id)),
     queryKey: ["tourPackageData", id],
   });
 
-  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
-  const { data: tourPackageReviews } = useQuery<tourPackageReviews[]>({
+  // Fetch package reviews
+  const { data: tourPackageReviews } = useQuery<
+    tourPackageReviews[]
+  >({
     queryFn: () => fetchPackageReviews(Number(id)),
     queryKey: ["tourPackageReviews", id],
   });
 
-  const { data: ownTourPackageReviews, refetch: ownTourPackageReviewsRefetch } = useQuery<
+  // Fetch own package reviews (enabled only if authorized)
+  const { data: ownTourPackageReviews, refetch: ownTourPackageReviewsRefetch, isLoading: isOwnTourPackageReviewLoading } = useQuery<
     tourPackageReviews[]
   >({
     queryFn: () => fetchOwnPackageReviews(Number(id)),
@@ -39,13 +47,13 @@ function PackagePage() {
     enabled: isAuthorized,
   });
 
+  // Fetch own transactions (enabled only if authorized)
   const { data: ownTransactions, refetch: ownTransactionRefetch } = useQuery({
     queryFn: () => fetchTransactions(Number(id)),
     queryKey: ["ownTransactions"],
     enabled: isAuthorized,
   });
 
-  const navigate = useNavigate();
   const [date, setDate] = useState<Date>(new Date());
   const [commentDialogOpen, setCommentDialogOpen] = useState(false);
   const [typeOfPackage, setTypeOfPackage] = useState<number>(0);
@@ -55,23 +63,15 @@ function PackagePage() {
   const { openConfirmation } = useConfirmationStore();
   const [transactionId, setTransactionId] = useState<number>(0);
 
-  if (commentDialogOpen == false) {
-    ownTourPackageReviewsRefetch();
-  }
-
+  // Refetch data when authorized status changes
   useEffect(() => {
-    if (!tourpackage) {
-      useGetStore.setState({ loadingMessage: "Loading package data" });
-      useGetStore.setState({ loading: true });
-    } else {
-      useGetStore.setState({ loading: false });
+    if (isAuthorized) {
+      ownTourPackageReviewsRefetch();
+      ownTransactionRefetch();
     }
-  }, [tourpackage]);
+  }, [isAuthorized, ownTourPackageReviewsRefetch, ownTransactionRefetch]);
 
-  useEffect(() => {
-    ownTransactionRefetch();
-  }, [id, ownTransactionRefetch]);
-
+  // Update booking and comment permissions based on transactions
   useEffect(() => {
     if (ownTransactions && ownTransactions.length > 0) {
       const booking = ownTransactions[0].booking.id;
@@ -80,7 +80,11 @@ function PackagePage() {
       setIsAllowedToComment(isBookingEqualToId);
       setTransactionId(ownTransactions[0].id);
     }
-  }, [ownTransactions, isAllowedToComment, isAllowedToBook, id]);
+  }, [ownTransactions, id]);
+
+  if (tourPackageLoading || isOwnTourPackageReviewLoading ) {
+    return <Loading loadingMessage="Loading Package Data"/>;
+  }
 
   function handleBooking() {
     if (!isAllowedToBook) {

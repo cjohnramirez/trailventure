@@ -1,9 +1,10 @@
 import "./Loading.css"
-import { useGetStore } from "../Contexts/AuthStore";
 
-export default function Loading() {
-  const loadingMessage = useGetStore((state) => state.loadingMessage);
+interface LoadingProps {
+  loadingMessage: string;
+}
 
+export default function Loading({ loadingMessage }: LoadingProps) {
   return (
     <div className="select-none flex h-screen w-screen flex-col items-center justify-center">
       <span className="loader"></span>
