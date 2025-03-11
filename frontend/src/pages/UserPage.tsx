@@ -17,6 +17,7 @@ import { Rating } from "react-simple-star-rating";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { Booking } from "@/lib/BookingPage/booking";
 
+
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
@@ -258,13 +259,7 @@ function UserPage() {
                         </div>
                         <div className="flex justify-between">
                           <div>
-                            <p className="text-sm">Booking Start</p>
-                            <p className="text-sm">
-                              {new Date(booking.booking_date).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm">Booking End</p>
+                            <p className="text-sm font-semibold">Booking Start</p>
                             <p className="text-sm">
                               {new Date(booking.booking_date).toLocaleDateString()}
                             </p>

@@ -44,7 +44,7 @@ function NavBarDropdown() {
             <>
               <DropdownMenuItem>
                 <Link to="/user-page" className="flex gap-2 items-center">
-                  <img src={userData && userData[0]?.avatar ? userData[0]?.avatar : DefaultProfile} alt="avatar" className="w-8 h-8 rounded-full" />
+                  <img src={userData && userData[0]?.avatar ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar : DefaultProfile} alt="avatar" className="w-8 h-8 rounded-full" />
                   <p>{userData && userData[0]?.user?.username}</p>
                 </Link>
               </DropdownMenuItem>

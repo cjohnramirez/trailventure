@@ -262,8 +262,8 @@ function PackagePage() {
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <div className="items-center gap-4 lg:flex">
-                  <div className="items-center gap-4 lg:flex lg:w-2/3">
+                <div className="items-center gap-4 xl:flex">
+                  <div className="items-center gap-4 xl:flex xl:w-2/3 mb:pb-0 pb-4">
                     <p className="text-xl font-semibold">Select Tour Date</p>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -294,7 +294,7 @@ function PackagePage() {
                     </Popover>
                   </div>
                   <p className="text-xl font-semibold">Quantity</p>
-                  <div className="flex items-center gap-4 rounded-full border-[1px] p-2 px-4 lg:w-1/3">
+                  <div className="flex items-center gap-4 rounded-full border-[1px] p-2 px-4 xl:w-1/3">
                     <p>Person</p>
                     <Button
                       variant={"outline"}
@@ -370,7 +370,7 @@ function PackagePage() {
                       ownTourPackageReviews &&
                       ownTourPackageReviews.length > 0 &&
                       ownTourPackageReviews[0]?.review_by_user?.user?.length !== 0
-                        ? "grid grid-cols-2 grid-rows-1 gap-4"
+                        ? "grid md:grid-cols-2 grid-rows-1 gap-4"
                         : ""
                     }
                   >
