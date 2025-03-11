@@ -98,7 +98,6 @@ def stripe_webhook(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     payload = request.body
     
-    # First check if the header exists
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     if not sig_header:
         print("Stripe signature header missing")

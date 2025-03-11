@@ -18,9 +18,9 @@ const BookingSuccessful = () => {
 
   return (
     <div className="h-screen">
-      <Confetti width={width} height={height} tweenDuration={1000} className="-z-10"/>
       {successfulBooking ? (
         <div className="flex h-full flex-col items-center justify-center">
+          <Confetti width={width} height={height} tweenDuration={1000} className="-z-10" />
           <div className="z-20 space-y-4 rounded-xl border-[1px] p-8">
             <CircleCheck size={120} color="#38b2ac" />
             <div>
