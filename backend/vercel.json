@@ -28,6 +28,5 @@
     "deploymentEnabled": {
       "dev": false
     }
-  },
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  }
 }
