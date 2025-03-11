@@ -102,7 +102,6 @@ def stripe_webhook(request):
     if not sig_header:
         print("Stripe signature header missing")
         return HttpResponse(status=401)
-        
     event = None
 
     try:
