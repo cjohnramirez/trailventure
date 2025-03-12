@@ -33,7 +33,7 @@ function NavBarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="h-full">
+        <Button variant="outline" className="h-full shadow-lg py-4">
           <Menu />
           Menu
         </Button>

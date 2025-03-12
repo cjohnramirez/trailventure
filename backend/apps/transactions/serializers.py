@@ -29,6 +29,7 @@ class TransactionSerializer(serializers.ModelSerializer):
       "user": booking.user.username,
       "package": booking.package_type.package.name,
       "id": booking.package_type.package.id,
+      "booking_id": booking.id,
     }
 
 class BookingCreateSerializer(serializers.ModelSerializer):

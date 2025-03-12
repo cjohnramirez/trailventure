@@ -15,8 +15,8 @@ import { useEffect } from "react";
 import Loading from "./components/Loading/Loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HostDashboardPage from "./pages/HostDashboardPage";
-import BookingCancelled from "./components/BookingPage/BookingCancelled";
-import BookingSuccessful from "./components/BookingPage/BookingSuccessful";
+import BookingCancelled from "./components/Pages/BookingPage/BookingCancelled";
+import BookingSuccessful from "./components/Pages/BookingPage/BookingSuccessful";
 
 function Logout() {
   localStorage.clear();

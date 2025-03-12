@@ -1,4 +1,4 @@
-import Form from "../components/Form/Form";
+import Form from "../components/Pages/FormPage/Form";
 
 function Login() {
   return <Form route="/apps/token/" method="login"></Form>;

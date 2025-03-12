@@ -6,6 +6,7 @@ export interface Booking {
   modified: string;
   package_type: PackageType;
   user: User | number;
+  start_date: string;
 }
 
 interface User {

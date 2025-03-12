@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from apps.users.permissions import IsCustomer
 from apps.packages.models import PackageImage, Package
-from apps.transactions.models import Booking, Transaction
+from apps.transactions.models import Booking, Transaction, AdditionalFees
 from apps.transactions.serializers import *
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
@@ -26,10 +26,14 @@ def checkout_session_view(request, pk):
         booking = get_object_or_404(Booking, pk=pk, user=request.user)
         package = booking.package_type.package
         package_image = PackageImage.objects.filter(package=package).first()
-
-        YOUR_DOMAIN = (
-            "https://trailventure-main.vercel.app/"  # change this in production
+        additional_fees = AdditionalFees.objects.get(id=2)
+        total_price = booking.package_type.price_per_person * (
+            1
+            + (additional_fees.tax_paid_percent + additional_fees.site_fees_percent)
+            / 100
         )
+
+        YOUR_DOMAIN = "https://trailventure-main.vercel.app/"  # change this in production
         package_image = PackageImage.objects.filter(package=package).first()
         image_url = package_image.image if package_image and package_image.image else ""
 
@@ -39,7 +43,7 @@ def checkout_session_view(request, pk):
                 {
                     "price_data": {
                         "currency": booking.currency.lower(),
-                        "unit_amount": int(booking.package_type.price_per_person * 100),
+                        "unit_amount": int(total_price * 100),
                         "product_data": {
                             "name": str(booking.package_type),
                             "images": [image_url] if image_url else [],
@@ -76,21 +80,6 @@ def cancel_booking_view(request, pk):
 
         return Response(
             {"message": "Booking cancelled successfully.", "booking": serialized_data},
-            status=status.HTTP_200_OK,
-        )
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def success_booking_view(request, pk):
-    try:
-        booking = get_object_or_404(Booking, pk=pk, user=request.user)
-        serialized_data = BookingSerializer(booking).data
-
-        return Response(
-            {"message": "Booking done successfully.", "booking": serialized_data},
             status=status.HTTP_200_OK,
         )
     except Exception as e:
@@ -163,6 +152,8 @@ def process_transaction(session_id):
         else:
             print(f"Updated existing transaction: {transaction}")
 
+        return transaction
+
     except Exception as e:
         print(f"Error processing transaction: {str(e)}")
 
@@ -189,6 +180,18 @@ class BookingListView(generics.ListAPIView):
         serializer.save(user=self.request.user)
 
 
+class BookingSingleView(generics.ListAPIView):
+    serializer_class = BookingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        id = self.kwargs.get("id")
+        return Booking.objects.filter(user=self.request.user, id=id)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 class BookingModifyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
@@ -203,20 +206,33 @@ class TransactionListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         id = self.kwargs.get("id")
-        print(f"Package ID: {id}")  # Debugging
 
         if id is None:
             return Transaction.objects.none()
 
-        booking_qs = Booking.objects.filter(
-            user=self.request.user, package_type__package=id
-        )
-        print(f"Bookings found: {booking_qs}")  # Debugging
+        booking_qs = Booking.objects.filter(user=self.request.user, id=id)
 
         transaction_qs = Transaction.objects.filter(booking__in=booking_qs).distinct()
-        print(f"Transactions found: {transaction_qs}")  # Debugging
-
         return transaction_qs
+
+
+class TransactionByBookingListView(generics.ListCreateAPIView):
+    serializer_class = TransactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        id = self.kwargs.get("id")
+
+        if id is None:
+            return Transaction.objects.none()
+
+        booking = Booking.objects.filter(
+            user=self.request.user, package_type__package=id
+        )
+
+        transaction = Transaction.objects.filter(booking__in=booking).distinct()
+
+        return transaction
 
 
 class TransactionModifyView(generics.RetrieveUpdateDestroyAPIView):

@@ -1,7 +1,7 @@
 import { Home, User } from "lucide-react";
 import { Button } from "../ui/button";
 import NavBarDropdown from "./NavBarDropdown";
-import Search from "./SearchBar";
+import Search from "@/components/SearchBar/SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useGetStore } from "../Contexts/AuthStore";
@@ -52,14 +52,14 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
             <></>
           </div>
         ) : (
-          <div className="col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1">
+          <div className="col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1 ">
             <Search navBar={true} />
           </div>
         )}
         <div className="flex justify-end gap-2">
           <Button
             variant="outline"
-            className={`hidden h-full sm:block ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
+            className={`hidden h-full sm:block shadow-lg ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
             onClick={handleAuthClick}
           >
             {isAuthorized ? (

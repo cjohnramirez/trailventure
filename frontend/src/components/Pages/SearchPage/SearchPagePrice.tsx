@@ -13,7 +13,7 @@ interface Props {
 
 export default function SearchPagePrice({ state, setMinPrice, setMaxPrice }: Props) {
   return (
-    <div className="rounded-2xl border-[1px] p-4">
+    <div className="rounded-2xl border-[1px] p-4 shadow-md">
       <div className="flex gap-4">
         <PhilippinePeso />
         <p>Price Range</p>

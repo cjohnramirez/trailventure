@@ -1,5 +1,5 @@
 import { MapPinned } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 interface SearchPageReviewProps {
   reviewScore: string | null;

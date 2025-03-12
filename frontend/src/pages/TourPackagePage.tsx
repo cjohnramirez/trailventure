@@ -9,13 +9,13 @@ import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { useGetStore } from "@/components/Contexts/AuthStore";
 import { useQuery } from "@tanstack/react-query";
-import { fetchPackage, fetchTransactions } from "@/api/tourPackageData";
+import { fetchPackage, fetchTransactionsByBooking } from "@/api/tourPackageData";
 import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
 import { tourPackageReviews } from "@/lib/TourPackagePage/tourPackageReview";
 import { fetchPackageReviews } from "@/api/tourPackageData";
 import { Rating } from "react-simple-star-rating";
 import { fetchOwnPackageReviews } from "@/api/tourPackageData";
-import CommentDialog from "@/components/BookingPage/BookingAddComment";
+import CommentDialog from "@/components/Pages/BookingPage/BookingAddComment";
 import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 import Loading from "@/components/Loading/Loading";
 
@@ -31,26 +31,26 @@ function PackagePage() {
   });
 
   // Fetch package reviews
-  const { data: tourPackageReviews } = useQuery<
-    tourPackageReviews[]
-  >({
+  const { data: tourPackageReviews } = useQuery<tourPackageReviews[]>({
     queryFn: () => fetchPackageReviews(Number(id)),
     queryKey: ["tourPackageReviews", id],
   });
 
   // Fetch own package reviews (enabled only if authorized)
-  const { data: ownTourPackageReviews, refetch: ownTourPackageReviewsRefetch, isLoading: isOwnTourPackageReviewLoading } = useQuery<
-    tourPackageReviews[]
-  >({
+  const {
+    data: ownTourPackageReviews,
+    refetch: ownTourPackageReviewsRefetch,
+    isLoading: isOwnTourPackageReviewLoading,
+  } = useQuery<tourPackageReviews[]>({
     queryFn: () => fetchOwnPackageReviews(Number(id)),
     queryKey: ["ownTourPackageReviews", id],
     enabled: isAuthorized,
   });
 
   // Fetch own transactions (enabled only if authorized)
-  const { data: ownTransactions, refetch: ownTransactionRefetch } = useQuery({
-    queryFn: () => fetchTransactions(Number(id)),
-    queryKey: ["ownTransactions"],
+  const { data: ownTransactionsByBooking, refetch: ownTransactionRefetch } = useQuery({
+    queryFn: () => fetchTransactionsByBooking(Number(id)),
+    queryKey: ["ownTransactionsByBooking"],
     enabled: isAuthorized,
   });
 
@@ -73,17 +73,19 @@ function PackagePage() {
 
   // Update booking and comment permissions based on transactions
   useEffect(() => {
-    if (ownTransactions && ownTransactions.length > 0) {
-      const booking = ownTransactions[0].booking.id;
+    if (ownTransactionsByBooking && ownTransactionsByBooking.length > 0) {
+      const booking = ownTransactionsByBooking[0].booking.id;
       const isBookingEqualToId = booking === Number(id);
       setIsAllowedToBook(!isBookingEqualToId);
       setIsAllowedToComment(isBookingEqualToId);
-      setTransactionId(ownTransactions[0].id);
+      setTransactionId(ownTransactionsByBooking[0].id);
     }
-  }, [ownTransactions, id]);
+  }, [ownTransactionsByBooking, id]);
 
-  if (tourPackageLoading || isOwnTourPackageReviewLoading ) {
-    return <Loading loadingMessage="Loading Package Data"/>;
+  console.log(ownTransactionsByBooking)
+
+  if (tourPackageLoading || isOwnTourPackageReviewLoading) {
+    return <Loading loadingMessage="Loading Package Data" />;
   }
 
   function handleBooking() {
@@ -119,7 +121,7 @@ function PackagePage() {
   return (
     <div id="main">
       <div className="fixed bottom-0 z-20 flex w-full justify-center px-8 py-4">
-        <div className="hidden w-full max-w-[500px] justify-center rounded-full border-[1px] bg-[#ffffff] p-4 dark:bg-[#09090b] lg:flex">
+        <div className="hidden w-full max-w-[500px] justify-center rounded-full border-[1px] bg-[#ffffff] p-4 dark:bg-[#09090b] lg:flex shadow-md">
           <div className="flex gap-4">
             <Button
               variant={"outline"}
@@ -158,7 +160,7 @@ function PackagePage() {
           </div>
         </div>
       </div>
-      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
+      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] shadow-md">
         <NavBar isNavBar={true} />
       </div>
       <div className="flex flex-col items-center gap-4 p-8 lg:mx-8 lg:my-4" id="description">
@@ -182,7 +184,7 @@ function PackagePage() {
                       <img
                         src={"https://res.cloudinary.com/dch6eenk5/" + image.image}
                         alt={`${tourpackage[0]?.name} image ${index}`}
-                        className={`h-96 w-full rounded-xl object-cover border-[1px]`}
+                        className={`h-96 w-full rounded-xl border-[1px] object-cover shadow-lg`}
                       />
                     </div>
                   </CarouselItem>
@@ -194,12 +196,12 @@ function PackagePage() {
         </div>
         <div className="w-full gap-4 lg:flex lg:max-w-[1200px]">
           <div className="flex flex-col gap-4 lg:w-2/3">
-            <div className="rounded-2xl border-[1px] p-8">
+            <div className="rounded-2xl border-[1px] p-8 shadow-lg">
               <p className="text-xl font-semibold">Description</p>
               <p>{tourpackage && tourpackage[0]?.description}</p>
             </div>
-            <div className="flex flex-col gap-8 rounded-2xl border-[1px] p-8" id="packageType">
-              <div className="flex flex-col gap-4 lg:rounded-2xl lg:border-[1px] lg:p-8">
+            <div className="flex flex-col gap-8 rounded-2xl border-[1px] p-8 shadow-md" id="packageType">
+              <div className="flex flex-col gap-4 lg:rounded-2xl lg:border-[1px] lg:p-8 shadow-md">
                 <div>
                   <p className="text-xl font-semibold">Package Type</p>
                   <div className="pt-4 lg:flex lg:gap-4">
@@ -207,7 +209,7 @@ function PackagePage() {
                       tourpackage[0]?.package_type.map((packageType, index) => {
                         return (
                           <Button
-                            className={`mb-4 flex rounded-2xl border-[1px] lg:mb-0 ${typeOfPackage == index ? "bg-teal-500 text-black" : ""}`}
+                            className={`mb-4 flex rounded-2xl border-[1px] lg:mb-0 shadow-md ${typeOfPackage == index ? "bg-teal-500 text-black" : ""}`}
                             variant={"outline"}
                             key={index}
                             onClick={() => {
@@ -231,7 +233,7 @@ function PackagePage() {
                         return (
                           <div
                             key={index}
-                            className="flex gap-4 rounded-full border-[1px] p-2 px-4"
+                            className="flex gap-4 rounded-full border-[1px] p-2 px-4 shadow-md"
                           >
                             <Box />
                             <p>{amenity.name}</p>
@@ -244,14 +246,14 @@ function PackagePage() {
                 <div>
                   <p className="text-xl font-semibold">Package Type Amenities</p>
                   <p>These are amenities that are available for the selected package</p>
-                  <div className="grid gap-2 pt-4 lg:grid-cols-2">
+                  <div className="grid gap-2 pt-4 lg:grid-cols-2 ">
                     {tourpackage &&
                       tourpackage[0]?.package_type[typeOfPackage].package_type_amenity.map(
                         (amenity, index) => {
                           return (
                             <div
                               key={index}
-                              className="flex gap-4 rounded-full border-[1px] p-2 px-4"
+                              className="flex gap-4 rounded-full border-[1px] p-2 px-4 shadow-lg"
                             >
                               <Box />
                               <p>{amenity.name}</p>
@@ -263,11 +265,14 @@ function PackagePage() {
                 </div>
                 <DropdownMenuSeparator />
                 <div className="items-center gap-4 xl:flex">
-                  <div className="items-center gap-4 xl:flex xl:w-2/3 mb:pb-0 pb-4">
-                    <p className="text-xl font-semibold">Select Tour Date</p>
+                  <div className="w-full items-center gap-4 pb-0 sm:flex sm:pb-4 md:pb-0">
+                    <p className="mb-2 text-xl font-semibold sm:mb-0">Select Tour Date</p>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant={"outline"} className="p-6">
+                        <Button
+                          variant={"outline"}
+                          className="flex w-full justify-start sm:justify-center p-6 sm:w-auto"
+                        >
                           <p>
                             {date
                               ? date.toLocaleDateString()
@@ -293,30 +298,32 @@ function PackagePage() {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  <p className="text-xl font-semibold">Quantity</p>
-                  <div className="flex items-center gap-4 rounded-full border-[1px] p-2 px-4 xl:w-1/3">
-                    <p>Person</p>
-                    <Button
-                      variant={"outline"}
-                      onClick={() => {
-                        setQuantity(quantity + 1);
-                      }}
-                      className="p-2"
-                    >
-                      <Plus />
-                    </Button>
-                    <p>{quantity}</p>
-                    <Button
-                      variant={"outline"}
-                      onClick={() => {
-                        if (quantity > 1) {
-                          setQuantity(quantity - 1);
-                        }
-                      }}
-                      className="p-2"
-                    >
-                      <Minus />
-                    </Button>
+                  <div className="items-center gap-4 pt-4 sm:flex xl:pt-0">
+                    <p className="mb-2 text-xl font-semibold sm:mb-0">Quantity</p>
+                    <div className="flex w-full items-center sm:justify-center gap-4 rounded-full border-[1px] p-2 px-4 sm:w-auto">
+                      <p>Person</p>
+                      <Button
+                        variant={"outline"}
+                        onClick={() => {
+                          setQuantity(quantity + 1);
+                        }}
+                        className="p-2"
+                      >
+                        <Plus />
+                      </Button>
+                      <p>{quantity}</p>
+                      <Button
+                        variant={"outline"}
+                        onClick={() => {
+                          if (quantity > 1) {
+                            setQuantity(quantity - 1);
+                          }
+                        }}
+                        className="p-2"
+                      >
+                        <Minus />
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
@@ -332,7 +339,7 @@ function PackagePage() {
                   </div>
                   <Button
                     variant={"outline"}
-                    className="h-full w-full bg-teal-500 px-10 text-black sm:w-auto"
+                    className="h-full w-full bg-teal-500 px-10 text-black sm:w-auto shadow-md"
                     onClick={() => {
                       handleBooking();
                     }}
@@ -370,7 +377,7 @@ function PackagePage() {
                       ownTourPackageReviews &&
                       ownTourPackageReviews.length > 0 &&
                       ownTourPackageReviews[0]?.review_by_user?.user?.length !== 0
-                        ? "grid md:grid-cols-2 grid-rows-1 gap-4"
+                        ? "grid grid-rows-1 gap-4 md:grid-cols-2"
                         : ""
                     }
                   >
@@ -484,10 +491,10 @@ function PackagePage() {
                     return (
                       <div
                         key={index}
-                        className="mb-4 flex flex-col gap-2 rounded-xl border-[1px] p-4"
+                        className="mb-4 flex flex-col gap-2 rounded-xl border-[1px] p-4 shadow-md"
                       >
                         <div className="flex gap-4">
-                          <div className="flex gap-4 rounded-xl border-[1px] p-2 px-4">
+                          <div className="flex gap-4 rounded-xl border-[1px] p-2 px-4 shadow-md">
                             <p className="border-r-2 pr-4">Route {routePoints.point_number}</p>
                             <p>Day {routePoints.day}</p>
                           </div>

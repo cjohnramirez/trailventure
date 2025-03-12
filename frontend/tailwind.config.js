@@ -7,6 +7,11 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+			boxShadow: {
+        sm: "0 0px 8px var(--shadow)", // Override small shadow
+        md: "0 0px 15px var(--shadow)", // Override medium shadow
+        lg: "0 0px 30px var(--shadow)", // Override large shadow
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

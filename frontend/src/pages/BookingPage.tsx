@@ -121,10 +121,6 @@ function BookingPage() {
     setPackageTypeId(packageData?.[0]?.package_type?.[packagetype]?.id || 0);
   }, [packageData]);
 
-  const updateInvoice = () => {
-    setTotalPrice((basePrice + siteFeePrice + taxPrice) * quantity);
-  };
-
   if (isPackageDataLoading || isUserDataLoading) {
     return <Loading loadingMessage="Loading Booking Data"/>
   }
@@ -151,12 +147,12 @@ function BookingPage() {
 
   return (
     <>
-      <nav className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
+      <nav className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] shadow-md">
         <NavBar isNavBar={true} />
       </nav>
-      <main className="flex-row px-8 pb-8 lg:flex">
+      <main className="flex-row px-8 pb-8 sm:mt-16 mt-8 lg:flex">
         <div className="flex-col gap-2 lg:flex lg:w-2/3">
-          <div className="mb-4 flex flex-col rounded-2xl border-[1px] p-8 lg:mb-0 lg:flex-row lg:items-center xl:p-4">
+          <div className="mb-4 flex flex-col rounded-2xl border-[1px] p-8 lg:mb-0 lg:flex-row lg:items-center xl:p-4 shadow-md">
             <img
               src={
                 packageData?.[0]?.package_image[0]
@@ -174,7 +170,7 @@ function BookingPage() {
                 <MapPin />
                 <p>{packageData?.[0]?.address || "Address not available"}</p>
               </div>
-              <div className="mt-4 flex gap-4 rounded-2xl border-[1px] p-4">
+              <div className="mt-4 flex gap-4 rounded-2xl border-[1px] p-4 shadow-md">
                 <Package />
                 <p>
                   Package Type: {packageData?.[0]?.package_type[packagetype]?.name || "Standard"}
@@ -182,7 +178,7 @@ function BookingPage() {
               </div>
             </div>
           </div>
-          <div className="rounded-2xl border-[1px] p-8">
+          <div className="rounded-2xl border-[1px] p-8 shadow-md">
             <div className="pb-4">
               <p className="text-xl font-semibold">Package Configuration</p>
               <p>These are your package details. Change if you wish.</p>
@@ -242,17 +238,9 @@ function BookingPage() {
                   }}
                 />
               </div>
-              <div className="col-start-2 hidden items-center justify-end xl:flex">
-                <p>Update your changes</p>
-              </div>
-              <div className="col-span-full col-start-3">
-                <Button variant={"outline"} onClick={updateInvoice} className="w-full">
-                  <p>Update</p>
-                </Button>
-              </div>
             </div>
           </div>
-          <div className="mb-4 mt-4 items-center justify-between rounded-2xl border-[1px] p-8 sm:flex lg:mb-0">
+          <div className="mb-4 mt-4 items-center justify-between rounded-2xl border-[1px] p-8 sm:flex lg:mb-0 shadow-md">
             <div className="">
               <p className="text-xl font-semibold">Package Rules</p>
               <p>Before proceeding, read the rules for this tour package.</p>
@@ -275,11 +263,11 @@ function BookingPage() {
             </div>
           </div>
         </div>
-        <aside className="mb-4 flex-col justify-between rounded-2xl border-[1px] p-8 lg:mb-0 lg:ml-4 lg:flex lg:w-1/3">
+        <aside className="mb-4 flex-col justify-between rounded-2xl border-[1px] p-8 lg:mb-0 lg:ml-4 lg:flex lg:w-1/3 shadow-md">
           <div>
             <div className="flex w-full flex-row items-start justify-between pb-4">
               <p className="text-xl font-semibold">Invoice</p>
-              <div className="flex items-center gap-2 rounded-2xl border-[1px] p-1 px-4">
+              <div className="flex items-center gap-2 rounded-2xl border-[1px] p-1 px-4 shadow-md">
                 <PhilippinePeso size={18} />
                 <p>In PHP</p>
               </div>

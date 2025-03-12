@@ -1,7 +1,7 @@
 import { useState } from "react";
-import api from "../../api/api";
+import api from "../../../api/api";
 import { Link, useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../constants";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../../constants";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { loginSchema, registerSchema } from "@/lib/Form/loginRegisterSchema";
 import { loginRegisterFields } from "@/lib/Form/loginRegisterFields";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import LoginPageImage from "../../assets/Form/LoginPage.jpg";
-import useConfirmationStore from "../Contexts/ConfirmationStore";
+import LoginPageImage from "@/assets/Form/LoginPage.jpg";
+import useConfirmationStore from "../../Contexts/ConfirmationStore";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
   const [_loading, setLoading] = useState<boolean>(false);

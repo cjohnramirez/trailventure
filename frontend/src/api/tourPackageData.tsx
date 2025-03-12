@@ -21,6 +21,11 @@ export const fetchTransactions = async (id : number) => {
   return fetchTransactions.data || [];
 };
 
+export const fetchTransactionsByBooking = async (id : number) => {
+  const fetchTransactionsByBooking = await api.get(`apps/transaction/transaction/booking/list-create/${id}/`);
+  return fetchTransactionsByBooking.data || [];
+};
+
 export const postComment = async (comment: CreateComment) => {
   try {
     const response = await api.post(

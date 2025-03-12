@@ -16,10 +16,13 @@ import { tourPackageReviews } from "@/lib/TourPackagePage/tourPackageReview";
 import { Rating } from "react-simple-star-rating";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { Booking } from "@/lib/BookingPage/booking";
+import UserBookingDetails from "@/components/Pages/UserPage/UserBookingDetails";
 
 function UserPage() {
   const [editMode, setEditMode] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
+  const [openBookingDetails, setOpenBookingDetails] = useState(false);
+  const [seeBooking, setSeeBooking] = useState<Booking | null>();
 
   const { data: userData, isLoading: isUserDataLoading } = useQuery<UserData[]>({
     queryFn: () => fetchUserData(),
@@ -40,9 +43,14 @@ function UserPage() {
     return <Loading loadingMessage="Loading User Data" />;
   }
 
+  function handleSeeBookingDetails(seeBooking: Booking) {
+    setSeeBooking(seeBooking);
+    setOpenBookingDetails(true);
+  }
+
   return (
     <div className="w-full">
-      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
+      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] shadow-lg">
         <NavBar isNavBar={true} />
       </div>
       <div className="p-8">
@@ -53,7 +61,7 @@ function UserPage() {
                 ? "https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.banner
                 : DefaultBanner
             }
-            className="h-full max-h-[300px] w-full rounded-2xl object-cover object-bottom"
+            className="h-full max-h-[300px] w-full rounded-2xl object-cover object-bottom shadow-2xl"
           ></img>
           <img
             src={
@@ -61,10 +69,10 @@ function UserPage() {
                 ? "https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar
                 : DefaultProfile
             }
-            className="absolute left-[90px] top-[120px] z-10 hidden aspect-square w-[250px] rounded-2xl object-cover lg:block"
+            className="absolute left-[90px] top-[120px] z-10 hidden aspect-square w-[250px] rounded-2xl object-cover lg:block shadow-lg"
           ></img>
           <div className="relative top-[-75px] w-full sm:top-[-165px] sm:p-12">
-            <div className="max-w-[800px] rounded-2xl border-[1px] bg-white p-8 leading-tight dark:bg-[#09090b] lg:h-[220px] lg:w-[700px]">
+            <div className="max-w-[800px] rounded-2xl border-[1px] bg-white p-8 leading-tight dark:bg-[#09090b] lg:h-[220px] lg:w-[700px] shadow-lg">
               <div className="flex flex-col md:left-[290px] lg:relative">
                 <div className="flex items-center gap-4">
                   <img
@@ -73,7 +81,7 @@ function UserPage() {
                         ? "https://res.cloudinary.com/dch6eenk5/" + userData?.[0]?.avatar
                         : DefaultProfile
                     }
-                    className="block aspect-square w-10 rounded-full object-cover sm:w-20 lg:hidden"
+                    className="block aspect-square w-10 rounded-full object-cover sm:w-20 lg:hidden shadow-lg"
                   ></img>
                   <div>
                     <p className="text-xs sm:text-base">Customer Profile</p>
@@ -83,7 +91,7 @@ function UserPage() {
                   </div>
                 </div>
 
-                <div className="mt-2 flex w-[220px] items-center gap-4 rounded-3xl border-[1px] p-4">
+                <div className="mt-2 flex w-[220px] items-center gap-4 rounded-3xl border-[1px] p-4 shadow-lg">
                   <p className="border-r-2 pr-4">Links</p>
                   <div>
                     <a
@@ -138,119 +146,28 @@ function UserPage() {
             </div>
           </div>
         </div>
-        <div className="relative top-[-40px] xl:flex w-full sm:top-[-165px]">
-          <div className="xl:w-1/2">
-            <div className="col-span-1">
-              <div className="my-4 max-w-[1300px] rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0 xl:my-0">
-                <p className="mb-4 text-lg font-semibold">Your Booking</p>
-                {userBooking && userBooking.length > 0 ? (
-                  userBooking.map((booking: Booking, index: number) => (
-                    <div key={index} className="mb-4 rounded-xl border-[1px] p-4 sm:p-8">
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                        <img
-                          src={`https://res.cloudinary.com/dch6eenk5/${booking.package_type?.package?.images?.image || ""}`}
-                          alt={booking.id + " package image"}
-                          className="h-32 rounded-xl object-cover sm:w-1/3"
-                        />
-                        <div className="flex h-full flex-col justify-between gap-4 sm:w-2/3">
-                          <div>
-                            <p className="text-md font-semibold">
-                              {booking.package_type?.package?.name}
-                            </p>
-                            <p className="text-sm">{booking.package_type?.name}</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <Button variant={"outline"}>See Booking Details</Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="mt-8 flex w-full items-center justify-center rounded-xl border-[1px] p-4">
-                    No bookings available
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="mt-4 flex max-w-[1300px] flex-col rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0">
-              <p className="text-lg font-semibold">Your Reviews</p>
-              <DropdownMenuSeparator className="my-4" />
-              <div
-                className={
-                  UserReview &&
-                  UserReview.length > 0 &&
-                  UserReview[0]?.review_by_user?.user?.length !== 0
-                    ? "grid grid-rows-1 gap-4 lg:grid-cols-2 xl:grid-cols-1"
-                    : ""
-                }
-              >
-                {UserReview &&
-                UserReview.length > 0 &&
-                UserReview[0]?.review_by_user.user.length !== 0 ? (
-                  UserReview.map((review, index) => {
-                    return (
-                      <div key={index} className="rounded-xl border-[1px] p-4">
-                        <div className="flex items-center justify-between pb-4">
-                          <div className="flex items-center gap-4">
-                            <img
-                              src={`https://res.cloudinary.com/dch6eenk5/${review.review_by_user.customer_profile[0]?.avatar}`}
-                              alt="avatar"
-                              className="h-6 w-6 rounded-full"
-                            />
-                            <p>{review.review_by_user.user}</p>
-                          </div>
-                          <div>
-                            <Rating
-                              initialValue={review.rating}
-                              disableFillHover={true}
-                              allowHover={false}
-                              size={20}
-                              SVGstyle={{ display: "inline" }}
-                              allowFraction={true}
-                              fillColor={"#16baa8"}
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <p>{review.comment}</p>
-                        </div>
-                        <div className="mt-2 sm:flex justify-between border-t-2 pt-2">
-                          <div>
-                            <p className="text-sm">{review.transaction.booking.package}</p>
-                          </div>
-                          <p className="sm:block hidden">{new Date(review.created).toLocaleDateString()}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="flex w-full items-center justify-center rounded-xl border-[1px] p-4">
-                    <p>No reviews yet</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="xl:w-1/2 xl:mt-0 mt-4">
-            <div className="col-span-1 flex max-w-[1300px] flex-col rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0">
-              <div className="items-center justify-between gap-4 pb-4 sm:flex">
+        <div className="relative top-[-40px] w-full sm:top-[-165px]">
+          <div className="mb-4 mt-4 xl:mt-0">
+            <div className="flex max-w-[1300px] flex-col rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0 shadow-lg">
+              <div className="relative grid items-center gap-4 pb-4 sm:grid-cols-2">
                 <p className="text-lg font-semibold">User Details</p>
-                <Button
-                  variant={"outline"}
-                  className="h-full"
-                  onClick={() => {
-                    setEditMode(!editMode);
-                  }}
-                >
-                  <Edit />
-                  <p>{editMode ? "Save Edit" : "Edit User Details"}</p>
-                </Button>
+                <div className="relative flex sm:justify-end">
+                  <Button
+                    variant={"outline"}
+                    className="h-full w-full"
+                    onClick={() => {
+                      setEditMode(!editMode);
+                    }}
+                  >
+                    <Edit />
+                    <p>{editMode ? "Save Edit" : "Edit User Details"}</p>
+                  </Button>
+                </div>
               </div>
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-1">
+              <div className="grid gap-4 lg:grid-cols-2">
                 {editMode ? (
                   <>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex shadow-sm">
                       <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">First Name</p>
                       <Input
                         type="text"
@@ -258,7 +175,7 @@ function UserPage() {
                         className="rounded-xl sm:rounded-full"
                       />
                     </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex shadow-sm">
                       <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Last Name</p>
                       <Input
                         type="text"
@@ -266,7 +183,7 @@ function UserPage() {
                         className="rounded-xl sm:rounded-full"
                       />
                     </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex shadow-sm">
                       <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Email</p>
                       <Input
                         type="email"
@@ -274,7 +191,7 @@ function UserPage() {
                         className="rounded-xl sm:rounded-full"
                       />
                     </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex shadow-sm">
                       <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Date of Birth</p>
                       <div className="w-full">
                         <Popover>
@@ -303,31 +220,140 @@ function UserPage() {
                   </>
                 ) : (
                   <>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6 shadow-sm">
                       <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                         First Name
                       </p>
                       <p className="sm:pl-4">{userData?.[0]?.user?.first_name}</p>
                     </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6 shadow-sm">
                       <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                         Last Name
                       </p>
                       <p className="sm:pl-4">{userData?.[0]?.user?.last_name}</p>
                     </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6 shadow-sm">
                       <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                         Email
                       </p>
                       <p className="sm:pl-4">{userData?.[0]?.user?.email}</p>
                     </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6">
+                    <div className="items-center rounded-2xl border-[1px] p-4 sm:flex sm:p-4 sm:py-6 shadow-sm">
                       <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
                         Date of Birth
                       </p>
                       <p className="sm:pl-4">{userData?.[0]?.date_of_birth}</p>
                     </div>
                   </>
+                )}
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="my-4 max-w-[1300px] rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0 xl:my-0 shadow-lg">
+              <p className="mb-4 text-lg font-semibold">Your Booking</p>
+              <div className="grid gap-4 lg:grid-cols-2">
+                {userBooking && userBooking.length > 0 ? (
+                  userBooking.map((booking: Booking, index: number) => (
+                    <div key={index} className="mb-4 rounded-xl border-[1px] p-4 sm:p-8 shadow-lg">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                        <img
+                          src={`https://res.cloudinary.com/dch6eenk5/${booking.package_type?.package?.images?.image || ""}`}
+                          alt={booking.id + " package image"}
+                          className="h-32 rounded-xl object-cover sm:w-1/3 shadow-lg"
+                        />
+                        <div className="flex h-full flex-col justify-between gap-4 sm:w-2/3">
+                          <div>
+                            <p className="text-md font-semibold">
+                              {booking.package_type?.package?.name}
+                            </p>
+                            <p className="text-sm">{booking.package_type?.name}</p>
+                          </div>
+                          <div className="flex items-center justify-between ">
+                            <Button
+                              key={index}
+                              variant={"outline"}
+                              onClick={() => handleSeeBookingDetails(booking)}
+                              className="shadow-lg"
+                            >
+                              See Booking Details
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="mt-8 flex w-full items-center justify-center rounded-xl border-[1px] p-4">
+                    No bookings available
+                  </p>
+                )}
+              </div>
+              {seeBooking && (
+                <UserBookingDetails
+                  booking={seeBooking}
+                  setOpenBookingDetails={setOpenBookingDetails}
+                  openBookingDetails={openBookingDetails}
+                />
+              )}
+            </div>
+            <div className="mt-4 flex max-w-[1300px] flex-col rounded-2xl border-[1px] p-8 sm:ml-12 sm:mr-12 lg:mr-0 shadow-lg">
+              <p className="text-lg font-semibold">Your Reviews</p>
+              <DropdownMenuSeparator className="my-4" />
+              <div
+                className={
+                  UserReview &&
+                  UserReview.length > 0 &&
+                  UserReview[0]?.review_by_user?.user?.length !== 0
+                    ? "grid gap-4 lg:grid-cols-2"
+                    : ""
+                }
+              >
+                {UserReview &&
+                UserReview.length > 0 &&
+                UserReview[0]?.review_by_user.user.length !== 0 ? (
+                  UserReview.map((review, index) => {
+                    return (
+                      <div key={index} className="rounded-xl border-[1px] p-4  shadow-lg">
+                        <div className="flex items-center justify-between pb-4">
+                          <div className="flex items-center gap-4">
+                            <img
+                              src={`https://res.cloudinary.com/dch6eenk5/${review.review_by_user.customer_profile[0]?.avatar}`}
+                              alt="avatar"
+                              className="h-6 w-6 rounded-full"
+                            />
+                            <p>{review.review_by_user.user}</p>
+                          </div>
+                          <div>
+                            <Rating
+                              initialValue={review.rating}
+                              disableFillHover={true}
+                              allowHover={false}
+                              size={20}
+                              SVGstyle={{ display: "inline" }}
+                              allowFraction={true}
+                              fillColor={"#16baa8"}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <p>{review.comment}</p>
+                        </div>
+                        <div className="mt-2 justify-between border-t-2 pt-2 sm:flex">
+                          <div>
+                            <p className="text-sm">{review.transaction.booking.package}</p>
+                          </div>
+                          <p className="hidden sm:block">
+                            {new Date(review.created).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="flex w-full items-center justify-center rounded-xl border-[1px] p-4">
+                    <p>No reviews yet</p>
+                  </div>
                 )}
               </div>
             </div>

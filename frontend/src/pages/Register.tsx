@@ -1,4 +1,4 @@
-import Form from "../components/Form/Form";
+import Form from "../components/Pages/FormPage/Form";
 
 function Register() {
   return <Form route="/apps/users/register/" method="register"></Form>;

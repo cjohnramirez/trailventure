@@ -35,7 +35,7 @@ export default function SearchPageDestination({
   state,
 }: SearchPageDestinationProps) {
   return (
-    <div className="sm:flex items-center justify-between rounded-2xl border-[1px] p-4">
+    <div className="sm:flex items-center justify-between rounded-2xl border-[1px] p-4 shadow-md">
       <div className="flex gap-4 sm:mb-0 mb-4">
         <MapPinned />
         <p>Destinations</p>

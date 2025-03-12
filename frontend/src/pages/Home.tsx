@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Search from "../components/NavBar/SearchBar";
+import Search from "@/components/SearchBar/SearchBar";
 import NavBar from "@/components/NavBar/NavBar";
-import DiscoverSection from "@/components/Home/DiscoverSection";
+import DiscoverSection from "@/components/Pages/HomePage/DiscoverSection";
 import BackgroundImage from "../assets/Home/HomePage.webp";
 import { useMediaQuery } from "react-responsive";
 import Footer from "@/components/Footer/Footer";
@@ -36,13 +36,13 @@ function Home() {
 
   return (
     <div>
-      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
+      <div className={`sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] ${forNavBar ? "" : "shadow-lg"}`}>
         <NavBar isNavBar={!forNavBar} isHomePage={true} />
       </div>
       <div className="flex h-screen w-full select-none flex-col px-8 pb-[100px]">
         <div className="relative flex h-full w-full flex-col items-center justify-center">
-          <div className="absolute inset-0 box-border w-full">
-            <img src={BackgroundImage} className="h-full w-full rounded-2xl object-cover" />
+          <div className="absolute inset-0 box-border w-full ">
+            <img src={BackgroundImage} className="h-full w-full rounded-2xl object-cover shadow-2xl" />
           </div>
           <div className="relative -top-12 flex flex-col items-center justify-center">
             <div className="text-center">

@@ -90,10 +90,10 @@ function Search({ navBar, homePage }: forNavBar) {
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
-                className={`flex h-full w-full ${homePage ? "sm:w-[400px] md:w-[450px] lg:w-full" : ""}`}
+                className={`flex h-full w-full shadow-lg ${homePage ? "sm:w-[400px] md:w-[450px] lg:w-full" : ""}`}
               >
                 <div className="flex w-full items-center justify-between gap-2">
-                  <div className="rounded-full border-[1px] bg-teal-500 p-2 text-black">
+                  <div className="rounded-full border-[1px] bg-teal-500 p-2 text-black shadow-lg">
                     <LucideSearch className="" />
                   </div>
                   <p className="w-full pr-8 text-xs sm:pr-10 md:text-sm">Search TrailVenture</p>
@@ -103,8 +103,8 @@ function Search({ navBar, homePage }: forNavBar) {
             <PopoverContent
               className={
                 homePage || mediumScreen
-                  ? `t-2 flex w-[330px] flex-col gap-2 rounded-[20px] md:gap-4`
-                  : `mt-2 flex w-full flex-row gap-4 rounded-full`
+                  ? `t-2 flex w-[330px] flex-col gap-2 rounded-[20px] md:gap-4 shadow-xl`
+                  : `mt-2 flex w-full flex-row gap-4 rounded-full shadow-xl`
               }
             >
               <SearchDestination
@@ -130,7 +130,7 @@ function Search({ navBar, homePage }: forNavBar) {
               <div className="w-full">
                 <Button
                   variant="outline"
-                  className="h-full w-full bg-teal-500 text-white dark:text-[#09090b]"
+                  className="h-full w-full bg-teal-500 text-white dark:text-[#09090b] shadow-lg"
                 >
                   <Link
                     to={searchUrl}
@@ -163,14 +163,14 @@ function Search({ navBar, homePage }: forNavBar) {
               setMinPrice={setMinimumPrice}
               setMaxPrice={setMaximumPrice}
             />
-            <Button variant="outline" className="h-full bg-teal-500 text-white dark:text-[#09090b]">
+            <Button variant="outline" className="h-full bg-teal-500 text-white dark:text-[#09090b] shadow-lg">
               <Link
                 to={searchUrl}
               >
                 {!navBar ? (
                   <p className="text-md px-2 py-2">Find My Trailventure</p>
                 ) : (
-                  <div className="py-[3px]">
+                  <div className="py-[3px] ">
                     <SearchIcon />
                   </div>
                 )}

@@ -5,10 +5,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
-import SearchPageDate from "@/components/SearchPage/SearchPageDate";
-import SearchPageDestination from "@/components/SearchPage/SearchPageDestination";
-import SearchPagePrice from "@/components/SearchPage/SearchPagePrice";
-import SearchPageReview from "@/components/SearchPage/SearchPageReview";
+import SearchPageDate from "@/components/Pages/SearchPage/SearchPageDate";
+import SearchPageDestination from "@/components/Pages/SearchPage/SearchPageDestination";
+import SearchPagePrice from "@/components/Pages/SearchPage/SearchPagePrice";
+import SearchPageReview from "@/components/Pages/SearchPage/SearchPageReview";
 import { useMediaQuery } from "react-responsive";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSearchData, fetchDestinationData } from "@/api/searchData";
@@ -145,14 +145,14 @@ function SearchPage() {
 
   return (
     <>
-      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b]">
+      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] shadow-md">
         <NavBar isNavBar={false} isHomePage={true} />
       </div>
       <div className="w-screen flex-col md:flex-row lg:flex">
-        <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll">
-          <div className="flex items-center justify-between pb-4">
+        <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll shadow-lg">
+          <div className="flex items-center justify-between pb-4 ">
             <p className="text-xl font-semibold">Filters</p>
-            <Button variant={"outline"} onClick={resetFilters}>
+            <Button variant={"outline"} onClick={resetFilters} className="shadow-md">
               <X />
               Clear Filter
             </Button>
@@ -186,19 +186,19 @@ function SearchPage() {
           />
           <Button
             variant={"outline"}
-            className="w-full bg-teal-500 text-white dark:text-[#09090b]"
+            className="w-full bg-teal-500 text-white dark:text-[#09090b]  shadow-md"
             onClick={applyFilters}
           >
             Apply Filter
           </Button>
         </aside>
-        <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5">
+        <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5 shadow-lg">
           <div className="justify-between lg:flex">
             <div className="items-center gap-4 pb-4 md:pb-0 lg:w-1/2 xl:flex">
               <p className="pb-2 text-center text-xl font-semibold sm:text-left xl:pb-0">
                 Search Results
               </p>
-              <div className="rounded-2xl border-[1px] px-8 py-2">
+              <div className="rounded-2xl border-[1px] px-8 py-2 shadow-md">
                 <p className="text-center text-sm sm:text-left">
                   Found {searchData?.results?.length} search result
                 </p>
@@ -207,13 +207,13 @@ function SearchPage() {
             <Pagination className="flex select-none lg:w-1/2 lg:justify-end">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious onClick={decrementPageNumber} className="cursor-pointer" />
+                  <PaginationPrevious onClick={decrementPageNumber} className="cursor-pointer shadow-lg border-[1px]" />
                 </PaginationItem>
                 <PaginationItem>
-                  <span className="pr-4 text-sm">Page {pageNumber}</span>
+                  <span className="px-4 text-sm text-center">Page {pageNumber}</span>
                 </PaginationItem>
                 <PaginationItem>
-                  <PaginationNext onClick={incrementPageNumber} className="cursor-pointer" />
+                  <PaginationNext onClick={incrementPageNumber} className="cursor-pointer shadow-lg border-[1px]" />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
@@ -223,7 +223,7 @@ function SearchPage() {
               searchData.results.map((tourPackage: tourPackage, index) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
-                    <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 xl:h-full">
+                    <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 xl:h-full shadow-md">
                       <div className="h-1/2 w-full pb-4 sm:h-2/3 xl:h-1/2">
                         <img
                           src={
@@ -231,10 +231,10 @@ function SearchPage() {
                               tourPackage.package_image[0]?.image || "None"
                           }
                           alt={String(tourPackage.package_image[0]?.id || "None")}
-                          className="h-full w-full rounded-xl object-cover"
+                          className="h-full w-full rounded-xl object-cover shadow-md"
                         />
                       </div>
-                      <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4 sm:h-1/3 xl:h-1/2">
+                      <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4 sm:h-1/3 xl:h-1/2 shadow-md">
                         <div>
                           <p className="text-lg font-semibold">{tourPackage.name}</p>
                           <p className="hidden text-xs sm:block">
@@ -248,8 +248,8 @@ function SearchPage() {
                             <p className="text-sm font-semibold">Cheapest Package</p>
                             <p className="pb-2 text-xs sm:pb-0">Price per person</p>
                           </div>
-                          <div className="rounded-xl border-[1px]">
-                            <p className="p-2 text-sm font-semibold">
+                          <div className="rounded-xl border-[1px] shadow-md">
+                            <p className="p-2 text-sm font-semibold ">
                               PHP{" "}
                               {Math.floor(Number(tourPackage.package_type[0]?.price_per_person)) ||
                                 "None"}

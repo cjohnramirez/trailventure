@@ -37,6 +37,11 @@ export const fetchAdditionalFeesData = async () => {
   return additionalFees.data || [];
 };
 
+export const fetchSingleBooking = async (id : number) => {
+  const additionalFees = await api.get(`/apps/transaction/booking/list/${id}/`);
+  return additionalFees.data || [];
+};
+
 export const postDeletedBooking = async (id: number) => {
   try {
     const response = await api.get(`/apps/transaction/booking/cancelled/${id}/`);
@@ -48,13 +53,7 @@ export const postDeletedBooking = async (id: number) => {
   return [];
 };
 
-export const fetchSuccessfulBooking = async (id: number) => {
-  try {
-    const response = await api.get(`/apps/transaction/booking/successful/${id}/`);
-    return response.data || [];
-  } catch (error) {
-    console.error("Error:", error);
-  }
-
-  return [];
-};
+export const fetchSuccessfulTransaction = async (id: number) => {
+  const response = await api.get(`apps/transaction/transaction/list-create/${id}/`);
+  return response.data || [];
+}

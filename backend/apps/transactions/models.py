@@ -12,10 +12,12 @@ class AdditionalFees(models.Model):
     class Meta:
         verbose_name_plural = "additional fees"
 
+    from decimal import Decimal
+
     tax_paid_percent = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.00
+        max_digits=10, decimal_places=2, default=Decimal('0.00')
     )
-    site_fees_percent = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    site_fees_percent = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
 
     def __str__(self):
         return f"Tax: {self.tax_paid_percent}%, Site Fees: {self.site_fees_percent}"

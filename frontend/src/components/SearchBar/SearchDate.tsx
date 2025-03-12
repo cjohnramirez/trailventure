@@ -21,7 +21,7 @@ export default function SearchDate({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="flex h-full w-full justify-start gap-4 px-6 pr-8">
+        <Button variant="outline" className="flex h-full w-full justify-start gap-4 px-6 pr-8 shadow-lg">
           <CalendarIcon />
           <div className="flex h-full flex-col justify-center text-left">
             <div>

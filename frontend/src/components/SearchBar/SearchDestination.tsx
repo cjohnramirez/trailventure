@@ -27,7 +27,7 @@ export default function SearchDate({
   return (
     <Popover open={locPopoverOpen} onOpenChange={setLocPopoverOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="flex h-full gap-4 px-6 pr-8 w-full justify-start">
+        <Button variant="outline" className="flex h-full gap-4 px-6 pr-8 w-full justify-start shadow-lg">
           <MapPin />
           <div className="flex h-full flex-col justify-center text-left">
               <div>

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 import { useNavigate } from "react-router-dom";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "../../ui/textarea";
 import { postComment } from "@/api/tourPackageData";
 import { useMutation } from "@tanstack/react-query";
 
