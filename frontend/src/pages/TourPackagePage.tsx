@@ -82,8 +82,6 @@ function PackagePage() {
     }
   }, [ownTransactionsByBooking, id]);
 
-  console.log(ownTransactionsByBooking)
-
   if (tourPackageLoading || isOwnTourPackageReviewLoading) {
     return <Loading loadingMessage="Loading Package Data" />;
   }

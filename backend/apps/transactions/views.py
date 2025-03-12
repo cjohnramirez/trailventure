@@ -294,7 +294,7 @@ class OwnPackageReviewListView(generics.ListAPIView):
 
 
 class PackageReviewCreateView(generics.ListCreateAPIView):
-    serializer_class = PackageReviewSerializer
+    serializer_class = CreatePackageReviewSerializer
     permission_classes = [IsCustomer]
 
     def get_queryset(self):

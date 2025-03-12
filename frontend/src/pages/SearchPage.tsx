@@ -192,9 +192,9 @@ function SearchPage() {
             Apply Filter
           </Button>
         </aside>
-        <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5 shadow-lg">
-          <div className="justify-between lg:flex">
-            <div className="items-center gap-4 pb-4 md:pb-0 lg:w-1/2 xl:flex">
+        <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5 sm:shadow-lg">
+          <div className="justify-between items-end lg:flex">
+            <div className="items-center justify-end gap-4 pb-4 lg:pb-0 xl:w-1/2 xl:flex">
               <p className="pb-2 text-center text-xl font-semibold sm:text-left xl:pb-0">
                 Search Results
               </p>
@@ -204,13 +204,13 @@ function SearchPage() {
                 </p>
               </div>
             </div>
-            <Pagination className="flex select-none lg:w-1/2 lg:justify-end">
+            <Pagination className="flex select-none lg:w-1/2 lg:justify-end m-0">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious onClick={decrementPageNumber} className="cursor-pointer shadow-lg border-[1px]" />
                 </PaginationItem>
                 <PaginationItem>
-                  <span className="px-4 text-sm text-center">Page {pageNumber}</span>
+                  <p className="px-4 text-sm text-center">Page {pageNumber}</p>
                 </PaginationItem>
                 <PaginationItem>
                   <PaginationNext onClick={incrementPageNumber} className="cursor-pointer shadow-lg border-[1px]" />

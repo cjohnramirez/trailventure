@@ -80,6 +80,7 @@ export default function CommentDialog({
       rating: rating,
       transaction: transactionId,
     });
+
     if (request.status === 400) {
       openConfirmation({
         title: "Not Allowed",

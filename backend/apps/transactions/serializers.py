@@ -38,7 +38,14 @@ class BookingCreateSerializer(serializers.ModelSerializer):
     fields = "__all__"
   
 class PackageReviewSerializer(serializers.ModelSerializer):
+  review_by_user = ReviewByUserSerializer(read_only=True)
   transaction = TransactionSerializer(read_only=True)
+
+  class Meta:
+    model = PackageReview
+    fields = ["id", "comment", "rating", "created", "modified", "review_by_user", "transaction"]
+
+class CreatePackageReviewSerializer(serializers.ModelSerializer):
   review_by_user = ReviewByUserSerializer(read_only=True)
 
   class Meta:
