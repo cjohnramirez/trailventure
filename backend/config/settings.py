@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "cloudinary",
+    'cloudinary_storage',
     "django_extensions",
     "apps.destinations",
     "apps.packages",
@@ -185,10 +186,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/"]
 
 cloudinary.config(
     cloud_name="dch6eenk5", api_key=CLOUDINARY_API_KEY, api_secret=CLOUDINARY_API_SECRET
 )
+
+
 
 

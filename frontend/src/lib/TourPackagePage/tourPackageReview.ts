@@ -8,6 +8,11 @@ export interface tourPackageReviews {
     user: string,
     customer_profile: customer_profile[];
   }
+  transaction: {
+    booking: {
+      package: string,
+    }
+  }
 }
 
 interface customer_profile {

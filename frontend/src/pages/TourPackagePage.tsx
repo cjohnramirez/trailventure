@@ -182,7 +182,7 @@ function PackagePage() {
                       <img
                         src={"https://res.cloudinary.com/dch6eenk5/" + image.image}
                         alt={`${tourpackage[0]?.name} image ${index}`}
-                        className="h-96 w-full rounded-xl object-cover"
+                        className={`h-96 w-full rounded-xl object-cover border-[1px]`}
                       />
                     </div>
                   </CarouselItem>

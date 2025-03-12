@@ -2,6 +2,7 @@ import api from "@/api/api";
 
 export const fetchUserReviews = async () => {
   const fetchUserReviews = await api.get(`apps/transaction/own-all-review/list/`);
+  console.log(fetchUserReviews)
   return fetchUserReviews.data || [];
 };
 
