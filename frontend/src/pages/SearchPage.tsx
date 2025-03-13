@@ -2,7 +2,7 @@ import NavBar from "@/components/NavBar/NavBar";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
 import SearchPageDate from "@/components/Pages/SearchPage/SearchPageDate";
@@ -46,6 +46,7 @@ function SearchPage() {
   const [pageRefresh, setPageRefresh] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(Number(pagenumber) || 1);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
+  const [openFilter, setOpenFilter] = useState<boolean>(false);
 
   useEffect(() => {
     setPageRefresh(true);
@@ -69,6 +70,8 @@ function SearchPage() {
     refetchOnWindowFocus: false,
     enabled: pageRefresh,
   });
+
+  console.log(searchData)
 
   const { data: destinations } = useQuery<Destination[]>({
     queryFn: () => fetchDestinationData(),
@@ -145,56 +148,63 @@ function SearchPage() {
 
   return (
     <>
-      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] shadow-md">
+      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 shadow-md dark:bg-[#09090b]">
         <NavBar isNavBar={false} isHomePage={true} />
       </div>
       <div className="w-screen flex-col md:flex-row lg:flex">
-        <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll sm:shadow-lg">
-          <div className="flex items-center justify-between pb-4 ">
-            <p className="text-xl font-semibold">Filters</p>
+        <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 sm:shadow-lg lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll">
+          <div className="flex items-center justify-between lg:pb-4">
+            <div className="flex items-center lg:gap-0 gap-4">
+              <Button variant={"outline"} className="block lg:hidden" onClick={() => setOpenFilter(!openFilter)}>
+                <ChevronDown />
+              </Button>
+              <p className="text-xl font-semibold">Filters</p>
+            </div>
             <Button variant={"outline"} onClick={resetFilters} className="shadow-md">
               <X />
               Clear Filter
             </Button>
           </div>
-          <SearchPageDate
-            state={{ startDate, endDate }}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-          />
-          <SearchPagePrice
-            state={{ minPrice, maxPrice }}
-            setMinPrice={setMinPrice}
-            setMaxPrice={setMaxPrice}
-          />
-          <SearchPageDestination
-            state={destination}
-            locPopoverOpen={locPopoverOpen}
-            selectedDestination={selectedDestination}
-            setLocPopoverOpen={setLocPopoverOpen}
-            searchItem={searchItem}
-            handleInputChange={handleInputChange}
-            filteredDestinations={filteredDestinations}
-            setSelectedDestination={setSelectedDestination}
-            setDestination={setDestination}
-          />
-          <SearchPageReview
-            reviewScore={reviewScore}
-            setReviewScore={setReviewScore}
-            altReviewScores={altReviewScores}
-            reviewScores={reviewScores}
-          />
-          <Button
-            variant={"outline"}
-            className="w-full bg-teal-500 text-white dark:text-[#09090b]  shadow-md"
-            onClick={applyFilters}
-          >
-            Apply Filter
-          </Button>
+          <div className={`space-y-4 ${openFilter ? "block" : "hidden"} lg:block`}>
+            <SearchPageDate
+              state={{ startDate, endDate }}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+            />
+            <SearchPagePrice
+              state={{ minPrice, maxPrice }}
+              setMinPrice={setMinPrice}
+              setMaxPrice={setMaxPrice}
+            />
+            <SearchPageDestination
+              state={destination}
+              locPopoverOpen={locPopoverOpen}
+              selectedDestination={selectedDestination}
+              setLocPopoverOpen={setLocPopoverOpen}
+              searchItem={searchItem}
+              handleInputChange={handleInputChange}
+              filteredDestinations={filteredDestinations}
+              setSelectedDestination={setSelectedDestination}
+              setDestination={setDestination}
+            />
+            <SearchPageReview
+              reviewScore={reviewScore}
+              setReviewScore={setReviewScore}
+              altReviewScores={altReviewScores}
+              reviewScores={reviewScores}
+            />
+            <Button
+              variant={"outline"}
+              className="w-full bg-teal-500 text-white shadow-md dark:text-[#09090b]"
+              onClick={applyFilters}
+            >
+              Apply Filter
+            </Button>
+          </div>
         </aside>
-        <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 lg:ml-0 lg:mt-2 lg:w-3/5 sm:shadow-lg">
-          <div className="justify-between items-end lg:flex">
-            <div className="items-center justify-end gap-4 pb-4 lg:pb-0 xl:w-1/2 xl:flex">
+        <div className="m-8 flex flex-col gap-4 rounded-2xl sm:border-[1px] sm:p-8 sm:shadow-lg lg:ml-0 lg:mt-2 lg:w-3/5">
+          <div className="items-end justify-between lg:flex">
+            <div className="items-center justify-end gap-4 pb-4 lg:pb-0 xl:flex xl:w-1/2">
               <p className="pb-2 text-center text-xl font-semibold sm:text-left xl:pb-0">
                 Search Results
               </p>
@@ -204,16 +214,22 @@ function SearchPage() {
                 </p>
               </div>
             </div>
-            <Pagination className="flex select-none lg:w-1/2 lg:justify-end m-0">
+            <Pagination className="m-0 flex select-none lg:w-1/2 lg:justify-end">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious onClick={decrementPageNumber} className="cursor-pointer shadow-lg border-[1px]" />
+                  <PaginationPrevious
+                    onClick={decrementPageNumber}
+                    className="cursor-pointer border-[1px] shadow-lg"
+                  />
                 </PaginationItem>
                 <PaginationItem>
-                  <p className="px-4 text-sm text-center">Page {pageNumber}</p>
+                  <p className="px-4 text-center text-sm">Page {pageNumber}</p>
                 </PaginationItem>
                 <PaginationItem>
-                  <PaginationNext onClick={incrementPageNumber} className="cursor-pointer shadow-lg border-[1px]" />
+                  <PaginationNext
+                    onClick={incrementPageNumber}
+                    className={`cursor-pointer border-[1px] shadow-lg ${searchData && searchData.next === null ? "hidden" : ""}`}
+                  />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
@@ -223,7 +239,7 @@ function SearchPage() {
               searchData.results.map((tourPackage: tourPackage, index) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
-                    <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 xl:h-full shadow-md">
+                    <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 shadow-md xl:h-full">
                       <div className="h-1/2 w-full pb-4 sm:h-2/3 xl:h-1/2">
                         <img
                           src={
@@ -234,7 +250,7 @@ function SearchPage() {
                           className="h-full w-full rounded-xl object-cover shadow-md"
                         />
                       </div>
-                      <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4 sm:h-1/3 xl:h-1/2 shadow-md">
+                      <div className="flex h-1/2 flex-col justify-between rounded-xl border-[1px] p-4 shadow-md sm:h-1/3 xl:h-1/2">
                         <div>
                           <p className="text-lg font-semibold">{tourPackage.name}</p>
                           <p className="hidden text-xs sm:block">
@@ -249,7 +265,7 @@ function SearchPage() {
                             <p className="pb-2 text-xs sm:pb-0">Price per person</p>
                           </div>
                           <div className="rounded-xl border-[1px] shadow-md">
-                            <p className="p-2 text-sm font-semibold ">
+                            <p className="p-2 text-sm font-semibold">
                               PHP{" "}
                               {Math.floor(Number(tourPackage.package_type[0]?.price_per_person)) ||
                                 "None"}

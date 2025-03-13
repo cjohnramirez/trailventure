@@ -69,7 +69,7 @@ function PackagePage() {
       ownTourPackageReviewsRefetch();
       ownTransactionRefetch();
     }
-  }, [isAuthorized, ownTourPackageReviewsRefetch, ownTransactionRefetch]);
+  }, [isAuthorized, ownTourPackageReviewsRefetch, ownTransactionRefetch, commentDialogOpen]);
 
   // Update booking and comment permissions based on transactions
   useEffect(() => {
@@ -199,7 +199,7 @@ function PackagePage() {
               <p>{tourpackage && tourpackage[0]?.description}</p>
             </div>
             <div className="flex flex-col gap-8 rounded-2xl border-[1px] p-8 shadow-md" id="packageType">
-              <div className="flex flex-col gap-4 lg:rounded-2xl lg:border-[1px] lg:p-8 shadow-md">
+              <div className="flex flex-col gap-4 lg:rounded-2xl lg:border-[1px] lg:p-8 md:shadow-md">
                 <div>
                   <p className="text-xl font-semibold">Package Type</p>
                   <div className="pt-4 lg:flex lg:gap-4">
@@ -433,7 +433,7 @@ function PackagePage() {
                   tourPackageReviews &&
                   tourPackageReviews.length > 0 &&
                   tourPackageReviews[0]?.review_by_user?.user.length !== 0
-                    ? "grid grid-cols-2 grid-rows-1 gap-4"
+                    ? "grid grid-rows-1 gap-4 md:grid-cols-2"
                     : ""
                 }
               >
