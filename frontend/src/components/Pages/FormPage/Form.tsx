@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { loginSchema, registerSchema } from "@/lib/Form/loginRegisterSchema";
 import { loginRegisterFields } from "@/lib/Form/loginRegisterFields";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import LoginPageImage from "@/assets/Form/LoginPage.jpg";
+import FormPageImage from "@/assets/Form/FormPage.webp";
 import useConfirmationStore from "../../Contexts/ConfirmationStore";
 
 function HomeForm({ route, method }: { route: string; method: string }) {
@@ -109,13 +109,13 @@ function HomeForm({ route, method }: { route: string; method: string }) {
   return (
     <div className="flex h-dvh items-center justify-center p-4">
       <div className="flex h-full max-h-[900px] w-full max-w-[800px] items-center justify-center">
-        <Card className="h-full w-full items-center p-4 md:flex ">
+        <Card className={`h-full w-full items-center p-4 md:flex ${isLogin ? "h-full" : "md:h-full h-auto"}`}>
           <div
-            className={`md:h-full md:w-1/2 ${isLogin ? "h-2/5 sm:h-1/2" : "h-1/6 pb-8 md:pb-0"}`}
+            className={`md:h-full md:w-1/2 ${isLogin ? "h-2/5 sm:h-1/2" : ""}`}
           >
-            <img src={LoginPageImage} className={`h-full w-full rounded-lg object-cover ${isLogin ? "" : "md:block hidden"}`} />
+            <img src={FormPageImage} className={`h-full w-full rounded-lg object-cover ${isLogin ? "" : "md:block hidden"}`} />
           </div>
-          <div className={`md:h-full md:w-1/2 ${isLogin ? "h-3/5 md:h-1/2" : "h-5/6"}`}>
+          <div className={`md:h-full md:w-1/2 ${isLogin ? "sm:h-1/2 h-3/5 " : ""}`}>
             <div className="flex h-full flex-col justify-center">
               <CardHeader className="px-8 text-center">
                 <CardTitle>{isLogin ? "Login to Proceed" : "Create an Account"}</CardTitle>
@@ -137,7 +137,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
                   )}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="scrollbar md:mb-0 mb-20 flex flex-col gap-y-2 px-8 md:pb-6 pb-10">
+              <CardContent className="scrollbar flex flex-col gap-y-2 px-8 ">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(handleSubmit, (errors) => {
