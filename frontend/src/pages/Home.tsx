@@ -44,7 +44,7 @@ function Home() {
       <div className="flex h-dvh w-full select-none flex-col px-8 pb-[100px]">
         <div className="relative flex h-full w-full flex-col items-center justify-center">
           <div className="absolute inset-0 box-border w-full ">
-            <img src={BackgroundImage} className="h-full w-full rounded-2xl object-cover shadow-2xl" />
+            <img src={BackgroundImage} className="h-full w-full rounded-2xl object-cover shadow-2xl border-[1px]" />
           </div>
           <div className="relative -top-12 flex flex-col items-center justify-center">
             <div className="text-center">
