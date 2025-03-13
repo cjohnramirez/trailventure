@@ -42,11 +42,11 @@ function DiscoverSection() {
               <div className="sm:block flex flex-col h-full">
                 <img
                   src={"https://res.cloudinary.com/dch6eenk5/" + destination.image}
-                  className="sm:h-full w-full rounded-lg object-cover h-4/5  shadow-lg"
+                  className="sm:h-full w-full rounded-lg object-cover h-4/5 shadow-lg"
                   alt={`${destination.image} image`}
                 ></img>
-                <div className="sm:relative sm:bottom-[85px] sm:ml-4 sm:mr-4 rounded-2xl bg-white dark:bg-[#09090b]">
-                  <div className="flex items-center gap-2 px-4 py-2 shadow-lg">
+                <div className="sm:relative sm:bottom-[85px] sm:ml-4 sm:mr-4 rounded-2xl bg-white dark:bg-[#09090b] shadow-md border-[1px]">
+                  <div className="flex items-center gap-2 px-4 py-2">
                     <MapPin />
                     <div>
                       <p className="sm:text-xl font-semibold">

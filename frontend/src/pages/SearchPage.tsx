@@ -149,7 +149,7 @@ function SearchPage() {
         <NavBar isNavBar={false} isHomePage={true} />
       </div>
       <div className="w-screen flex-col md:flex-row lg:flex">
-        <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll shadow-lg">
+        <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll sm:shadow-lg">
           <div className="flex items-center justify-between pb-4 ">
             <p className="text-xl font-semibold">Filters</p>
             <Button variant={"outline"} onClick={resetFilters} className="shadow-md">
@@ -273,7 +273,7 @@ function SearchPage() {
               </div>
             )}
             {(isLoading || isPageLoading) && (
-              <div className="col-span-full h-screen pb-96">
+              <div className="col-span-full h-dvh pb-96">
                 <div className="flex h-full w-full flex-col items-center justify-center">
                   <span className="loader"></span>
                   <p className="mt-10 text-lg">Searching</p>

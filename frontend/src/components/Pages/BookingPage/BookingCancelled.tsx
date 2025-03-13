@@ -17,7 +17,7 @@ const BookingCancelled = () => {
   console.log(deletedBooking);
 
   return (
-    <div className="flex h-screen items-center justify-center p-8">
+    <div className="flex h-dvh items-center justify-center p-8">
       {deletedBooking ? (
         <div className="flex h-full max-w-[800px] flex-col items-center justify-center">
           <div className="space-y-4 rounded-xl border-[1px] p-8 shadow-lg">

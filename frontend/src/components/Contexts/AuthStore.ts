@@ -5,27 +5,20 @@ import { jwtDecode } from "jwt-decode";
 
 interface GetState {
   loading: boolean;
-  loadingMessage: string;
   isAuthorized: boolean | null;
   role: "host" | "customer" | null;
-  isAllowedToComment: boolean;
   setIsAuthorized: (value: boolean) => void;
   setRole: (role: "host" | "customer" | null) => void; 
   refreshToken: () => Promise<void>;
   auth: () => Promise<void>;
   isHost: () => boolean;
   isCustomer: () => boolean;
-  setIsAllowedToComment: (value: boolean) => void;
 }
 
 export const useGetStore = create<GetState>((set) => ({
   loading: false,
-  loadingMessage: "",
   isAuthorized: null,
   role: null,
-  
-  isAllowedToComment: false,
-  setIsAllowedToComment: (value: boolean) => set({ isAllowedToComment: value }),
 
   setIsAuthorized: (value: boolean) => set({ isAuthorized: value }),
   setRole: (role: "host" | "customer" | null) => set({ role }),

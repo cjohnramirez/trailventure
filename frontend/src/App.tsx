@@ -12,11 +12,11 @@ import UserPage from "./pages/UserPage";
 import BookingPage from "./pages/BookingPage";
 import { useGetStore } from "@/components/Contexts/AuthStore";
 import { useEffect } from "react";
-import Loading from "./components/Loading/Loading";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HostDashboardPage from "./pages/HostDashboardPage";
 import BookingCancelled from "./components/Pages/BookingPage/BookingCancelled";
 import BookingSuccessful from "./components/Pages/BookingPage/BookingSuccessful";
+import Loading from "./components/Loading/Loading";
 
 function Logout() {
   localStorage.clear();
@@ -34,10 +34,21 @@ const queryClient = new QueryClient();
 function App() {
   const auth = useGetStore((state) => state.auth);
   const role = useGetStore((state) => state.role);
+  const loading = useGetStore((state) => state.loading);
 
   useEffect(() => {
     auth();
   }, []);
+
+  useEffect(() => {
+    if (loading) {
+      loadingScreen();
+    }
+  }, [loading]);
+
+  function loadingScreen() {
+    return <Loading loadingMessage="Loading Trailventure" />;
+  }
 
   return (
     <BrowserRouter>
@@ -88,7 +99,6 @@ function App() {
               <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<RegisterAndLogout />} />
               <Route path="*" element={<NotFound />} />
-              <Route path="/loading" element={<Loading loadingMessage="Loading TrailVenture"/>} />
             </>
           ) : (
             <>

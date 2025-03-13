@@ -107,7 +107,7 @@ function HomeForm({ route, method }: { route: string; method: string }) {
   const formFields = isLogin ? loginRegisterFields.login : loginRegisterFields.register;
 
   return (
-    <div className="flex h-screen items-center justify-center p-4">
+    <div className="flex h-dvh items-center justify-center p-4">
       <div className="flex h-full max-h-[900px] w-full max-w-[800px] items-center justify-center">
         <Card className="h-full w-full items-center p-4 md:flex">
           <div

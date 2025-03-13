@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ReactNode, useEffect } from "react";
 import { useGetStore } from "@/components/Contexts/AuthStore";
 import useConfirmationStore from "../Contexts/ConfirmationStore";
+import Loading from "../Loading/Loading";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -21,7 +22,7 @@ function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
         description: "You must login or sign up in order to access this page",
         cancelLabel: "Cancel",
         actionLabel: "Go to Login",
-        onAction: () => { () => navigate("/login") },
+        onAction: () => { navigate("/login") },
         onCancel: () => { },
       });
     } else if (isAuthorized && allowedRoles.length > 0 && !allowedRoles.includes(role ?? "")) {
@@ -31,13 +32,13 @@ function ProtectedRoute({ children, allowedRoles = [] }: ProtectedRouteProps) {
         cancelLabel: "Cancel",
         actionLabel: "Go to Home",
         onAction: () => { },
-        onCancel: () => { () => navigate("/") },
+        onCancel: () => { navigate("/") },
       });
     }
   }, [isAuthorized, role, allowedRoles, navigate]);
 
   if (isAuthorized === null) {
-    return <div>Loading...</div>;
+    return <Loading loadingMessage="Loading page"/>;
   }
 
   if (!isAuthorized || (allowedRoles.length > 0 && !allowedRoles.includes(role ?? ""))) {

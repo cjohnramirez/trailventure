@@ -5,7 +5,7 @@ function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex h-screen w-full items-center justify-center gap-2">
+    <div className="flex h-dvh w-full items-center justify-center gap-2">
       <div className="flex-row">
         <p className="pb-4 text-center text-2xl font-bold">
           Error: 404 Not Found
