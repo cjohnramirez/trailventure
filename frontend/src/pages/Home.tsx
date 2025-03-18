@@ -26,8 +26,6 @@ function Home() {
     setforNavBar(!inView);
   };
 
-  
-
   useEffect(() => {
     window.addEventListener("scroll", checkSectionInView);
 
@@ -38,13 +36,18 @@ function Home() {
 
   return (
     <div>
-      <div className={`sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] ${forNavBar ? "" : "shadow-lg"}`}>
+      <div
+        className={`sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] ${forNavBar ? "" : "shadow-lg"}`}
+      >
         <NavBar isNavBar={!forNavBar} isHomePage={true} />
       </div>
       <div className="flex h-dvh w-full select-none flex-col px-8 pb-[100px]">
         <div className="relative flex h-full w-full flex-col items-center justify-center">
-          <div className="absolute inset-0 box-border w-full ">
-            <img src={BackgroundImage} className="h-full w-full rounded-2xl object-cover shadow-2xl border-[1px]" />
+          <div className="absolute inset-0 box-border w-full">
+            <img
+              src={BackgroundImage}
+              className="h-full w-full rounded-2xl border-[1px] object-cover shadow-2xl"
+            />
           </div>
           <div className="relative -top-12 flex flex-col items-center justify-center">
             <div className="text-center">
@@ -72,26 +75,26 @@ function Home() {
             </p>
           </div>
         </div>
-        <div className="mx-auto flex flex-col md:grid max-w-[1200px] md:grid-cols-3 sm:grid-rows-2 gap-4">
-          <div className="flex flex-col justify-center col-span-1 rounded-2xl border-[1px] p-8 shadow-lg">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-4 sm:grid-rows-2 md:grid md:grid-cols-3">
+          <div className="col-span-1 flex flex-col justify-center rounded-2xl border-[1px] p-8 shadow-lg">
             <Calendar size={64} strokeWidth={1} className="mb-4" />
             <p className="text-2xl font-semibold">Hassle-Free Booking</p>
             <p>A fast, easy, and worry-free tour package booking process.</p>
           </div>
-          <div className="col-span-1 row-span-2 rounded-2xl border-[1px] shadow-lg sm:block hidden">
-            <img src={personHiking} className="object-cover h-full rounded-2xl"></img>
+          <div className="col-span-1 row-span-2 hidden rounded-2xl border-[1px] shadow-lg sm:block">
+            <img src={personHiking} className="h-full rounded-2xl object-cover"></img>
           </div>
-          <div className="flex flex-col justify-center col-span- rounded-2xl border-[1px] p-8 shadow-lg">
+          <div className="col-span- flex flex-col justify-center rounded-2xl border-[1px] p-8 shadow-lg">
             <SearchIcon size={64} strokeWidth={1} className="mb-4" />
             <p className="text-2xl font-semibold">Advanced Search</p>
             <p>Find the best tour packages with our advanced search options.</p>
           </div>
-          <div className="flex flex-col justify-center col-span-1 rounded-2xl border-[1px] p-8 shadow-lg">
+          <div className="col-span-1 flex flex-col justify-center rounded-2xl border-[1px] p-8 shadow-lg">
             <User size={64} strokeWidth={1} className="mb-4" />
             <p className="text-2xl font-semibold">Designed for You</p>
             <p>Personalized recommendations to suit your preferences.</p>
           </div>
-          <div className="flex flex-col justify-center col-span-1 rounded-2xl border-[1px] p-8 shadow-lg">
+          <div className="col-span-1 flex flex-col justify-center rounded-2xl border-[1px] p-8 shadow-lg">
             <Shield size={64} strokeWidth={1} className="mb-4" />
             <p className="text-2xl font-semibold">Secure and Trusted Bookings</p>
             <p>Book with confidence knowing your bookings are secure.</p>

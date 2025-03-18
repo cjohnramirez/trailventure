@@ -10,9 +10,8 @@ import SearchPageDestination from "@/components/Pages/SearchPage/SearchPageDesti
 import SearchPagePrice from "@/components/Pages/SearchPage/SearchPagePrice";
 import SearchPageReview from "@/components/Pages/SearchPage/SearchPageReview";
 import { useMediaQuery } from "react-responsive";
-import { useQuery } from "@tanstack/react-query";
-import { fetchSearchData, fetchDestinationData } from "@/api/searchData";
-import { searchData } from "@/lib/TourPackagePage/tourPackage";
+import { useSearchQuery, useDestinationQuery } from "@/hooks/tanstack/search/useQuerySearch";
+import { searchQuery } from "@/lib/SearchPage/searchQuery";
 import {
   Pagination,
   PaginationContent,
@@ -43,7 +42,7 @@ function SearchPage() {
   );
   const [destination, setDestination] = useState<string | null>(location || null);
   const [reviewScore, setReviewScore] = useState<string | null>(null);
-  const [pageRefresh, setPageRefresh] = useState<boolean>(false);
+  const [_pageRefresh, setPageRefresh] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(Number(pagenumber) || 1);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
@@ -52,31 +51,20 @@ function SearchPage() {
     setPageRefresh(true);
   }, []);
 
-  const {
-    data: searchData,
-    refetch,
-    isLoading,
-  } = useQuery<searchData>({
-    queryFn: () =>
-      fetchSearchData({
-        destination: destination === "Set Location" ? "None" : destination || "None",
-        start_date: startdate || "None",
-        end_date: enddate || "None",
-        min_price: Number(minPrice) || "None",
-        max_price: Number(maxPrice) || "None",
-        page: pageNumber,
-      }),
-    queryKey: ["searchData", location, startdate, enddate, startprice, endprice, pageNumber],
-    refetchOnWindowFocus: false,
-    enabled: pageRefresh,
-  });
+  const searchParams: searchQuery = {
+    destination: destination === "Set Location" ? "None" : destination || "None",
+    start_date: startdate || "None",
+    end_date: enddate || "None",
+    min_price: Number(minPrice) || "None",
+    max_price: Number(maxPrice) || "None",
+    page: pageNumber,
+  };
 
-  console.log(searchData)
+  const { data: searchData, refetch, isLoading } = useSearchQuery(searchParams);
 
-  const { data: destinations } = useQuery<Destination[]>({
-    queryFn: () => fetchDestinationData(),
-    queryKey: ["searchDestinationData"],
-  });
+  console.log(searchData);
+
+  const { data: destinations } = useDestinationQuery();
 
   const [searchItem, setSearchItem] = useState<string>("None");
   const [filteredDestinations, setFilteredDestinations] = useState<Destination[]>([]);
@@ -85,7 +73,7 @@ function SearchPage() {
     const searchTerm = e.target.value;
     setSearchItem(searchTerm);
 
-    const filteredItems = destinations?.filter((destination) => {
+    const filteredItems = destinations?.filter((destination: Destination) => {
       return destination.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
@@ -154,8 +142,12 @@ function SearchPage() {
       <div className="w-screen flex-col md:flex-row lg:flex">
         <aside className="m-8 flex h-full flex-col gap-4 sm:rounded-2xl sm:border-[1px] sm:p-8 sm:shadow-lg lg:sticky lg:top-20 lg:mt-2 lg:w-2/5 lg:overflow-y-scroll">
           <div className="flex items-center justify-between lg:pb-4">
-            <div className="flex items-center lg:gap-0 gap-4">
-              <Button variant={"outline"} className="block lg:hidden" onClick={() => setOpenFilter(!openFilter)}>
+            <div className="flex items-center gap-4 lg:gap-0">
+              <Button
+                variant={"outline"}
+                className="block lg:hidden"
+                onClick={() => setOpenFilter(!openFilter)}
+              >
                 <ChevronDown />
               </Button>
               <p className="text-xl font-semibold">Filters</p>
@@ -236,7 +228,7 @@ function SearchPage() {
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
             {!isLoading && !isPageLoading && searchData && searchData?.results?.length > 0 ? (
-              searchData.results.map((tourPackage: tourPackage, index) => {
+              searchData.results.map((tourPackage: tourPackage, index: number) => {
                 return (
                   <Link to={`/package/${tourPackage.id}/`} key={index}>
                     <div className="h-[400px] flex-row rounded-xl border-[1px] p-4 shadow-md xl:h-full">

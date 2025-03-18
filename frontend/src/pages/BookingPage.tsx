@@ -15,48 +15,40 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
-import { fetchPackage } from "@/api/tourPackageData";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { UserData } from "@/lib/UserPage/userData";
-import { fetchUserData } from "@/api/userData";
-import { AdditionalFees } from "@/lib/BookingPage/additionalFees";
-import { postCheckoutData, postBookingData, fetchAdditionalFeesData } from "@/api/bookingData";
 import Loading from "@/components/Loading/Loading";
-import "@/components/Loading/LoadingSpinner.css"
+import "@/components/Loading/LoadingSpinner.css";
+import { usePackageQuery, useAdditionalFeesQuery } from "@/hooks/tanstack/booking/useQueryBooking";
+import {
+  useBookingMutation,
+  useCheckoutMutation,
+} from "@/hooks/tanstack/booking/useMutationBooking";
+import { useUserQuery } from "@/hooks/tanstack/user/useQueryUser";
 
 function BookingPage() {
   const { tourpackageId, tourpackagetype, numofperson, startdate } = useParams();
 
-  const { data: packageData, isLoading: isPackageDataLoading } = useQuery<tourPackage[]>({
-    queryFn: () => fetchPackage(Number(tourpackageId)),
-    queryKey: ["bookingData", tourpackageId],
-  });
+  const { data: packageData, isLoading: isPackageDataLoading } = usePackageQuery(
+    Number(tourpackageId),
+  );
 
-  const { data: userData, isLoading: isUserDataLoading  } = useQuery<UserData[]>({
-    queryFn: () => fetchUserData(),
-    queryKey: ["userData"],
-  });
+  const { data: userData, isLoading: isUserDataLoading } = useUserQuery();
 
-  const { data: additionalFees } = useQuery<AdditionalFees[]>({
-    queryFn: () => fetchAdditionalFeesData(),
-    queryKey: ["additionalFeesData"],
-  });
+  const { data: additionalFees } = useAdditionalFeesQuery();
 
-  const { mutateAsync: mutateBookingData, isPending: isMutateBookingDataLoading } = useMutation({
-    mutationFn: postBookingData,
-  });
+  const { mutateAsync: mutateBookingData, isPending: isMutateBookingDataLoading } =
+    useBookingMutation();
 
-  const { mutateAsync: mutateCheckoutData, isPending: isMutateCheckoutDataLoading } = useMutation({
-    mutationFn: postCheckoutData,
-  });
+  const { mutateAsync: mutateCheckoutData, isPending: isMutateCheckoutDataLoading } =
+    useCheckoutMutation();
 
   const [startUserDate, setStartDate] = useState<Date>(new Date());
   const [endUserDate, setEndDate] = useState<string>("");
   const [quantity, setQuantity] = useState(Number(numofperson) || 1);
   const [currency, _setCurrency] = useState<string>("PHP");
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [packageTypeId, setPackageTypeId] = useState<number>(tourpackagetype ? Number(tourpackagetype) : 0);
+  const [packageTypeId, setPackageTypeId] = useState<number>(
+    tourpackagetype ? Number(tourpackagetype) : 0,
+  );
 
   const packagetype = Number(tourpackagetype) || 0;
   const numOfDays =
@@ -122,7 +114,7 @@ function BookingPage() {
   }, [packageData]);
 
   if (isPackageDataLoading || isUserDataLoading) {
-    return <Loading loadingMessage="Loading Booking Data"/>
+    return <Loading loadingMessage="Loading Booking Data" />;
   }
 
   const handleCheckoutButton = async () => {
@@ -147,12 +139,12 @@ function BookingPage() {
 
   return (
     <>
-      <nav className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] shadow-md">
+      <nav className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 shadow-md dark:bg-[#09090b]">
         <NavBar isNavBar={true} />
       </nav>
-      <main className="flex-row px-8 pb-8 sm:mt-16 mt-8 lg:flex">
+      <main className="mt-8 flex-row px-8 pb-8 sm:mt-16 lg:flex">
         <div className="flex-col gap-2 lg:flex lg:w-2/3">
-          <div className="mb-4 flex flex-col rounded-2xl border-[1px] p-8 lg:mb-0 lg:flex-row lg:items-center xl:p-4 shadow-md">
+          <div className="mb-4 flex flex-col rounded-2xl border-[1px] p-8 shadow-md lg:mb-0 lg:flex-row lg:items-center xl:p-4">
             <img
               src={
                 packageData?.[0]?.package_image[0]
@@ -240,7 +232,7 @@ function BookingPage() {
               </div>
             </div>
           </div>
-          <div className="mb-4 mt-4 items-center justify-between rounded-2xl border-[1px] p-8 sm:flex lg:mb-0 shadow-md">
+          <div className="mb-4 mt-4 items-center justify-between rounded-2xl border-[1px] p-8 shadow-md sm:flex lg:mb-0">
             <div className="">
               <p className="text-xl font-semibold">Package Rules</p>
               <p>Before proceeding, read the rules for this tour package.</p>
@@ -263,7 +255,7 @@ function BookingPage() {
             </div>
           </div>
         </div>
-        <aside className="mb-4 flex-col justify-between rounded-2xl border-[1px] p-8 lg:mb-0 lg:ml-4 lg:flex lg:w-1/3 shadow-md">
+        <aside className="mb-4 flex-col justify-between rounded-2xl border-[1px] p-8 shadow-md lg:mb-0 lg:ml-4 lg:flex lg:w-1/3">
           <div>
             <div className="flex w-full flex-row items-start justify-between pb-4">
               <p className="text-xl font-semibold">Invoice</p>
@@ -313,10 +305,9 @@ function BookingPage() {
               </p>
             </div>
             <Button variant={"outline"} className="w-full" onClick={handleCheckoutButton}>
-              {
-                isMutateBookingDataLoading || isMutateCheckoutDataLoading ? 
-                <div className="loadertiny"></div> : null
-              }
+              {isMutateBookingDataLoading || isMutateCheckoutDataLoading ? (
+                <div className="loadertiny"></div>
+              ) : null}
               <p>Proceed to Checkout</p>
             </Button>
           </div>

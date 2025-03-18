@@ -37,7 +37,7 @@ export const fetchAdditionalFeesData = async () => {
   return additionalFees.data || [];
 };
 
-export const fetchSingleBooking = async (id : number) => {
+export const fetchSingleBooking = async (id: number) => {
   const additionalFees = await api.get(`/apps/transaction/booking/list/${id}/`);
   return additionalFees.data || [];
 };
@@ -56,4 +56,4 @@ export const postDeletedBooking = async (id: number) => {
 export const fetchSuccessfulTransaction = async (id: number) => {
   const response = await api.get(`apps/transaction/transaction/list-create/${id}/`);
   return response.data || [];
-}
+};

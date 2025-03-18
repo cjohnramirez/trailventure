@@ -1,21 +1,16 @@
-import { fetchSuccessfulTransaction } from "@/api/bookingData";
-import { useQuery } from "@tanstack/react-query";
 import { CircleCheck } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { Button } from "../../ui/button";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
 import Loading from "../../Loading/Loading";
+import { useSuccessfulTransactionQuery } from "@/hooks/tanstack/booking/useQueryBooking";
 
 const BookingSuccessful = () => {
   const { width, height } = useWindowSize();
   const { id } = useParams();
 
-  const { data: successfulTransaction } = useQuery({
-    queryFn: () => fetchSuccessfulTransaction(Number(id)),
-    queryKey: ["successfulTransaction", id],
-    staleTime: Infinity,
-  });
+  const { data: successfulTransaction } = useSuccessfulTransactionQuery(Number(id));
 
   console.log(successfulTransaction);
 

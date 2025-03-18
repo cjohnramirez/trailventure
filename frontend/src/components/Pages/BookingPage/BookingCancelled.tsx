@@ -1,18 +1,13 @@
-import { postDeletedBooking } from "@/api/bookingData";
-import { useQuery } from "@tanstack/react-query";
 import { CircleX } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { Button } from "../../ui/button";
 import Loading from "../../Loading/Loading";
+import { useDeleteBookingMutation } from "@/hooks/tanstack/booking/useMutationBooking";
 
 const BookingCancelled = () => {
   const { id } = useParams();
 
-  const { data: deletedBooking } = useQuery({
-    queryFn: () => postDeletedBooking(Number(id)),
-    queryKey: ["deletedBooking", id],
-    staleTime: Infinity,
-  });
+  const { data: deletedBooking } = useDeleteBookingMutation(id ? parseInt(id) : 0);
 
   console.log(deletedBooking);
 

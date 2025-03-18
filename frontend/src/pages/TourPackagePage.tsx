@@ -8,59 +8,38 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { useGetStore } from "@/components/Contexts/AuthStore";
-import { useQuery } from "@tanstack/react-query";
-import { fetchPackage, fetchTransactionsByBooking } from "@/api/tourPackageData";
-import { tourPackage } from "@/lib/TourPackagePage/tourPackage";
-import { tourPackageReviews } from "@/lib/TourPackagePage/tourPackageReview";
-import { fetchPackageReviews } from "@/api/tourPackageData";
 import { Rating } from "react-simple-star-rating";
-import { fetchOwnPackageReviews } from "@/api/tourPackageData";
 import CommentDialog from "@/components/Pages/BookingPage/BookingAddComment";
-import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 import Loading from "@/components/Loading/Loading";
+import { usePackageQuery } from "@/hooks/tanstack/booking/useQueryBooking";
+import {
+  useOwnPackageReviewsQuery,
+  usePackageReviewsQuery,
+  useTransactionsByBookingQuery,
+} from "@/hooks/tanstack/tourPackage/useQueryTourPackage";
+import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 
 function PackagePage() {
   const { id } = useParams();
   const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
   const navigate = useNavigate();
+  const { openConfirmation } = useConfirmationStore();
 
-  // Fetch tour package data
-  const { data: tourpackage, isLoading: tourPackageLoading } = useQuery<tourPackage[]>({
-    queryFn: () => fetchPackage(Number(id)),
-    queryKey: ["tourPackageData", id],
-  });
+  // Queries
+  const { data: tourpackage, isLoading: tourPackageLoading } = usePackageQuery(Number(id));
+  const { data: tourPackageReviews } = usePackageReviewsQuery(Number(id));
+  const { data: ownTourPackageReviews, refetch: ownTourPackageReviewsRefetch } =
+    useOwnPackageReviewsQuery(Number(id));
+  const { data: ownTransactionsByBooking, refetch: ownTransactionRefetch } =
+    useTransactionsByBookingQuery(Number(id));
 
-  // Fetch package reviews
-  const { data: tourPackageReviews } = useQuery<tourPackageReviews[]>({
-    queryFn: () => fetchPackageReviews(Number(id)),
-    queryKey: ["tourPackageReviews", id],
-  });
-
-  // Fetch own package reviews (enabled only if authorized)
-  const {
-    data: ownTourPackageReviews,
-    refetch: ownTourPackageReviewsRefetch,
-    isLoading: isOwnTourPackageReviewLoading,
-  } = useQuery<tourPackageReviews[]>({
-    queryFn: () => fetchOwnPackageReviews(Number(id)),
-    queryKey: ["ownTourPackageReviews", id],
-    enabled: isAuthorized,
-  });
-
-  // Fetch own transactions (enabled only if authorized)
-  const { data: ownTransactionsByBooking, refetch: ownTransactionRefetch } = useQuery({
-    queryFn: () => fetchTransactionsByBooking(Number(id)),
-    queryKey: ["ownTransactionsByBooking"],
-    enabled: isAuthorized,
-  });
-
+  // State
   const [date, setDate] = useState<Date>(new Date());
   const [commentDialogOpen, setCommentDialogOpen] = useState(false);
   const [typeOfPackage, setTypeOfPackage] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
   const [isAllowedToComment, setIsAllowedToComment] = useState(false);
   const [isAllowedToBook, setIsAllowedToBook] = useState(true);
-  const { openConfirmation } = useConfirmationStore();
   const [transactionId, setTransactionId] = useState<number>(0);
 
   // Refetch data when authorized status changes
@@ -82,7 +61,7 @@ function PackagePage() {
     }
   }, [ownTransactionsByBooking, id]);
 
-  if (tourPackageLoading || isOwnTourPackageReviewLoading) {
+  if (tourPackageLoading) {
     return <Loading loadingMessage="Loading Package Data" />;
   }
 
@@ -93,9 +72,7 @@ function PackagePage() {
         description: "You have already booked this package",
         cancelLabel: "Cancel",
         actionLabel: "Go to Home",
-        onAction: () => {
-          navigate("/");
-        },
+        onAction: () => navigate("/"),
         onCancel: () => {},
       });
     } else if (isAuthorized) {
@@ -108,9 +85,7 @@ function PackagePage() {
         description: "You must login or sign up in order to access this page",
         cancelLabel: "Cancel",
         actionLabel: "Go to Login",
-        onAction: () => {
-          navigate("/login");
-        },
+        onAction: () => navigate("/login"),
         onCancel: () => {},
       });
     }
@@ -119,7 +94,7 @@ function PackagePage() {
   return (
     <div id="main">
       <div className="fixed bottom-0 z-20 flex w-full justify-center px-8 py-4">
-        <div className="hidden w-full max-w-[500px] justify-center rounded-full border-[1px] bg-[#ffffff] p-4 dark:bg-[#09090b] lg:flex shadow-md">
+        <div className="hidden w-full max-w-[500px] justify-center rounded-full border-[1px] bg-[#ffffff] p-4 shadow-md dark:bg-[#09090b] lg:flex">
           <div className="flex gap-4">
             <Button
               variant={"outline"}
@@ -158,7 +133,7 @@ function PackagePage() {
           </div>
         </div>
       </div>
-      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 dark:bg-[#09090b] shadow-md">
+      <div className="sticky top-0 z-20 bg-[#ffffff] px-8 py-4 shadow-md dark:bg-[#09090b]">
         <NavBar isNavBar={true} />
       </div>
       <div className="flex flex-col items-center gap-4 p-8 lg:mx-8 lg:my-4" id="description">
@@ -198,8 +173,11 @@ function PackagePage() {
               <p className="text-xl font-semibold">Description</p>
               <p>{tourpackage && tourpackage[0]?.description}</p>
             </div>
-            <div className="flex flex-col gap-8 rounded-2xl border-[1px] p-8 shadow-md" id="packageType">
-              <div className="flex flex-col gap-4 lg:rounded-2xl lg:border-[1px] lg:p-8 md:shadow-md">
+            <div
+              className="flex flex-col gap-8 rounded-2xl border-[1px] p-8 shadow-md"
+              id="packageType"
+            >
+              <div className="flex flex-col gap-4 md:shadow-md lg:rounded-2xl lg:border-[1px] lg:p-8">
                 <div>
                   <p className="text-xl font-semibold">Package Type</p>
                   <div className="pt-4 lg:flex lg:gap-4">
@@ -207,7 +185,7 @@ function PackagePage() {
                       tourpackage[0]?.package_type.map((packageType, index) => {
                         return (
                           <Button
-                            className={`mb-4 flex rounded-2xl border-[1px] lg:mb-0 shadow-md ${typeOfPackage == index ? "bg-teal-500 text-black" : ""}`}
+                            className={`mb-4 flex rounded-2xl border-[1px] shadow-md lg:mb-0 ${typeOfPackage == index ? "bg-teal-500 text-black" : ""}`}
                             variant={"outline"}
                             key={index}
                             onClick={() => {
@@ -244,7 +222,7 @@ function PackagePage() {
                 <div>
                   <p className="text-xl font-semibold">Package Type Amenities</p>
                   <p>These are amenities that are available for the selected package</p>
-                  <div className="grid gap-2 pt-4 lg:grid-cols-2 ">
+                  <div className="grid gap-2 pt-4 lg:grid-cols-2">
                     {tourpackage &&
                       tourpackage[0]?.package_type[typeOfPackage].package_type_amenity.map(
                         (amenity, index) => {
@@ -269,7 +247,7 @@ function PackagePage() {
                       <PopoverTrigger asChild>
                         <Button
                           variant={"outline"}
-                          className="flex w-full justify-start sm:justify-center p-6 sm:w-auto"
+                          className="flex w-full justify-start p-6 sm:w-auto sm:justify-center"
                         >
                           <p>
                             {date
@@ -298,7 +276,7 @@ function PackagePage() {
                   </div>
                   <div className="items-center gap-4 pt-4 sm:flex xl:pt-0">
                     <p className="mb-2 text-xl font-semibold sm:mb-0">Quantity</p>
-                    <div className="flex w-full items-center sm:justify-center gap-4 rounded-full border-[1px] p-2 px-4 sm:w-auto">
+                    <div className="flex w-full items-center gap-4 rounded-full border-[1px] p-2 px-4 sm:w-auto sm:justify-center">
                       <p>Person</p>
                       <Button
                         variant={"outline"}
@@ -337,7 +315,7 @@ function PackagePage() {
                   </div>
                   <Button
                     variant={"outline"}
-                    className="h-full w-full bg-teal-500 px-10 text-black sm:w-auto shadow-md"
+                    className="h-full w-full bg-teal-500 px-10 text-black shadow-md sm:w-auto"
                     onClick={() => {
                       handleBooking();
                     }}

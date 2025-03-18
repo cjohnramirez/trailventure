@@ -14,8 +14,7 @@ import {
 import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "../../ui/textarea";
-import { postComment } from "@/api/tourPackageData";
-import { useMutation } from "@tanstack/react-query";
+import { usePostCommentMutation } from "@/hooks/tanstack/tourPackage/useMutationTourPackage";
 
 interface CommentDialogProps {
   commentDialogOpen: boolean;
@@ -38,10 +37,7 @@ export default function CommentDialog({
   const [firstPageOpen, setFirstPageOpen] = useState(true);
   const { openConfirmation } = useConfirmationStore();
   const navigate = useNavigate();
-
-  const { mutateAsync: mutateCommentData } = useMutation({
-    mutationFn: postComment,
-  });
+  const { mutateAsync: mutateCommentData } = usePostCommentMutation();
 
   useEffect(() => {
     setFirstPageOpen(false);
