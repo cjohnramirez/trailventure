@@ -5,10 +5,8 @@ import Search from "@/components/SearchBar/SearchBar";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useGetStore } from "../Contexts/AuthStore";
-import { useQuery } from "@tanstack/react-query";
-import { UserData } from "@/lib/UserPage/userData";
-import { fetchUserData } from "@/api/userData";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
+import { useUserQuery } from "@/hooks/tanstack/user/useQueryUser";
 
 interface NavBarInterface {
   isNavBar: boolean;
@@ -16,13 +14,10 @@ interface NavBarInterface {
 }
 
 function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
-  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false; 
+  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
 
-  const { data: userData } = useQuery<UserData[]>({
-    queryFn: () => fetchUserData(),
-    queryKey: ["userData"],
-    enabled: isAuthorized,
-  });
+  // Fetch User Data
+  const { data: userData } = useUserQuery();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,23 +38,34 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
 
   return (
     <div className="z-10 select-none">
-      <div className={isNavBar ? `grid grid-cols-2 grid-rows-2 gap-2 xl:grid-cols-3 xl:grid-rows-1` : `grid grid-cols-2`}>
+      <div
+        className={
+          isNavBar
+            ? `grid grid-cols-2 grid-rows-2 gap-2 xl:grid-cols-3 xl:grid-rows-1`
+            : `grid grid-cols-2`
+        }
+      >
         <p className="title flex items-center text-4xl font-bold">
           <Link to="/">TRAILVENTURE</Link>
         </p>
         {!isNavBar ? (
-          <div className={`col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1` + (isHomePage ? "hidden" : "")}>
+          <div
+            className={
+              `col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1` +
+              (isHomePage ? "hidden" : "")
+            }
+          >
             <></>
           </div>
         ) : (
-          <div className="col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1 ">
+          <div className="col-span-full row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1">
             <Search navBar={true} />
           </div>
         )}
         <div className="flex justify-end gap-2">
           <Button
             variant="outline"
-            className={`hidden h-full sm:block shadow-lg ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
+            className={`hidden h-full shadow-lg sm:block ${!atUserPage && isAuthorized ? "px-2 lg:pl-[4px] lg:pr-4" : ""}`}
             onClick={handleAuthClick}
           >
             {isAuthorized ? (
@@ -71,12 +77,16 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
               ) : (
                 <div className="flex items-center gap-2 p-1">
                   <img
-                  src={userData && userData[0]?.avatar ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar : DefaultProfile}
-                  className="aspect-square w-7 rounded-full object-cover"
-                  alt="User avatar"
+                    src={
+                      userData && userData[0]?.avatar
+                        ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar
+                        : DefaultProfile
+                    }
+                    className="aspect-square w-7 rounded-full object-cover"
+                    alt="User avatar"
                   />
                   <p className="hidden lg:block">
-                  Welcome, {userData ? userData[0]?.user?.username : "user!"}
+                    Welcome, {userData ? userData[0]?.user?.username : "user!"}
                   </p>
                 </div>
               )
