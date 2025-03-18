@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { useSuccessfulTransactionQuery } from "@/hooks/tanstack/booking/useQueryBooking";
+import { useQueryBooking } from "@/hooks/tanstack/booking/useQueryBooking";
 import { Booking } from "@/lib/BookingPage/booking";
 import { CircleCheck } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -25,6 +25,7 @@ export default function UserBookingDetails({
   openBookingDetails,
 }: UserBookingDetailsProps) {
   const [endDate, setEndDate] = useState<string>("");
+  const { useSuccessfulTransactionQuery } = useQueryBooking();
 
   const { data: useSingleTransaction } = useSuccessfulTransactionQuery(booking?.id || 0);
 

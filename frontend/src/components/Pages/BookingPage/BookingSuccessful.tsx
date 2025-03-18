@@ -4,11 +4,12 @@ import { Button } from "../../ui/button";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
 import Loading from "../../Loading/Loading";
-import { useSuccessfulTransactionQuery } from "@/hooks/tanstack/booking/useQueryBooking";
+import { useQueryBooking } from "@/hooks/tanstack/booking/useQueryBooking";
 
 const BookingSuccessful = () => {
   const { width, height } = useWindowSize();
   const { id } = useParams();
+  const { useSuccessfulTransactionQuery } = useQueryBooking();
 
   const { data: successfulTransaction } = useSuccessfulTransactionQuery(Number(id));
 

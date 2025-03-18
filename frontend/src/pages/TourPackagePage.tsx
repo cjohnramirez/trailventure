@@ -11,12 +11,8 @@ import { useGetStore } from "@/components/Contexts/AuthStore";
 import { Rating } from "react-simple-star-rating";
 import CommentDialog from "@/components/Pages/BookingPage/BookingAddComment";
 import Loading from "@/components/Loading/Loading";
-import { usePackageQuery } from "@/hooks/tanstack/booking/useQueryBooking";
-import {
-  useOwnPackageReviewsQuery,
-  usePackageReviewsQuery,
-  useTransactionsByBookingQuery,
-} from "@/hooks/tanstack/tourPackage/useQueryTourPackage";
+import { useQueryBooking } from "@/hooks/tanstack/booking/useQueryBooking";
+import { useQueryTourPackage } from "@/hooks/tanstack/tourPackage/useQueryTourPackage";
 import useConfirmationStore from "@/components/Contexts/ConfirmationStore";
 
 function PackagePage() {
@@ -24,7 +20,9 @@ function PackagePage() {
   const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
   const navigate = useNavigate();
   const { openConfirmation } = useConfirmationStore();
-
+  const { usePackageQuery } = useQueryBooking();
+  const { useOwnPackageReviewsQuery, usePackageReviewsQuery, useTransactionsByBookingQuery } =
+    useQueryTourPackage();
   // Queries
   const { data: tourpackage, isLoading: tourPackageLoading } = usePackageQuery(Number(id));
   const { data: tourPackageReviews } = usePackageReviewsQuery(Number(id));

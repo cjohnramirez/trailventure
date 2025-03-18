@@ -2,10 +2,11 @@ import { CircleX } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { Button } from "../../ui/button";
 import Loading from "../../Loading/Loading";
-import { useDeleteBookingMutation } from "@/hooks/tanstack/booking/useMutationBooking";
+import useMutationBooking from "@/hooks/tanstack/booking/useMutationBooking";
 
 const BookingCancelled = () => {
   const { id } = useParams();
+  const { useDeleteBookingMutation } = useMutationBooking();
 
   const { data: deletedBooking } = useDeleteBookingMutation(id ? parseInt(id) : 0);
 

@@ -1,9 +1,10 @@
 import { Card } from "../../ui/card";
 import { MapPin } from "lucide-react";
-import { useHomeDestinationQuery } from "@/hooks/tanstack/home/useQueryHome";
+import { useQueryHome } from "@/hooks/tanstack/home/useQueryHome";
 
 function DiscoverSection() {
-  const { data: destinations } = useHomeDestinationQuery();
+  const { useHomeDestinationQuery } = useQueryHome();
+  const { data: destinations } = useHomeDestinationQuery;
 
   return (
     <div className="flex flex-col justify-center py-10 md:py-20">

@@ -6,7 +6,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useGetStore } from "../Contexts/AuthStore";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
-import { useUserQuery } from "@/hooks/tanstack/user/useQueryUser";
+import { useQueryUser } from "@/hooks/tanstack/user/useQueryUser";
 
 interface NavBarInterface {
   isNavBar: boolean;
@@ -17,7 +17,8 @@ function NavBar({ isNavBar, isHomePage }: NavBarInterface) {
   const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false;
 
   // Fetch User Data
-  const { data: userData } = useUserQuery();
+  const { userDataQuery } = useQueryUser();
+  const { data: userData } = userDataQuery;
 
   const navigate = useNavigate();
   const location = useLocation();
