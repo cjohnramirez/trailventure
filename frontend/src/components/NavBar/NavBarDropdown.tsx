@@ -12,13 +12,14 @@ import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useMediaQuery } from "react-responsive";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
-import { useUserQuery } from "@/hooks/tanstack/user/useQueryUser";
+import { useQueryUser } from "@/hooks/tanstack/user/useQueryUser";
 
 function NavBarDropdown() {
   const { theme, setTheme } = useTheme();
 
-  const { data: userData } = useUserQuery();
+  const { userDataQuery } = useQueryUser();
 
+  const { data: userData } = userDataQuery;
   const smallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   return (
