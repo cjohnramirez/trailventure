@@ -3,11 +3,7 @@ import { useState } from "react";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
 import DefaultBanner from "@/assets/UserPage/defaultBanner.jpeg";
 import { siFacebook, siX, siInstagram } from "simple-icons";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Edit } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import Loading from "@/components/Loading/Loading";
 import { Rating } from "react-simple-star-rating";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
@@ -20,8 +16,6 @@ import {
 } from "@/hooks/tanstack/user/useQueryUser";
 
 function UserPage() {
-  const [editMode, setEditMode] = useState(false);
-  const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [openBookingDetails, setOpenBookingDetails] = useState(false);
   const [seeBooking, setSeeBooking] = useState<Booking | null>();
 
@@ -141,101 +135,33 @@ function UserPage() {
             <div className="flex max-w-[1300px] flex-col rounded-2xl border-[1px] p-8 shadow-lg sm:ml-12 sm:mr-12 lg:mr-0">
               <div className="relative grid items-center gap-4 pb-4 sm:grid-cols-2">
                 <p className="text-lg font-semibold">User Details</p>
-                <div className="relative flex sm:justify-end">
-                  <Button
-                    variant={"outline"}
-                    className="h-full w-full"
-                    onClick={() => {
-                      setEditMode(!editMode);
-                    }}
-                  >
-                    <Edit />
-                    <p>{editMode ? "Save Edit" : "Edit User Details"}</p>
-                  </Button>
-                </div>
+                <div className="relative flex sm:justify-end"></div>
               </div>
               <div className="grid gap-4 lg:grid-cols-2">
-                {editMode ? (
-                  <>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex">
-                      <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">First Name</p>
-                      <Input
-                        type="text"
-                        placeholder="Enter your new first name"
-                        className="rounded-xl sm:rounded-full"
-                      />
-                    </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex">
-                      <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Last Name</p>
-                      <Input
-                        type="text"
-                        placeholder="Enter your new last name"
-                        className="rounded-xl sm:rounded-full"
-                      />
-                    </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex">
-                      <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Email</p>
-                      <Input
-                        type="email"
-                        placeholder="Enter your new email"
-                        className="rounded-xl sm:rounded-full"
-                      />
-                    </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex">
-                      <p className="mb-2 w-[150px] sm:mb-0 sm:pr-4">Date of Birth</p>
-                      <div className="w-full">
-                        <Popover>
-                          <PopoverTrigger asChild className="w-full">
-                            <Button
-                              variant={"outline"}
-                              className="flex justify-start rounded-xl sm:rounded-full"
-                            >
-                              <CalendarIcon />
-                              <p>{dateOfBirth?.toLocaleDateString()}</p>
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent>
-                            <Calendar
-                              mode="single"
-                              selected={dateOfBirth ? new Date(dateOfBirth) : undefined}
-                              onSelect={(date) => {
-                                setDateOfBirth(date || null);
-                              }}
-                              className="rounded-md border shadow"
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
-                      <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
-                        First Name
-                      </p>
-                      <p className="sm:pl-4">{userData?.[0]?.user?.first_name}</p>
-                    </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
-                      <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
-                        Last Name
-                      </p>
-                      <p className="sm:pl-4">{userData?.[0]?.user?.last_name}</p>
-                    </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
-                      <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
-                        Email
-                      </p>
-                      <p className="sm:pl-4">{userData?.[0]?.user?.email}</p>
-                    </div>
-                    <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
-                      <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
-                        Date of Birth
-                      </p>
-                      <p className="sm:pl-4">{userData?.[0]?.date_of_birth}</p>
-                    </div>
-                  </>
-                )}
+                <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
+                  <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                    First Name
+                  </p>
+                  <p className="sm:pl-4">{userData?.[0]?.user?.first_name}</p>
+                </div>
+                <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
+                  <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                    Last Name
+                  </p>
+                  <p className="sm:pl-4">{userData?.[0]?.user?.last_name}</p>
+                </div>
+                <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
+                  <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                    Email
+                  </p>
+                  <p className="sm:pl-4">{userData?.[0]?.user?.email}</p>
+                </div>
+                <div className="items-center rounded-2xl border-[1px] p-4 shadow-sm sm:flex sm:p-4 sm:py-6">
+                  <p className="mb-2 border-b-[1px] sm:mb-0 sm:w-[150px] sm:border-b-0 sm:border-r-[1px] sm:pr-2">
+                    Date of Birth
+                  </p>
+                  <p className="sm:pl-4">{userData?.[0]?.date_of_birth}</p>
+                </div>
               </div>
             </div>
           </div>
