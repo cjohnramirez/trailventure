@@ -9,19 +9,17 @@ import { Rating } from "react-simple-star-rating";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { Booking } from "@/lib/BookingPage/booking";
 import UserBookingDetails from "@/components/Pages/UserPage/UserBookingDetails";
-import {
-  useUserBookingQuery,
-  useUserQuery,
-  useUserReviewsQuery,
-} from "@/hooks/tanstack/user/useQueryUser";
+import { useQueryUser } from "@/hooks/tanstack/user/useQueryUser";
 
 function UserPage() {
   const [openBookingDetails, setOpenBookingDetails] = useState(false);
   const [seeBooking, setSeeBooking] = useState<Booking | null>();
 
-  const { data: userData, isLoading: isUserDataLoading } = useUserQuery();
-  const { data: userBooking, isLoading: isUserBookingLoading } = useUserBookingQuery();
-  const { data: UserReview, isLoading: isUserReviewLoading } = useUserReviewsQuery();
+  const { userDataQuery, userReviewsQuery, userBookingQuery } = useQueryUser();
+
+  const { data: userData, isLoading: isUserDataLoading } = userDataQuery;
+  const { data: userBooking, isLoading: isUserBookingLoading } = userBookingQuery;
+  const { data: UserReview, isLoading: isUserReviewLoading } = userReviewsQuery;
 
   if (isUserDataLoading || isUserBookingLoading || isUserReviewLoading) {
     return <Loading loadingMessage="Loading User Data" />;

@@ -7,37 +7,47 @@ import {
   fetchTransactionsByBooking,
 } from "@/api/tourPackageData";
 
-// Fetch Package Reviews
-export const usePackageReviewsQuery = (id: number) =>
-  useQuery({
-    queryKey: ["packageReviews", id],
-    queryFn: () => fetchPackageReviews(id),
-  });
+export const useQueryTourPackage = () => {
+  // Fetch Package Reviews
+  const usePackageReviewsQuery = (id: number) =>
+    useQuery({
+      queryKey: ["packageReviews", id],
+      queryFn: () => fetchPackageReviews(id),
+    });
 
-// Fetch Package
-export const usePackageQuery = (id: number) =>
-  useQuery({
-    queryKey: ["package", id],
-    queryFn: () => fetchPackage(id),
-  });
+  // Fetch Package
+  const usePackageQuery = (id: number) =>
+    useQuery({
+      queryKey: ["package", id],
+      queryFn: () => fetchPackage(id),
+    });
 
-// Fetch Own Package Reviews
-export const useOwnPackageReviewsQuery = (id: number) =>
-  useQuery({
-    queryKey: ["ownPackageReviews", id],
-    queryFn: () => fetchOwnPackageReviews(id),
-  });
+  // Fetch Own Package Reviews
+  const useOwnPackageReviewsQuery = (id: number) =>
+    useQuery({
+      queryKey: ["ownPackageReviews", id],
+      queryFn: () => fetchOwnPackageReviews(id),
+    });
 
-// Fetch Transactions
-export const useTransactionsQuery = (id: number) =>
-  useQuery({
-    queryKey: ["transactions", id],
-    queryFn: () => fetchTransactions(id),
-  });
+  // Fetch Transactions
+  const useTransactionsQuery = (id: number) =>
+    useQuery({
+      queryKey: ["transactions", id],
+      queryFn: () => fetchTransactions(id),
+    });
 
-// Fetch Transactions by Booking
-export const useTransactionsByBookingQuery = (id: number) =>
-  useQuery({
-    queryKey: ["transactionsByBooking", id],
-    queryFn: () => fetchTransactionsByBooking(id),
-  });
+  // Fetch Transactions by Booking
+  const useTransactionsByBookingQuery = (id: number) =>
+    useQuery({
+      queryKey: ["transactionsByBooking", id],
+      queryFn: () => fetchTransactionsByBooking(id),
+    });
+
+  return {
+    usePackageReviewsQuery,
+    usePackageQuery,
+    useOwnPackageReviewsQuery,
+    useTransactionsQuery,
+    useTransactionsByBookingQuery,
+  };
+};

@@ -17,21 +17,21 @@ import {
 } from "@/components/ui/dialog";
 import Loading from "@/components/Loading/Loading";
 import "@/components/Loading/LoadingSpinner.css";
-import { usePackageQuery, useAdditionalFeesQuery } from "@/hooks/tanstack/booking/useQueryBooking";
-import {
-  useBookingMutation,
-  useCheckoutMutation,
-} from "@/hooks/tanstack/booking/useMutationBooking";
-import { useUserQuery } from "@/hooks/tanstack/user/useQueryUser";
+import { useQueryBooking } from "@/hooks/tanstack/booking/useQueryBooking";
+import useMutationBooking from "@/hooks/tanstack/booking/useMutationBooking";
+import { useQueryUser } from "@/hooks/tanstack/user/useQueryUser";
 
 function BookingPage() {
   const { tourpackageId, tourpackagetype, numofperson, startdate } = useParams();
+  const { usePackageQuery, useAdditionalFeesQuery } = useQueryBooking();
+  const { useBookingMutation, useCheckoutMutation } = useMutationBooking();
+  const { userDataQuery } = useQueryUser();
 
   const { data: packageData, isLoading: isPackageDataLoading } = usePackageQuery(
     Number(tourpackageId),
   );
 
-  const { data: userData, isLoading: isUserDataLoading } = useUserQuery();
+  const { data: userData, isLoading: isUserDataLoading } = userDataQuery;
 
   const { data: additionalFees } = useAdditionalFeesQuery();
 

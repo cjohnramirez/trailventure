@@ -1,9 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchHomeDestinationData } from "@/api/homeData";
 
-// Fetch Home Destination Data
-export const useHomeDestinationQuery = () =>
-  useQuery({
+export const useQueryHome = () => {
+  const homeDestinationQuery = useQuery({
     queryKey: ["homeDestination"],
     queryFn: fetchHomeDestinationData,
   });
+
+  return {
+    useHomeDestinationQuery: homeDestinationQuery,
+  };
+};

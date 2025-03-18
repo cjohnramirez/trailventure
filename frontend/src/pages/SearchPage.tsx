@@ -10,7 +10,7 @@ import SearchPageDestination from "@/components/Pages/SearchPage/SearchPageDesti
 import SearchPagePrice from "@/components/Pages/SearchPage/SearchPagePrice";
 import SearchPageReview from "@/components/Pages/SearchPage/SearchPageReview";
 import { useMediaQuery } from "react-responsive";
-import { useSearchQuery, useDestinationQuery } from "@/hooks/tanstack/search/useQuerySearch";
+import { useQuerySearch } from "@/hooks/tanstack/search/useQuerySearch";
 import { searchQuery } from "@/lib/SearchPage/searchQuery";
 import {
   Pagination,
@@ -46,6 +46,8 @@ function SearchPage() {
   const [pageNumber, setPageNumber] = useState<number>(Number(pagenumber) || 1);
   const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
   const [openFilter, setOpenFilter] = useState<boolean>(false);
+
+  const { useSearchQuery, useDestinationQuery } = useQuerySearch();
 
   useEffect(() => {
     setPageRefresh(true);

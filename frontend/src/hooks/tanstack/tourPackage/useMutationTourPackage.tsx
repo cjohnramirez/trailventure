@@ -1,8 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { postComment } from "@/api/tourPackageData";
 
-// Post Comment
-export const usePostCommentMutation = () =>
-  useMutation({
+export const useMutationTourPackage = () => {
+  const postCommentMutation = useMutation({
     mutationFn: postComment,
   });
+
+  return {
+    postCommentMutation,
+  };
+};
