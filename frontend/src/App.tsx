@@ -4,7 +4,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./components/Error/NotFound";
 import Home from "./pages/Home";
-import AboutUs from "./pages/AboutUs";
 import SearchPage from "./pages/SearchPage";
 import PackagePage from "./pages/TourPackagePage";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
@@ -13,7 +12,6 @@ import BookingPage from "./pages/BookingPage";
 import { useGetStore } from "@/components/Contexts/AuthStore";
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import HostDashboardPage from "./pages/HostDashboardPage";
 import BookingCancelled from "./components/Pages/BookingPage/BookingCancelled";
 import BookingSuccessful from "./components/Pages/BookingPage/BookingSuccessful";
 import Loading from "./components/Loading/Loading";
@@ -88,7 +86,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/about-us" element={<AboutUs />} />
               <Route path="/" element={<Home />} />
               <Route
                 path="/search/:location/:startdate/:enddate/:startprice/:endprice/:pageNumber"
@@ -101,9 +98,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </>
           ) : (
-            <>
-              <Route path="/" element={<HostDashboardPage />} />
-            </>
+            <></>
           )}
         </Routes>
       </QueryClientProvider>

@@ -145,7 +145,6 @@ function PackagePage() {
               <p>{tourpackage && tourpackage[0]?.address}</p>
             </div>
           </div>
-          <Button variant={"outline"}>Save to Wishlist</Button>
         </div>
         <div className="w-screen max-w-[1200px] px-8 lg:px-16 xl:p-0">
           <Carousel opts={{ align: "start" }}>

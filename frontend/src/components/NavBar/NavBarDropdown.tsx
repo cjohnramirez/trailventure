@@ -11,40 +11,39 @@ import { Menu } from "lucide-react";
 import { Button } from "../ui/button";
 import { useTheme } from "@/components/ui/theme-provider";
 import { useMediaQuery } from "react-responsive";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserData } from "@/api/userData";
-import { UserData } from "@/lib/UserPage/userData";
-import { useGetStore } from "../Contexts/AuthStore";
 import DefaultProfile from "@/assets/UserPage/defaultProfile.jpg";
+import { useUserQuery } from "@/hooks/tanstack/user/useQueryUser";
 
 function NavBarDropdown() {
   const { theme, setTheme } = useTheme();
 
-  const isAuthorized = useGetStore((state) => state.isAuthorized) ?? false; 
-
-  const { data: userData } = useQuery<UserData[]>({
-    queryFn: () => fetchUserData(),
-    queryKey: ["userData"],
-    enabled: isAuthorized,
-  });
+  const { data: userData } = useUserQuery();
 
   const smallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="h-full shadow-lg py-4">
+        <Button variant="outline" className="h-full py-4 shadow-lg">
           <Menu />
           Menu
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-8 select-none p-2">
         <DropdownMenuGroup>
-          {(smallScreen && userData ) && (
+          {smallScreen && userData && (
             <>
               <DropdownMenuItem>
-                <Link to="/user-page" className="flex gap-2 items-center">
-                  <img src={userData && userData[0]?.avatar ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar : DefaultProfile} alt="avatar" className="w-8 h-8 rounded-full" />
+                <Link to="/user-page" className="flex items-center gap-2">
+                  <img
+                    src={
+                      userData && userData[0]?.avatar
+                        ? "https://res.cloudinary.com/dch6eenk5/" + userData[0]?.avatar
+                        : DefaultProfile
+                    }
+                    alt="avatar"
+                    className="h-8 w-8 rounded-full"
+                  />
                   <p>{userData && userData[0]?.user?.username}</p>
                 </Link>
               </DropdownMenuItem>
@@ -72,14 +71,15 @@ function NavBarDropdown() {
               )}
             </div>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to="/about-us">About Us</Link>
-          </DropdownMenuItem>
-          {userData ? (<DropdownMenuItem>
-            <Link to="/logout">Logout</Link>
-          </DropdownMenuItem>) : (<DropdownMenuItem>
-            <Link to="/login">Login</Link>
-          </DropdownMenuItem>)}
+          {userData ? (
+            <DropdownMenuItem>
+              <Link to="/logout">Logout</Link>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem>
+              <Link to="/login">Login</Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
