@@ -9,8 +9,6 @@ const BookingCancelled = () => {
 
   const { data: deletedBooking } = useDeleteBookingMutation(id ? parseInt(id) : 0);
 
-  console.log(deletedBooking);
-
   return (
     <div className="flex h-dvh items-center justify-center p-8">
       {deletedBooking ? (

@@ -5,7 +5,6 @@ import { UserData } from "@/lib/UserPage/userData";
 
 export const fetchUserReviews = async (): Promise<tourPackageReviews[]> => {
   const fetchUserReviews = await api.get(`apps/transaction/own-all-review/list/`);
-  console.log(fetchUserReviews);
   return fetchUserReviews.data || [];
 };
 

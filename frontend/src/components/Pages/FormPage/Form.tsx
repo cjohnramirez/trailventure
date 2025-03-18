@@ -37,7 +37,6 @@ function HomeForm({ method }: { route: string; method: string }) {
   const authMutation = useAuthMutation(isLogin, navigate, openConfirmation);
 
   const handleSubmit = (values: any) => {
-    console.log(values);
     authMutation.mutate(values);
     setPending(authMutation.isPending);
   };

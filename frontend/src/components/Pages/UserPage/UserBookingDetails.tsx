@@ -36,7 +36,6 @@ export default function UserBookingDetails({
     setEndDate(end.toDateString());
   }, [booking]);
 
-  console.log(booking);
   return (
     <Dialog open={openBookingDetails} onOpenChange={() => setOpenBookingDetails(false)}>
       <DialogContent>

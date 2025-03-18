@@ -12,8 +12,6 @@ const BookingSuccessful = () => {
 
   const { data: successfulTransaction } = useSuccessfulTransactionQuery(Number(id));
 
-  console.log(successfulTransaction);
-
   return (
     <>
       {successfulTransaction ? (

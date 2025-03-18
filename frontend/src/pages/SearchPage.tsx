@@ -62,8 +62,6 @@ function SearchPage() {
 
   const { data: searchData, refetch, isLoading } = useSearchQuery(searchParams);
 
-  console.log(searchData);
-
   const { data: destinations } = useDestinationQuery();
 
   const [searchItem, setSearchItem] = useState<string>("None");
