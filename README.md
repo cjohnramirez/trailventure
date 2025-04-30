@@ -43,7 +43,7 @@
 
 ## Demo
 
-[Live Demo]([https://trailventure.example.com](https://trailventure-main.vercel.app/)
+[Live Demo](https://trailventure-main.vercel.app/)
 ![TrailVenture Image](https://github.com/user-attachments/assets/fe9869d4-ae2a-4a47-9cbe-d862474c4c87)
 
 ## Setup
