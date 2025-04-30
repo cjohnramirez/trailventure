@@ -146,4 +146,4 @@ For any inquiries, please reach out to: contact@trailventure.example.com
 
 ---
 
-Made with ❤️ by [Your Name]
+Made with ❤
