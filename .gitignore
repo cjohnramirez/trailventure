@@ -26,3 +26,23 @@ dist-ssr
 venv/
 frontend/.env
 backend/.env
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Build / collected static
+backend/staticfiles/
+staticfiles_build/
+
+# Data dumps (may contain user data)
+backend/data.json
+*.dump
+
+# Env files anywhere
+.env
+.env.*
+!.env.example
+
+# Tool artifacts
+.playwright-mcp/
