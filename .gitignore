@@ -46,3 +46,15 @@ backend/data.json
 
 # Tool artifacts
 .playwright-mcp/
+
+# Local copy of legacy data for import_legacy (never commit)
+.legacy/
+
+# Python virtualenvs and collected static
+.venv/
+staticfiles/
+
+# Next.js
+.next/
+next-env.d.ts
+*.tsbuildinfo
