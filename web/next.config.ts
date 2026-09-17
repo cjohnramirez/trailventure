@@ -20,12 +20,13 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   async rewrites() {
     // Same-origin proxy so Django session and CSRF cookies stay first-party.
-    return [
-      { source: "/api/:path*", destination: `${apiOrigin}/api/:path*` },
-      { source: "/_allauth/:path*", destination: `${apiOrigin}/_allauth/:path*` },
-      { source: "/django-admin/:path*", destination: `${apiOrigin}/django-admin/:path*` },
-      { source: "/static/:path*", destination: `${apiOrigin}/static/:path*` },
-    ];
+    // `:path*` drops a trailing slash, and Django's URLs need it (otherwise APPEND_SLASH redirects
+    // back through this proxy forever), so slash-terminated paths get their own rule first.
+    const proxied = ["api", "_allauth", "django-admin", "accounts", "static"];
+    return proxied.flatMap((prefix) => [
+      { source: `/${prefix}/:path*/`, destination: `${apiOrigin}/${prefix}/:path*/` },
+      { source: `/${prefix}/:path*`, destination: `${apiOrigin}/${prefix}/:path*` },
+    ]);
   },
 };
 
