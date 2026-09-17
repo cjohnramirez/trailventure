@@ -49,7 +49,7 @@ def test_signup_requires_email_verification_and_sends_a_code(client):
     assert pending_flow(response) == "verify_email"
     assert len(mail.outbox) == 1
     assert mail.outbox[0].subject == "TrailVenture · Confirm your email to finish signing up"
-    assert extract_code(mail.outbox[0])
+    assert re.fullmatch(r"\d{6}", extract_code(mail.outbox[0]))
     alternatives = getattr(mail.outbox[0], "alternatives", [])
     assert any(mimetype == "text/html" for _, mimetype in alternatives)
 

@@ -15,8 +15,8 @@ This README only lists what exists today:
 
 | Area | Implemented |
 |---|---|
-| API | Django 5.2 project, email-based user model, health check (database + Redis), OpenAPI docs |
-| Web | Next.js App Router project, shadcn/ui setup, unit and end-to-end test harness |
+| API | Django 5.2 project, health check (database + Redis), OpenAPI docs; accounts with email + password, 6-digit email verification and password-reset codes (sent via Mailjet, Celery), Google sign-in, rate limits in Redis, and a server-controlled `role` |
+| Web | Original TrailVenture look (theme, logo, header with search pill, footer, early-access notices), home hero, About page; login, register, email verification, forgot/reset password, Google sign-in and a signed-in account page |
 | Tooling | Docker images for web and API, Railway service configs, CI (lint, types, tests, deploy checks, dependency audit) |
 
 ## Stack
@@ -42,6 +42,7 @@ cp .env.example .env
 uv sync
 uv run python manage.py migrate
 uv run python manage.py runserver         # API docs at http://localhost:8000/api/docs/
+# Emails (verification codes) land in Mailpit: http://localhost:8025
 
 cd ../web
 cp .env.example .env.local
@@ -56,6 +57,8 @@ The web app proxies `/api/*` to Django, so the browser only ever talks to one or
 ```bash
 cd api && uv run pytest
 cd web && npm run test && npm run e2e
+# Auth flows run against the real API and Mailpit:
+cd web && E2E_FULL_STACK=1 npm run e2e
 ```
 
 ## Contributing and deployment

@@ -14,3 +14,6 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 WHITENOISE_AUTOREFRESH = True
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+
+# Run Celery tasks (e.g. emails) inline unless a worker is running: set CELERY_TASK_ALWAYS_EAGER=false.
+CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=True)

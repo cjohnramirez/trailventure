@@ -140,6 +140,9 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
+# Six-digit codes for email verification and password reset (fits a one-time-code input).
+ALLAUTH_USER_CODE_FORMAT = {"numeric": True, "length": 6, "dashed": False}
+
 ACCOUNT_ADAPTER = "apps.accounts.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "apps.accounts.adapters.SocialAccountAdapter"
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
