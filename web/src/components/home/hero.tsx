@@ -27,11 +27,11 @@ export function Hero({ destinations }: { destinations: DestinationOption[] }) {
           className="object-cover"
         />
         {/* Flat scrim so EXPLORE and the pill read clearly on any photo. */}
-        <div aria-hidden="true" className="absolute inset-0 bg-black/30" />
+        <div aria-hidden="true" className="absolute inset-0 bg-hero-scrim" />
         <div className="relative flex w-full flex-col items-center gap-4 px-4 sm:-mt-12">
           <h1
             id="hero-title"
-            className="title text-[6.5rem] font-semibold text-[#f4f4f5] select-none sm:-mb-6 sm:text-[9.5rem]"
+            className="title text-[6.5rem] font-semibold text-hero-title select-none sm:-mb-6 sm:text-[9.5rem]"
           >
             Explore
           </h1>

@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarIcon, MapPinIcon, PhilippinePesoIcon, SearchIcon } from "lucide-react";
+import { MapPinIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
@@ -109,7 +109,6 @@ function SearchSegments({
       <Popover>
         <PopoverTrigger asChild>
           <SegmentButton
-            icon={<CalendarIcon />}
             label="Date"
             value={formatDateRange(dates?.from, dates?.to) ?? "Choose your date"}
           />
@@ -127,7 +126,7 @@ function SearchSegments({
       </Popover>
       <Popover>
         <PopoverTrigger asChild>
-          <SegmentButton icon={<PhilippinePesoIcon />} label="Price" value={priceLabel} />
+          <SegmentButton label="Price" value={priceLabel} />
         </PopoverTrigger>
         <PopoverContent className="w-80 p-5" align="start">
           <PriceRange value={price} onChange={setPrice} />
@@ -153,11 +152,7 @@ function DestinationSegment({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <SegmentButton
-          icon={<MapPinIcon />}
-          label="Destination"
-          value={value?.name ?? "Set location"}
-        />
+        <SegmentButton label="Destination" value={value?.name ?? "Set location"} />
       </PopoverTrigger>
       <PopoverContent className="w-[min(92vw,24rem)] p-0" align="start">
         <Command>
@@ -263,25 +258,20 @@ function PriceRange({
 }
 
 function SegmentButton({
-  icon,
   label,
   value,
   className,
   ...props
-}: React.ComponentProps<typeof Button> & { icon: React.ReactNode; label: string; value: string }) {
+}: React.ComponentProps<typeof Button> & { label: string; value: string }) {
   return (
     <Button
       variant="outline"
-      className={cn(
-        "h-14 min-w-44 justify-start gap-3 pr-8 pl-5 text-left [&_svg:not([class*='size-'])]:size-5",
-        className,
-      )}
+      className={cn("h-14 min-w-44 justify-start px-7 text-left", className)}
       {...props}
     >
-      {icon}
       <span className="flex min-w-0 flex-col">
         <span className="text-sm leading-tight font-semibold">{label}</span>
-        <span className="truncate text-sm leading-tight text-muted-foreground group-hover/button:text-brand-foreground">
+        <span className="truncate text-sm leading-tight text-muted-foreground group-hover/button:text-brand-hover-foreground/70">
           {value}
         </span>
       </span>
