@@ -1,149 +1,64 @@
 # TrailVenture
-**TrailVenture** is a travel package website that allows users to search, filter, and book travel packages. It integrates with Stripe for payment processing and provides a seamless, user-friendly experience. The platform features beautiful UI components, login/signup functionality, and fast image loading with Cloudinary.
 
-## Features
+> **Early access.** TrailVenture is a portfolio project that is still being built. Trips, hosts and reviews are demo data, and all payments run in Stripe test mode, so no real money is charged.
 
-- **Search and Filter**: Users can search for travel packages and filter them based on various criteria like destination, price range, duration, and activities.
-- **Booking**: Secure booking system integrated with the Stripe API for seamless payment processing.
-- **User Authentication**: Login and signup features for registered users with email verification.
-- **User Dashboard**: Personalized dashboard for users to manage bookings, favorites, and account details.
-- **Fast Image Loading**: Uses Cloudinary API for optimized image delivery and manipulation.
-- **Beautiful UI**: Designed with a modern, user-friendly interface using **Tailwind** and several UI libraries.
-- **State Management**: Uses **Zustand** for global state management and **TanStack** for efficient data fetching.
-- **Responsive Design**: Fully responsive layout that works seamlessly across desktop, tablet, and mobile devices.
-- **Reviews & Ratings**: Users can leave reviews and ratings for packages they've experienced.
-- **Wishlist**: Save favorite packages for future reference.
-- **Admin Panel**: Comprehensive admin interface for managing packages, users, and bookings.
+TrailVenture is a tour-package booking site for trips across the Philippines and beyond. Travelers search packages by destination, date and budget, compare tiers and itineraries, book, and pay with Stripe.
 
-## Technologies
+## Status
 
-### Frontend:
-- **React** - JavaScript library for building user interfaces
-- **Tailwind CSS** - Utility-first CSS framework for fast UI development
-- **Vite** - Next-generation frontend tooling for fast development and build
-- **TypeScript** - A statically typed superset of JavaScript for better developer experience
-- **React Router** - For handling client-side routing
+The project is being rebuilt from its first version, a Vite SPA and a Django API on Vercel. The first version is tagged `legacy-v1`, and its code stays in [`frontend/`](frontend/) and [`backend/`](backend/) as a reference until the rebuild is finished. The rebuild follows [the design spec](docs/specs/2026-09-17-rebuild-design.md) in two phases:
 
-### Backend:
-- **Django** - Python web framework for rapid development and clean design
-- **Django REST Framework** - For building RESTful APIs
-- **Stripe API** - Payment gateway for handling bookings and transactions
-- **PostgreSQL** - Relational database powered by **Neon** for scalable data storage
-- **JWT Authentication** - For secure user authentication
+- **Phase A (in progress): parity.** Everything the first version did, rebuilt on a secure stack in the same visual design. That covers search, package pages, booking with Stripe Checkout, reviews, the account page, and sign-in with email verification and Google.
+- **Phase B: new features.** Host and admin roles, departures with seat capacity, cancellations and refunds, a security page with 2FA, a wishlist, and itinerary maps.
 
-### Plugins and Libraries:
-- **Cloudinary API** - For optimized image loading and delivery
-- **Zustand** - Lightweight state management for global state handling
-- **TanStack Query** - For handling data fetching, caching, and state management
-- **Aceternity UI** - Pre-built UI components for faster development
-- **ShadCn** - UI component library for consistent and customizable components
-- **React Hook Form** - For form validation and handling
-- **Zod** - TypeScript-first schema validation
-- **Framer Motion** - For smooth animations and transitions
+This README only lists what exists today:
 
-## Demo
+| Area | Implemented |
+|---|---|
+| API | Django 5.2 project, email-based user model, health check (database + Redis), OpenAPI docs |
+| Web | Next.js App Router project, shadcn/ui setup, unit and end-to-end test harness |
+| Tooling | Docker images for web and API, Railway service configs, CI (lint, types, tests, deploy checks, dependency audit) |
 
-[Live Demo](https://trailventure-main.vercel.app/)
+## Stack
 
-![TrailVenture Image](https://github.com/user-attachments/assets/fe9869d4-ae2a-4a47-9cbe-d862474c4c87)
+| | |
+|---|---|
+| **Web** (`web/`) | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, shadcn/ui, Vitest, Playwright |
+| **API** (`api/`) | Django 5.2 LTS, Django REST Framework, drf-spectacular, Celery, PostgreSQL 17, Redis 8, uv, ruff, mypy, pytest |
+| **Services** | Stripe (payments), Cloudinary (images), Mailjet (email), Google OAuth |
+| **Hosting** | Railway: web, API, Celery worker and beat, Postgres, Redis |
 
-## Setup
+Read [docs/architecture.md](docs/architecture.md) for how the pieces fit together.
 
-### Prerequisites
-- **Node.js** (v16 or above)
-- **Python** (v3.8 or above)
-- **Django** (v3.2 or above)
-- **PostgreSQL** Database
-- **Stripe API Keys** (for payment processing)
-- **Cloudinary Account** (for image management)
+## Running locally
 
-### Frontend Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/TrailVenture.git
-   ```
+Prerequisites: Docker, [uv](https://docs.astral.sh/uv/) and Node.js 22.
 
-2. Navigate to the frontend directory:
-   ```bash
-   cd TrailVenture/frontend
-   ```
+```bash
+docker compose up -d                      # Postgres (5433), Redis (6379), Mailpit (UI on 8025)
 
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
+cd api
+cp .env.example .env
+uv sync
+uv run python manage.py migrate
+uv run python manage.py runserver         # API docs at http://localhost:8000/api/docs/
 
-4. Create a `.env` file with necessary environment variables:
-   ```
-   VITE_API_URL=http://localhost:8000/api
-   VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
-   VITE_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-   ```
+cd ../web
+cp .env.example .env.local
+npm ci
+npm run dev                               # http://localhost:3000
+```
 
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
+The web app proxies `/api/*` to Django, so the browser only ever talks to one origin.
 
-### Backend Setup
-1. Navigate to the backend directory:
-   ```bash
-   cd TrailVenture/backend
-   ```
+## Tests
 
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows, use venv\Scripts\activate
-   ```
+```bash
+cd api && uv run pytest
+cd web && npm run test && npm run e2e
+```
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Contributing and deployment
 
-4. Create a `.env` file with necessary environment variables:
-   ```
-   DEBUG=True
-   SECRET_KEY=your_django_secret_key
-   DATABASE_URL=your_postgresql_connection_string
-   STRIPE_SECRET_KEY=your_stripe_secret_key
-   CLOUDINARY_URL=your_cloudinary_url
-   ```
-
-5. Run migrations:
-   ```bash
-   python manage.py migrate
-   ```
-
-6. Create a superuser for admin access:
-   ```bash
-   python manage.py createsuperuser
-   ```
-
-7. Start the backend server:
-   ```bash
-   python manage.py runserver
-   ```
-   
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [Vercel](https://vercel.com) for frontend hosting
-- [Neon](https://neon.tech) for PostgreSQL database hosting
-- [Stripe](https://stripe.com) for payment integration
-- [Cloudinary](https://cloudinary.com) for optimized image delivery
-- [Tailwind CSS](https://tailwindcss.com), [Aceternity UI](https://aceternity.com), [ShadCn](https://ui.shadcn.com), [Zustand](https://github.com/pmndrs/zustand), and [TanStack](https://tanstack.com) for providing essential tools and components
-
-## Contact
-
-Project Link: [https://github.com/yourusername/TrailVenture](https://github.com/yourusername/TrailVenture)
-
-For any inquiries, please reach out to: contact@trailventure.example.com
-
----
-
-Made with ❤
+- [CONTRIBUTING.md](CONTRIBUTING.md): branch flow, commit style, checks.
+- [docs/deployment-railway.md](docs/deployment-railway.md): production setup on Railway.

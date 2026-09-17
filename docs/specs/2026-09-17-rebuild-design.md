@@ -204,6 +204,7 @@ trailventure/
   - Text on teal is `zinc-950` everywhere, which passes AA; this replaces the failing white-on-teal.
   - Surface colors `#f4f4f5` / `#0e0e11` become `--muted-surface` tokens.
   - Radius: `rounded-2xl` section cards, `rounded-xl` inner cards, `rounded-full` buttons and pills, `border-[1px]` outlines kept.
+- **Spacing and sizing:** improve padding, margins, icon sizes and text sizes wherever the original is lacking, keeping its layout and structure (your call, 2026-09-17).
 - **No shadows:** every `shadow-*` goes, replaced by the existing borders. The header gets `border-b` when scrolled instead of `shadow-lg`.
 - **No glow:** no Aceternity or GlowingEffect, and no `motion` animation except Drawer/Dialog transitions. `prefers-reduced-motion` is respected.
 - **Buttons** keep the old variants (outline with `hover:bg-teal-300`, and so on), implemented as shadcn `Button` cva variants.

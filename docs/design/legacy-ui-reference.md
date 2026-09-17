@@ -8,6 +8,7 @@ Screenshots of the running legacy app are in [`baseline/`](baseline/). They are 
 - **No drop shadows.** Every `shadow-*` is removed, and surfaces keep their `border-[1px]`. The scrolled header gets `border-b` instead of `shadow-lg`.
 - **No Aceternity `GlowingEffect`** on buttons, and no wrapper `div` around `Button`.
 - **Fonts:** Alumni Sans for display type and Geist for UI text, both loaded with `next/font`. DM Sans is dropped. Section headings shrink from `40px / lg:70px extrabold` to `40px / lg:56px semibold`.
+- **Spacing and sizing are tuned, not copied:** padding, margins, icon sizes and text sizes are improved wherever the original is cramped or small. This means more generous card padding and section rhythm, `size-5` icons in buttons and pills (instead of `size-4`), and body text no smaller than `text-sm` (no `text-xs` for meaningful content). Layout, structure and components stay the same.
 - **Text on teal is `zinc-950`**, because white on `teal-500` fails WCAG AA.
 - **Other agreed improvements:** skeletons instead of the full-screen loader, the same header and footer on every page, the Airbnb-style booking card, toasts, inline form errors, pending buttons, and ₱ formatting.
 
