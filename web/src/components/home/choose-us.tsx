@@ -1,8 +1,8 @@
 import { CalendarIcon, SearchIcon, ShieldIcon, UserIcon, type LucideIcon } from "lucide-react";
+import Image from "next/image";
 
+import { PhotoCredit } from "@/components/app/photo-credit";
 import { SectionHeading } from "@/components/app/section-heading";
-import { SlotPhoto } from "@/components/app/slot-photo";
-import { photos } from "@/lib/photos";
 
 type Feature = { icon: LucideIcon; title: string; body: string };
 
@@ -55,7 +55,19 @@ export function ChooseUs() {
       <ul className="mx-auto grid max-w-[75rem] gap-4 md:grid-cols-3">
         <FeatureCard feature={features[0]} />
         <li className="relative hidden min-h-[28rem] overflow-hidden rounded-2xl border md:row-span-2 md:block">
-          <SlotPhoto photo={photos.hiker} sizes="(min-width: 768px) 24rem, 0px" />
+          <Image
+            src="/images/site/hiker.webp"
+            alt="Two hikers on a grassy ridge pointing out across the mountains"
+            fill
+            sizes="(min-width: 768px) 24rem, 0px"
+            className="object-cover"
+          />
+          <PhotoCredit
+            name="Dario Brönnimann"
+            url="https://unsplash.com/@dariobroe?utm_source=trailventure&utm_medium=referral"
+            tone="overlay"
+            className="absolute right-3 bottom-3"
+          />
         </li>
         <FeatureCard feature={features[1]} />
         <FeatureCard feature={features[2]} />

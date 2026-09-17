@@ -1,51 +1,31 @@
-import { SlotPhoto } from "@/components/app/slot-photo";
+import Image from "next/image";
+
+import { PhotoCredit } from "@/components/app/photo-credit";
 import { HERO_SEARCH_ID } from "@/components/layout/site-header";
 import { SearchPill, type DestinationOption } from "@/components/search/search-pill";
-import { photos } from "@/lib/photos";
-import { cn } from "@/lib/utils";
 
-/**
- * Full-bleed rounded photo with EXPLORE and the search pill, as on the original home page.
- * Each theme has its own photo slot, darkened under light EXPLORE. Without photos, placeholders
- * show and EXPLORE uses the theme's text color.
- */
+/** Full-bleed rounded photo with EXPLORE and the search pill, as on the original home page. */
 export function Hero({ destinations }: { destinations: DestinationOption[] }) {
-  const hasPhotos = Boolean(photos.hero.src && photos.heroDark.src);
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative flex h-[calc(100dvh-5.5rem)] min-h-136 flex-col px-4 pb-10 sm:px-8 sm:pb-16"
+      className="relative flex h-[calc(100dvh-5.5rem)] min-h-[34rem] flex-col px-4 pb-10 sm:px-8 sm:pb-16"
     >
       <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-2xl border">
-        <div className="absolute inset-0 dark:hidden">
-          <SlotPhoto
-            photo={photos.hero}
-            sizes="100vw"
-            priority
-            placeholderIconClassName="absolute right-5 bottom-5"
-          />
-          {photos.hero.src ? (
-            // Flat scrim so light EXPLORE and the pill read clearly.
-            <div aria-hidden="true" className="absolute inset-0 bg-black/30" />
-          ) : null}
-        </div>
-        <div className="absolute inset-0 hidden dark:block">
-          <SlotPhoto
-            photo={photos.heroDark}
-            sizes="100vw"
-            placeholderIconClassName="absolute right-5 bottom-5"
-          />
-          {photos.heroDark.src ? (
-            <div aria-hidden="true" className="absolute inset-0 bg-black/30" />
-          ) : null}
-        </div>
+        <Image
+          src="/images/hero-section.jpg"
+          alt="An aerial view of the coastal town of El Nido in the Philippines"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        {/* Flat scrim so the light EXPLORE and the pill read clearly. */}
+        <div aria-hidden="true" className="absolute inset-0 bg-black/30" />
         <div className="relative flex w-full flex-col items-center gap-4 px-4 sm:-mt-12">
           <h1
             id="hero-title"
-            className={cn(
-              "title text-[6.5rem] font-semibold select-none sm:-mb-6 sm:text-[9.5rem]",
-              hasPhotos ? "text-hero-title" : "text-foreground",
-            )}
+            className="title text-[6.5rem] font-semibold text-hero-title select-none sm:-mb-6 sm:text-[9.5rem]"
           >
             Explore
           </h1>
@@ -54,6 +34,12 @@ export function Hero({ destinations }: { destinations: DestinationOption[] }) {
             <SearchPill variant="compact" destinations={destinations} className="lg:hidden" />
           </div>
         </div>
+        <PhotoCredit
+          name="Eibner Saliba"
+          url="https://unsplash.com/@zilch?utm_source=trailventure&utm_medium=referral"
+          tone="overlay"
+          className="absolute right-4 bottom-4"
+        />
       </div>
     </section>
   );
