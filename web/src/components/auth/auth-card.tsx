@@ -1,34 +1,22 @@
-import Image from "next/image";
 import Link from "next/link";
 
-import { PhotoCredit } from "@/components/app/photo-credit";
+import { SlotPhoto } from "@/components/app/slot-photo";
 import { photos } from "@/lib/photos";
 
 type AuthCardProps = {
   title: string;
   description?: React.ReactNode;
   children: React.ReactNode;
-  /** The original register page hides the photo on phones; login keeps it hidden too for focus. */
   footer?: React.ReactNode;
 };
 
 /** The original split login card: photo on the left, form on the right. */
 export function AuthCard({ title, description, children, footer }: AuthCardProps) {
-  const photo = photos.auth;
   return (
     <div className="grid w-full max-w-[56rem] overflow-hidden rounded-2xl border bg-card p-3 md:grid-cols-2">
-      <div
-        className="relative hidden min-h-[36rem] overflow-hidden rounded-xl md:block"
-        style={{ backgroundColor: photo.color }}
-      >
-        <Image
-          src={photo.src}
-          alt={photo.alt}
-          fill
-          sizes="(min-width: 768px) 28rem, 0px"
-          className="object-cover"
-        />
-        <PhotoCredit photo={photo} tone="overlay" className="absolute bottom-3 left-3" />
+      {/* The original hides the photo on phones. */}
+      <div className="relative hidden min-h-[36rem] overflow-hidden rounded-xl md:block">
+        <SlotPhoto photo={photos.auth} sizes="(min-width: 768px) 28rem, 0px" />
       </div>
       <div className="flex flex-col justify-center gap-8 px-5 py-8 sm:px-10">
         <header className="flex flex-col gap-2 text-center">

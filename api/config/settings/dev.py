@@ -17,3 +17,10 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 
 # Run Celery tasks (e.g. emails) inline; set CELERY_TASK_ALWAYS_EAGER=false with a worker.
 CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=True)
+
+# Local development and end-to-end runs sign up many accounts from one IP; keep limits loose here.
+ACCOUNT_RATE_LIMITS = {
+    **ACCOUNT_RATE_LIMITS,
+    "signup": "500/h/ip",
+    "reset_password": "100/m/ip,20/m/key",
+}

@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/lib/auth/session";
 
 /**
- * The original user page's "User Details" section. Profile photos, bookings and reviews join this
+ * The original user page's "User Details" section. Avatar, banner, bookings and reviews join this
  * page in M6.
  */
 export function AccountDetails() {

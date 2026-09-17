@@ -1,19 +1,28 @@
-import sitePhotos from "@/content/site-photos.json";
-
-/** A photo hotlinked from Unsplash, with the credit the Unsplash API guidelines require. */
-export type Photo = {
-  id: string;
-  src: string;
-  width: number;
-  height: number;
+/**
+ * Named photo slots for site imagery.
+ *
+ * To add a photo, put the file in `web/public/images/` and set `src` to its public path
+ * (e.g. "/images/hero.jpg"). A slot with `src: null` renders a neutral placeholder.
+ */
+export type PhotoSlot = {
+  src: string | null;
   alt: string;
-  color: string;
-  photographer: string;
-  photographerUrl: string;
-  unsplashUrl: string;
-  photoUrl: string;
 };
 
-export type SitePhotoSlot = keyof typeof sitePhotos;
-
-export const photos: Record<SitePhotoSlot, Photo> = sitePhotos;
+export const photos = {
+  /** Home hero in light mode. Landscape, at least 2400px wide. Light EXPLORE sits on top. */
+  hero: {
+    src: null,
+    alt: "Rice terraces stepping down a green mountain valley",
+  },
+  /** Home hero in dark mode. A bright, airy landscape: off-black EXPLORE sits on top. */
+  heroDark: {
+    src: null,
+    alt: "Morning haze over rice terraces and a mountain village",
+  },
+  /** Login and register cards. Portrait, at least 1200px wide. */
+  auth: {
+    src: null,
+    alt: "A hiker walking a mountain trail toward distant peaks",
+  },
+} satisfies Record<string, PhotoSlot>;

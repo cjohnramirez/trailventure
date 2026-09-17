@@ -57,7 +57,6 @@
   --color-rating: var(--rating);
   --color-surface-muted: var(--surface-muted);
   --color-hero-title: var(--hero-title);
-  --color-hero-scrim: var(--hero-scrim);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
@@ -116,9 +115,8 @@
   --brand-hover-foreground: #131413;
   --rating: hsl(173 79% 41%);
   --surface-muted: hsl(240 4.8% 95.9%);
-  /* Home hero: light EXPLORE over a dark scrim. */
+  /* Home hero: light EXPLORE over the darkened photo. */
   --hero-title: hsl(240 4.8% 95.9%);
-  --hero-scrim: rgb(0 0 0 / 0.3);
   --success: hsl(173 80% 32%);
   --warning: hsl(38 92% 50%);
   --warning-foreground: #131413;
@@ -164,9 +162,8 @@
   --brand-hover-foreground: hsl(0 0% 98%);
   --rating: hsl(173 79% 41%);
   --surface-muted: #1a1b1a;
-  /* Home hero, as in the original dark mode: off-black EXPLORE, here over a light scrim. */
+  /* Home hero, as in the original dark mode: off-black EXPLORE over a light photo. */
   --hero-title: #131413;
-  --hero-scrim: rgb(255 255 255 / 0.35);
   --success: hsl(172 66% 50%);
   --warning: hsl(43 96% 56%);
   --warning-foreground: #131413;

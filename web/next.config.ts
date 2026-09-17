@@ -11,11 +11,6 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname),
   turbopack: { root: path.join(__dirname) },
   poweredByHeader: false,
-  images: {
-    // Unsplash photos are resized on Unsplash's CDN (hotlinking is required by its API terms).
-    loader: "custom",
-    loaderFile: "./src/lib/image-loader.ts",
-  },
   // Django URLs end in a slash; don't let Next strip it before proxying.
   skipTrailingSlashRedirect: true,
   async rewrites() {

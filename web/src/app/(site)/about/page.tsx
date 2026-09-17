@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { photos } from "@/lib/photos";
 
 export const metadata: Metadata = {
   title: "About",
@@ -50,36 +49,6 @@ export default function AboutPage() {
             </div>
           ))}
         </dl>
-      </section>
-
-      <section aria-labelledby="credits-title" className="flex flex-col gap-4">
-        <h2 id="credits-title" className="text-2xl font-semibold">
-          Photo credits
-        </h2>
-        <ul className="flex flex-col gap-2 text-muted-foreground">
-          {Object.values(photos).map((photo) => (
-            <li key={photo.id}>
-              <a
-                href={photo.photoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 hover:text-foreground"
-              >
-                {photo.alt}
-              </a>{" "}
-              by{" "}
-              <a
-                href={photo.photographerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-4 hover:text-foreground"
-              >
-                {photo.photographer}
-              </a>{" "}
-              on Unsplash
-            </li>
-          ))}
-        </ul>
       </section>
 
       <div className="flex flex-wrap gap-3">
