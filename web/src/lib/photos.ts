@@ -16,12 +16,12 @@ const UTM = "utm_source=trailventure&utm_medium=referral";
 export const photos = {
   /** Home hero in light mode. Landscape, at least 2400px wide. Light EXPLORE sits on top. */
   hero: {
-    src: null,
+    src: "/images/hero-section.jpg",
     alt: "Rice terraces stepping down a green mountain valley",
   },
   /** Home hero in dark mode. Landscape, at least 2400px wide. Darkened under light EXPLORE. */
   heroDark: {
-    src: null,
+    src: "/images/hero-section.jpg",
     alt: "Morning haze over rice terraces and a mountain village",
   },
   /** Login and register cards. Portrait, at least 1200px wide. */
