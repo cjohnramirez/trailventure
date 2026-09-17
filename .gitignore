@@ -26,3 +26,26 @@ dist-ssr
 venv/
 frontend/.env
 backend/.env
+# --- Rebuild (api/, web/) ---
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+api/staticfiles/
+api/media/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+playwright-report/
+test-results/
+blob-report/
+.playwright-mcp/

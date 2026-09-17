@@ -55,7 +55,7 @@ Decided by me:
    - If GitHub branch protection blocks the force-push, turn it off temporarily.
    - Delete the `v0.1.0` tag and release (`git push origin :refs/tags/v0.1.0`, `git tag -d v0.1.0`), and keep `legacy-v1`.
    - This throws away the current unstaged deletions on `main`, which is intended.
-2. **Rotate secrets** that are in git history: the Stripe test keys, Django `SECRET_KEY`, and Cloudinary key/secret. Change the passwords of the accounts in `data.json`.
+2. **Secret rotation: deferred** (your call). The legacy keys in git history are handled when legacy code is fully deleted at the end of the plan.
 3. **Run the old app locally** from `trailventure_old`, a throwaway clone that is never committed:
    - Backend: `uv venv -p 3.12`, then `pip install -r requirements.txt`.
    - Add a local settings override that uses SQLite, DEBUG on and CORS for localhost.
@@ -69,7 +69,7 @@ Decided by me:
    - Covers the popovers (search segments, menu) and dialogs.
    - Output goes to `docs/design/baseline/`, along with a token sheet (exact classes, colors, sizes) taken from the source.
 5. **Initial commits on `feat/rebuild`:**
-   - Remove the legacy code and untrack the dumps. Keep a copy of `data.json` outside the repo for the importer.
+   - **Legacy code stays** in `backend/` and `frontend/` for the whole plan, as a reference next to the new `api/` and `web/`. It is fully deleted in one step once the entire plan (Phase A and Phase B) is complete.
    - Commit this plan as `docs/specs/2026-09-17-rebuild-design.md`.
 
 ## Architecture
