@@ -1,0 +1,50 @@
+{
+  "hero": {
+    "id": "Yfh7E4KWDZ0",
+    "src": "https://images.unsplash.com/photo-1563175544-9759b48523b9?ixid=M3wxMDcxMDI5fDB8MXxzZWFyY2h8Mnx8cmljZSUyMHRlcnJhY2VzJTIwcGhpbGlwcGluZXN8ZW58MXwwfHx8MTc4OTYyMTkwOHww&ixlib=rb-4.1.0",
+    "width": 5129,
+    "height": 3419,
+    "alt": "Green rice terraces stepping down a mountain valley under a blue sky",
+    "color": "#f3f3f3",
+    "photographer": "Aldrin Brosas",
+    "photographerUrl": "https://unsplash.com/@aldrinooow?utm_source=trailventure&utm_medium=referral",
+    "unsplashUrl": "https://unsplash.com/?utm_source=trailventure&utm_medium=referral",
+    "photoUrl": "https://unsplash.com/photos/mountain-at-daytime-Yfh7E4KWDZ0?utm_source=trailventure&utm_medium=referral"
+  },
+  "auth": {
+    "id": "BIIPa5DYyD8",
+    "src": "https://images.unsplash.com/photo-1562593028-2e975fe28a0c?ixid=M3wxMDcxMDI5fDB8MXxzZWFyY2h8NHx8bW91bnRhaW4lMjBoaWtpbmclMjB0cmFpbHxlbnwxfDF8fHwxNzg5NjIxOTA5fDA&ixlib=rb-4.1.0",
+    "width": 4000,
+    "height": 5000,
+    "alt": "A hiker walking a mountain trail toward distant peaks",
+    "color": "#26260c",
+    "photographer": "Josh Hild",
+    "photographerUrl": "https://unsplash.com/@joshhild?utm_source=trailventure&utm_medium=referral",
+    "unsplashUrl": "https://unsplash.com/?utm_source=trailventure&utm_medium=referral",
+    "photoUrl": "https://unsplash.com/photos/person-walking-towards-mountain-during-daytime-BIIPa5DYyD8?utm_source=trailventure&utm_medium=referral"
+  },
+  "hiker": {
+    "id": "tu2apPbNQTs",
+    "src": "https://images.unsplash.com/photo-1627551885247-f9301e1d6101?ixid=M3wxMDcxMDI5fDB8MXxzZWFyY2h8M3x8aGlrZXIlMjBtb3VudGFpbiUyMHN1bW1pdHxlbnwxfDF8fHwxNzg5NjIxOTA5fDA&ixlib=rb-4.1.0",
+    "width": 4000,
+    "height": 6000,
+    "alt": "Two hikers on a grassy ridge pointing out across the mountains",
+    "color": "#a6a6a6",
+    "photographer": "Dario Brönnimann",
+    "photographerUrl": "https://unsplash.com/@dariobroe?utm_source=trailventure&utm_medium=referral",
+    "unsplashUrl": "https://unsplash.com/?utm_source=trailventure&utm_medium=referral",
+    "photoUrl": "https://unsplash.com/photos/man-in-black-jacket-standing-on-rock-mountain-during-daytime-tu2apPbNQTs?utm_source=trailventure&utm_medium=referral"
+  },
+  "banner": {
+    "id": "BurTAJlbsRo",
+    "src": "https://images.unsplash.com/photo-1592761944705-40d554de7b11?ixid=M3wxMDcxMDI5fDB8MXxzZWFyY2h8MXx8bW91bnRhaW4lMjBsYWtlJTIwcGFub3JhbWF8ZW58MXwwfHx8MTc4OTYyMTkxMHww&ixlib=rb-4.1.0",
+    "width": 7000,
+    "height": 3500,
+    "alt": "A mountain lake reflecting the peaks around it",
+    "color": "#f3f3f3",
+    "photographer": "Daniel Seßler",
+    "photographerUrl": "https://unsplash.com/@danielsessler?utm_source=trailventure&utm_medium=referral",
+    "unsplashUrl": "https://unsplash.com/?utm_source=trailventure&utm_medium=referral",
+    "photoUrl": "https://unsplash.com/photos/green-lake-near-mountain-under-blue-sky-during-daytime-BurTAJlbsRo?utm_source=trailventure&utm_medium=referral"
+  }
+}
