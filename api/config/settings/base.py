@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "allauth.headless",
     "apps.core",
     "apps.accounts",
+    "apps.catalog",
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,13 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 
 ADMIN_URL = env.str("DJANGO_ADMIN_URL", default="django-admin/")
+
+# Images: cloudinary://<api_key>:<api_secret>@<cloud_name>. Empty = seed photos as static files.
+CLOUDINARY_URL = env.str("CLOUDINARY_URL", default="")
+if CLOUDINARY_URL:
+    import cloudinary
+
+    cloudinary.config(cloudinary_url=CLOUDINARY_URL, secure=True)
 
 # --- Authentication (django-allauth, headless) --------------------------------------------------
 FRONTEND_URL = env.str("FRONTEND_URL", default="http://localhost:3000").rstrip("/")
