@@ -26,6 +26,8 @@ export function Hero({ destinations }: { destinations: DestinationOption[] }) {
           sizes="100vw"
           className="object-cover"
         />
+        {/* Flat scrim so EXPLORE and the pill read clearly on any photo. */}
+        <div aria-hidden="true" className="absolute inset-0 bg-black/30" />
         <div className="relative flex w-full flex-col items-center gap-4 px-4 sm:-mt-12">
           <h1
             id="hero-title"
