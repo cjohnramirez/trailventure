@@ -8,7 +8,8 @@
  * TrailVenture theme.
  * Colors are the original site's shadcn "new-york" zinc palette plus its teal brand color
  * (docs/design/legacy-ui-reference.md). There are deliberately no shadow tokens: surfaces are
- * separated with borders and background tone.
+ * separated with borders and background tone. Ink and dark backgrounds use the off-black #131413
+ * rather than the original near-black #09090b.
  */
 @theme inline {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -71,19 +72,21 @@
   --radius: 0.5rem;
 
   --background: hsl(0 0% 100%);
-  --foreground: hsl(240 10% 3.9%);
+  --foreground: #131413;
   --card: hsl(0 0% 100%);
-  --card-foreground: hsl(240 10% 3.9%);
+  --card-foreground: #131413;
   --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(240 10% 3.9%);
-  --primary: hsl(240 5.9% 10%);
+  --popover-foreground: #131413;
+  --primary: #131413;
   --primary-foreground: hsl(0 0% 98%);
   --secondary: hsl(240 4.8% 95.9%);
-  --secondary-foreground: hsl(240 5.9% 10%);
+  --secondary-foreground: #131413;
   --muted: hsl(240 4.8% 95.9%);
-  --muted-foreground: hsl(240 4% 41%); /* darker than the original zinc-500 so it passes AA on surface-muted */
+  --muted-foreground: hsl(
+    240 4% 41%
+  ); /* darker than the original zinc-500 so it passes AA on surface-muted */
   --accent: hsl(240 4.8% 95.9%);
-  --accent-foreground: hsl(240 5.9% 10%);
+  --accent-foreground: #131413;
   --destructive: hsl(0 72% 51%);
   --border: hsl(240 5.9% 90%);
   --input: hsl(240 5.9% 90%);
@@ -94,67 +97,67 @@
   --chart-4: hsl(43 74% 66%);
   --chart-5: hsl(27 87% 67%);
   --sidebar: hsl(0 0% 100%);
-  --sidebar-foreground: hsl(240 10% 3.9%);
-  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-foreground: #131413;
+  --sidebar-primary: #131413;
   --sidebar-primary-foreground: hsl(0 0% 98%);
   --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-accent-foreground: #131413;
   --sidebar-border: hsl(240 5.9% 90%);
   --sidebar-ring: hsl(173 80% 36%);
 
   /* teal-500, with zinc-950 text on it (white on teal-500 fails WCAG AA). */
   --brand: hsl(173 80% 40%);
-  --brand-foreground: hsl(240 10% 3.9%);
+  --brand-foreground: #131413;
   /* teal-300: hover fill on outline buttons, as in the original. */
   --brand-hover: hsl(171 77% 64%);
   --rating: hsl(173 79% 41%);
   --surface-muted: hsl(240 4.8% 95.9%);
   --success: hsl(173 80% 32%);
   --warning: hsl(38 92% 50%);
-  --warning-foreground: hsl(240 10% 3.9%);
+  --warning-foreground: #131413;
 }
 
 .dark {
-  --background: hsl(240 10% 3.9%);
+  --background: #131413;
   --foreground: hsl(0 0% 98%);
-  --card: hsl(240 10% 3.9%);
+  --card: #131413;
   --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(240 10% 3.9%);
+  --popover: #131413;
   --popover-foreground: hsl(0 0% 98%);
   --primary: hsl(0 0% 98%);
-  --primary-foreground: hsl(240 5.9% 10%);
-  --secondary: hsl(240 3.7% 15.9%);
+  --primary-foreground: #131413;
+  --secondary: #232423;
   --secondary-foreground: hsl(0 0% 98%);
-  --muted: hsl(240 3.7% 15.9%);
+  --muted: #232423;
   --muted-foreground: hsl(240 5% 64.9%);
-  --accent: hsl(240 3.7% 15.9%);
+  --accent: #232423;
   --accent-foreground: hsl(0 0% 98%);
   --destructive: hsl(0 84% 60%);
-  --border: hsl(240 3.7% 15.9%);
-  --input: hsl(240 3.7% 15.9%);
+  --border: #2a2b2a;
+  --input: #2a2b2a;
   --ring: hsl(172 66% 50%);
   --chart-1: hsl(220 70% 50%);
   --chart-2: hsl(160 60% 45%);
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
-  --sidebar: hsl(240 10% 3.9%);
+  --sidebar: #131413;
   --sidebar-foreground: hsl(0 0% 98%);
   --sidebar-primary: hsl(0 0% 98%);
-  --sidebar-primary-foreground: hsl(240 5.9% 10%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-primary-foreground: #131413;
+  --sidebar-accent: #232423;
   --sidebar-accent-foreground: hsl(0 0% 98%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-border: #2a2b2a;
   --sidebar-ring: hsl(172 66% 50%);
 
   --brand: hsl(173 80% 40%);
-  --brand-foreground: hsl(240 10% 3.9%);
+  --brand-foreground: #131413;
   --brand-hover: hsl(171 77% 64%);
   --rating: hsl(173 79% 41%);
-  --surface-muted: hsl(240 10% 6%);
+  --surface-muted: #1a1b1a;
   --success: hsl(172 66% 50%);
   --warning: hsl(43 96% 56%);
-  --warning-foreground: hsl(240 10% 3.9%);
+  --warning-foreground: #131413;
 }
 
 @layer base {
