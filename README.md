@@ -6,7 +6,7 @@ TrailVenture is a tour-package booking site for trips across the Philippines and
 
 ## Status
 
-The project is being rebuilt from its first version, a Vite SPA and a Django API on Vercel. The first version is tagged `legacy-v1`, and its code stays in [`frontend/`](frontend/) and [`backend/`](backend/) as a reference until the rebuild is finished. The rebuild follows [the design spec](docs/specs/2026-09-17-rebuild-design.md) in two phases:
+The project is being rebuilt from its first version, a Vite SPA and a Django API on Vercel. That version's code is preserved in git history under the `legacy-v1` tag. The rebuild follows [the design spec](docs/specs/2026-09-17-rebuild-design.md) in two phases:
 
 - **Phase A (in progress): parity.** Everything the first version did, rebuilt on a secure stack in the same visual design. That covers search, package pages, booking with Stripe Checkout, reviews, the account page, and sign-in with email verification and Google.
 - **Phase B: new features.** Host and admin roles, departures with seat capacity, cancellations and refunds, a security page with 2FA, a wishlist, and itinerary maps.

@@ -7,7 +7,7 @@ const apiOrigin = process.env.API_ORIGIN ?? "http://localhost:8000";
 const nextConfig: NextConfig = {
   // Minimal self-contained server for the Railway Docker image.
   output: "standalone",
-  // The repo root also holds a lockfile (legacy app); pin tracing to this package.
+  // Pin file tracing and Turbopack to this package, not the monorepo root.
   outputFileTracingRoot: path.join(__dirname),
   turbopack: { root: path.join(__dirname) },
   poweredByHeader: false,

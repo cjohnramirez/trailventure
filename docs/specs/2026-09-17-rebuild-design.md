@@ -69,7 +69,7 @@ Decided by me:
    - Covers the popovers (search segments, menu) and dialogs.
    - Output goes to `docs/design/baseline/`, along with a token sheet (exact classes, colors, sizes) taken from the source.
 5. **Initial commits on `feat/rebuild`:**
-   - **Legacy code stays** in `backend/` and `frontend/` for the whole plan, as a reference next to the new `api/` and `web/`. It is fully deleted in one step once the entire plan (Phase A and Phase B) is complete.
+   - **Legacy code:** kept in `backend/` and `frontend/` as a reference at first, then deleted on 2026-09-17 during M3 at your request. It remains in git history under the `legacy-v1` tag.
    - Commit this plan as `docs/specs/2026-09-17-rebuild-design.md`.
 
 ## Architecture
