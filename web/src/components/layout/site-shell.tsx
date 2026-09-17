@@ -1,18 +1,17 @@
 import { EarlyAccessBanner } from "@/components/layout/early-access-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import type { DestinationOption } from "@/components/search/search-pill";
+import { getDestinations } from "@/lib/catalog/api";
 
 type SiteShellProps = {
   children: React.ReactNode;
   search?: "always" | "after-hero";
 };
 
-// Destinations for the search pill come from the catalog API once it exists (M4).
-const destinations: DestinationOption[] = [];
-
 /** Banner, header, main content and footer: the same frame on every public page. */
-export function SiteShell({ children, search = "always" }: SiteShellProps) {
+export async function SiteShell({ children, search = "always" }: SiteShellProps) {
+  // The header search pill still works (free-text search) if destinations can't load.
+  const destinations = await getDestinations().catch(() => []);
   return (
     <>
       <a
@@ -22,7 +21,10 @@ export function SiteShell({ children, search = "always" }: SiteShellProps) {
         Skip to content
       </a>
       <EarlyAccessBanner />
-      <SiteHeader destinations={destinations} search={search} />
+      <SiteHeader
+        destinations={destinations.map(({ slug, name, region }) => ({ slug, name, region }))}
+        search={search}
+      />
       <main id="main" className="flex flex-1 flex-col">
         {children}
       </main>

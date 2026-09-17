@@ -56,7 +56,7 @@ export function AccountDetails() {
       aria-labelledby="details-title"
       className="flex flex-col gap-6 rounded-2xl border p-6 sm:p-8"
     >
-      <h2 id="details-title" className="text-xl font-semibold">
+      <h2 id="details-title" className="type-card-title">
         User Details
       </h2>
       <dl className="grid gap-4 md:grid-cols-2">

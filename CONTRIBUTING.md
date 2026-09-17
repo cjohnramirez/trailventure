@@ -69,6 +69,7 @@ docker run --rm -v "$PWD:/app" -w /app node:22-alpine npm install --package-lock
 
 ## UI rules
 
+- Text and icon sizes come from the scale in [docs/design/design-system.md](docs/design/design-system.md): use the `type-*` roles and the 14 / 18 / 24 / 48px icon sizes, never ad-hoc sizes.
 - The rebuild keeps the original TrailVenture design. [docs/design/legacy-ui-reference.md](docs/design/legacy-ui-reference.md) lists the exact values and the deliberate changes: no drop shadows, no Aceternity effects, and better spacing and sizing.
 - Every UI element is a shadcn/ui component from `web/src/components/ui`. ESLint blocks importing Radix directly anywhere else.
 - Every data view ships loading, empty and error states, and every async button has a pending state.

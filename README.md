@@ -15,8 +15,8 @@ This README only lists what exists today:
 
 | Area | Implemented |
 |---|---|
-| API | Django 5.2 project, health check (database + Redis), OpenAPI docs; accounts with email + password, 6-digit email verification and password-reset codes (sent via Mailjet, Celery), Google sign-in, rate limits in Redis, and a server-controlled `role` |
-| Web | Original TrailVenture look (theme, logo, header with search pill, footer, early-access notices), home hero, About page; login, register, email verification, forgot/reset password, Google sign-in and a signed-in account page |
+| API | Django 5.2 project, health check (database + Redis), OpenAPI docs; catalog of destinations, packages, tiers and itineraries with search filters (destination, dates, price, rating), pagination and Redis-cached reads; accounts with email + password, 6-digit email verification and password-reset codes (sent via Mailjet, Celery), Google sign-in, rate limits in Redis, and a server-controlled `role` |
+| Web | Original TrailVenture look (theme, logo, header with search pill, footer, early-access notices) on a standardized type and icon scale; home page (hero, featured destinations, choose us), search page with filters, package page with tiers and itinerary, About page; login, register, email verification, forgot/reset password, Google sign-in and a signed-in account page |
 | Tooling | Docker images for web and API, Railway service configs, CI (lint, types, tests, deploy checks, dependency audit) |
 
 ## Stack
@@ -41,6 +41,7 @@ cd api
 cp .env.example .env
 uv sync
 uv run python manage.py migrate
+uv run python manage.py seed_catalog    # demo destinations and packages
 uv run python manage.py runserver         # API docs at http://localhost:8000/api/docs/
 # Emails (verification codes) land in Mailpit: http://localhost:8025
 

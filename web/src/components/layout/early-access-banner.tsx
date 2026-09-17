@@ -29,15 +29,24 @@ export function EarlyAccessBanner() {
       aria-label="Early access notice"
       className="border-b bg-surface-muted in-data-[early-access-dismissed=true]:hidden"
     >
-      <div className="mx-auto flex max-w-screen-2xl items-center gap-3 px-4 py-2 sm:px-8">
-        <p className="flex-1 text-center text-sm text-pretty">
-          <span className="font-semibold">TrailVenture is in early access.</span> It’s a portfolio
-          project: trips are demo data and payments run in Stripe test mode.{" "}
-          <Link href="/about" className="font-medium underline underline-offset-4">
+      <div className="mx-auto flex max-w-screen-2xl items-center gap-2 py-1.5 pr-2 pl-4 lg:gap-3 lg:px-8">
+        <p className="flex-1 type-ui text-pretty lg:text-center">
+          <span className="font-semibold">
+            <span className="lg:hidden">Early access:</span>
+            <span className="hidden lg:inline">TrailVenture is in early access.</span>
+          </span>{" "}
+          <span className="lg:hidden">demo site.</span>
+          <span className="hidden lg:inline">
+            It’s a portfolio project: trips are demo data and payments run in Stripe test mode.
+          </span>{" "}
+          <Link
+            href="/about"
+            className="font-medium whitespace-nowrap underline underline-offset-4"
+          >
             Learn more
           </Link>
         </p>
-        <Button variant="ghost" size="icon-sm" onClick={dismiss} aria-label="Dismiss notice">
+        <Button variant="ghost" size="icon" onClick={dismiss} aria-label="Dismiss notice">
           <XIcon />
         </Button>
       </div>

@@ -21,8 +21,8 @@ export default function AboutPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-12 sm:px-8 sm:py-16">
       <header className="flex flex-col gap-4">
-        <h1 className="title text-6xl font-bold sm:text-7xl">About TrailVenture</h1>
-        <p className="text-lg text-pretty text-muted-foreground">
+        <h1 className="type-page-title">About TrailVenture</h1>
+        <p className="type-body text-pretty text-muted-foreground">
           TrailVenture is a tour-package booking site: search trips by destination, date and budget,
           compare package tiers and itineraries, and book.
         </p>
@@ -38,7 +38,7 @@ export default function AboutPage() {
       </Alert>
 
       <section aria-labelledby="stack-title" className="flex flex-col gap-4">
-        <h2 id="stack-title" className="text-2xl font-semibold">
+        <h2 id="stack-title" className="type-heading">
           How it’s built
         </h2>
         <dl className="flex flex-col divide-y rounded-2xl border">

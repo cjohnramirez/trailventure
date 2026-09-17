@@ -6,15 +6,15 @@ import { cn } from "@/lib/utils";
 
 /**
  * Full-bleed rounded photo with EXPLORE and the search pill, as on the original home page.
- * Light mode: a darkened photo under light EXPLORE. Dark mode: a naturally light photo under
- * off-black EXPLORE (the original dark-mode treatment). Without photos, placeholders show.
+ * Each theme has its own photo slot, darkened under light EXPLORE. Without photos, placeholders
+ * show and EXPLORE uses the theme's text color.
  */
 export function Hero({ destinations }: { destinations: DestinationOption[] }) {
   const hasPhotos = Boolean(photos.hero.src && photos.heroDark.src);
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative flex h-[calc(100dvh-5.5rem)] min-h-[34rem] flex-col px-4 pb-10 sm:px-8 sm:pb-16"
+      className="relative flex h-[calc(100dvh-5.5rem)] min-h-136 flex-col px-4 pb-10 sm:px-8 sm:pb-16"
     >
       <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-2xl border">
         <div className="absolute inset-0 dark:hidden">
@@ -35,6 +35,9 @@ export function Hero({ destinations }: { destinations: DestinationOption[] }) {
             sizes="100vw"
             placeholderIconClassName="absolute right-5 bottom-5"
           />
+          {photos.heroDark.src ? (
+            <div aria-hidden="true" className="absolute inset-0 bg-black/30" />
+          ) : null}
         </div>
         <div className="relative flex w-full flex-col items-center gap-4 px-4 sm:-mt-12">
           <h1

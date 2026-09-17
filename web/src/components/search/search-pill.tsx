@@ -132,8 +132,11 @@ function SearchSegments({
           <PriceRange value={price} onChange={setPrice} />
         </PopoverContent>
       </Popover>
-      <Button asChild variant="brand" size="lg" className="lg:h-14 lg:px-7">
-        <Link href={href}>Find My Trailventure</Link>
+      <Button asChild variant="brand" className="h-12 px-7 lg:h-14">
+        <Link href={href}>
+          <SearchIcon data-icon="inline-start" />
+          Find My Trailventure
+        </Link>
       </Button>
     </div>
   );
@@ -221,7 +224,7 @@ function PriceRange({
           step={PRICE_STEP}
           value={value}
           onValueChange={(next) => onChange([next[0], next[1]] as [number, number])}
-          aria-label="Budget per person"
+          thumbLabels={["Minimum budget per person", "Maximum budget per person"]}
           className="py-2"
         />
       </Field>

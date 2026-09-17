@@ -47,7 +47,7 @@ export function SiteHeader({ destinations, search = "always" }: SiteHeaderProps)
           <SearchPill
             variant="compact"
             destinations={destinations}
-            className="col-span-2 row-start-2 xl:col-span-1 xl:row-start-1"
+            className="col-span-2 row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1"
           />
         ) : null}
         <div className="flex justify-end">

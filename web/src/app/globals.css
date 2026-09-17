@@ -115,7 +115,7 @@
   --brand-hover-foreground: #131413;
   --rating: hsl(173 79% 41%);
   --surface-muted: hsl(240 4.8% 95.9%);
-  /* Home hero: light EXPLORE over the darkened photo. */
+  /* Home hero: EXPLORE over the darkened photo. */
   --hero-title: hsl(240 4.8% 95.9%);
   --success: hsl(173 80% 32%);
   --warning: hsl(38 92% 50%);
@@ -162,8 +162,8 @@
   --brand-hover-foreground: hsl(0 0% 98%);
   --rating: hsl(173 79% 41%);
   --surface-muted: #1a1b1a;
-  /* Home hero, as in the original dark mode: off-black EXPLORE over a light photo. */
-  --hero-title: #131413;
+  /* Home hero: EXPLORE uses the theme's default text color. */
+  --hero-title: var(--foreground);
   --success: hsl(172 66% 50%);
   --warning: hsl(43 96% 56%);
   --warning-foreground: #131413;
@@ -196,4 +196,31 @@
   .title {
     @apply font-display leading-none tracking-tight uppercase;
   }
+}
+
+/*
+ * Type scale. Use these roles instead of ad-hoc text sizes (docs/design/design-system.md).
+ * Icon sizes follow the same steps: 14px (size-3.5) with captions, 18px (size-4.5) with UI and
+ * body text, 24px (size-6) for empty-state media, 48px (size-12) for decorative feature icons.
+ */
+@utility type-page-title {
+  @apply font-display text-5xl leading-none font-bold tracking-tight uppercase sm:text-6xl;
+}
+@utility type-section-title {
+  @apply font-display text-[2.5rem] leading-none font-semibold tracking-tight uppercase lg:text-[3.5rem];
+}
+@utility type-heading {
+  @apply text-2xl leading-tight font-semibold;
+}
+@utility type-card-title {
+  @apply text-xl leading-snug font-semibold;
+}
+@utility type-body {
+  @apply text-base leading-relaxed;
+}
+@utility type-ui {
+  @apply text-sm;
+}
+@utility type-caption {
+  @apply text-xs;
 }
