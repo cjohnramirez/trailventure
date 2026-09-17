@@ -42,6 +42,7 @@ cp .env.example .env
 uv sync
 uv run python manage.py migrate
 uv run python manage.py seed_catalog    # demo destinations and packages
+uv run python manage.py seed_demo_users # traveler@ / admin@trailventure.local, password trailventure-demo
 uv run python manage.py runserver         # API docs at http://localhost:8000/api/docs/
 # Emails (verification codes) land in Mailpit: http://localhost:8025
 
