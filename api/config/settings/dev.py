@@ -15,5 +15,5 @@ WHITENOISE_AUTOREFRESH = True
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 
-# Run Celery tasks (e.g. emails) inline unless a worker is running: set CELERY_TASK_ALWAYS_EAGER=false.
+# Run Celery tasks (e.g. emails) inline; set CELERY_TASK_ALWAYS_EAGER=false with a worker.
 CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=True)
