@@ -6,6 +6,8 @@ requires-python = ">=3.13"
 dependencies = [
     "celery>=5.6.3",
     "django>=5.2,<5.3",
+    "django-allauth[socialaccount]>=65.19.3",
+    "django-anymail[mailjet]>=15.2",
     "django-environ>=0.14.0",
     "django-filter>=26.1",
     "djangorestframework>=3.18.1",
@@ -41,7 +43,7 @@ select = ["E", "F", "I", "UP", "B", "DJ", "S"]
 
 [tool.ruff.lint.per-file-ignores]
 "config/settings/*" = ["F403", "F405", "E402"]
-"**/tests/*" = ["S101", "S106"]
+"**/tests/*" = ["S101", "S105", "S106"]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.test"

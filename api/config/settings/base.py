@@ -22,6 +22,12 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "drf_spectacular",
+    "anymail",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "allauth.headless",
     "apps.core",
     "apps.accounts",
 ]
@@ -35,6 +41,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -43,7 +50,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -95,8 +102,15 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
-EMAIL_CONFIG = env.email("EMAIL_URL", default="smtp://localhost:1025")
-vars().update(EMAIL_CONFIG)
+# Email: Mailjet (via Anymail) when keys are set, otherwise SMTP (Mailpit locally).
+MAILJET_API_KEY = env.str("MAILJET_API_KEY", default="")
+MAILJET_SECRET_KEY = env.str("MAILJET_SECRET_KEY", default="")
+if MAILJET_API_KEY and MAILJET_SECRET_KEY:
+    EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
+    ANYMAIL = {"MAILJET_API_KEY": MAILJET_API_KEY, "MAILJET_SECRET_KEY": MAILJET_SECRET_KEY}
+else:
+    EMAIL_CONFIG = env.email("EMAIL_URL", default="smtp://localhost:1025")
+    vars().update(EMAIL_CONFIG)
 DEFAULT_FROM_EMAIL = env.str(
     "DEFAULT_FROM_EMAIL", default="TrailVenture <no-reply@trailventure.local>"
 )
@@ -117,6 +131,75 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 
 ADMIN_URL = env.str("DJANGO_ADMIN_URL", default="django-admin/")
+
+# --- Authentication (django-allauth, headless) --------------------------------------------------
+FRONTEND_URL = env.str("FRONTEND_URL", default="http://localhost:3000").rstrip("/")
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+ACCOUNT_ADAPTER = "apps.accounts.adapters.AccountAdapter"
+SOCIALACCOUNT_ADAPTER = "apps.accounts.adapters.SocialAccountAdapter"
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_SIGNUP_FORM_CLASS = "apps.accounts.forms.SignupForm"
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
+ACCOUNT_PASSWORD_RESET_BY_CODE_ENABLED = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_PREVENT_ENUMERATION = True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "TrailVenture · "
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+# Rate limits are stored in the cache (Redis): e.g. 5 failed logins per 5 minutes per account.
+ACCOUNT_RATE_LIMITS = {
+    "login_failed": "5/5m/ip,5/5m/key",
+    "signup": "20/h/ip",
+    # A login with an unverified email re-sends the code, so allow a few sends.
+    "confirm_email": "3/5m/key",
+    "reset_password": "20/m/ip,5/m/key",
+}
+
+HEADLESS_ONLY = True
+HEADLESS_CLIENTS = ("browser",)
+HEADLESS_FRONTEND_URLS = {
+    "account_confirm_email": f"{FRONTEND_URL}/verify-email?key={{key}}",
+    "account_reset_password": f"{FRONTEND_URL}/forgot-password",
+    "account_reset_password_from_key": f"{FRONTEND_URL}/reset-password?key={{key}}",
+    "account_signup": f"{FRONTEND_URL}/register",
+    "socialaccount_login_error": f"{FRONTEND_URL}/login?error=social",
+}
+
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_STORE_TOKENS = False
+GOOGLE_OAUTH_CLIENT_ID = env.str("GOOGLE_OAUTH_CLIENT_ID", default="")
+GOOGLE_OAUTH_CLIENT_SECRET = env.str("GOOGLE_OAUTH_CLIENT_SECRET", default="")
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "OAUTH_PKCE_ENABLED": True,
+        "EMAIL_AUTHENTICATION": True,
+        "VERIFIED_EMAIL": True,
+        # Without credentials the provider is simply not offered (the web app hides the button).
+        "APPS": (
+            [
+                {
+                    "client_id": GOOGLE_OAUTH_CLIENT_ID,
+                    "secret": GOOGLE_OAUTH_CLIENT_SECRET,
+                    "key": "",
+                }
+            ]
+            if GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET
+            else []
+        ),
+    }
+}
 
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
