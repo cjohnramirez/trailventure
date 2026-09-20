@@ -34,6 +34,31 @@ Server Components call Django directly (`API_ORIGIN`) and forward the incoming r
 - **Components:** all UI components are shadcn/ui in `src/components/ui`, themed with the original TrailVenture tokens in `src/app/globals.css`, in light and dark.
 - **Deployable output:** `output: "standalone"` builds a small Node server for the Docker image.
 
+## Booking and payment
+
+Prices are decided by the server and never by the client. The flow mirrors the original site:
+
+1. **Quote.** The booking card asks `POST /api/v1/bookings/quote/` for a breakdown: base price, site fee
+   and tax, taken from the tier and the single active `FeeSchedule`. Every amount is an integer number
+   of centavos, so nothing is lost to floating point.
+2. **Hold.** `POST /api/v1/bookings/create/` writes the booking with its own copy of those amounts and
+   a 30-minute `hold_expires_at`. The snapshot means a later price change cannot alter a booking that
+   is already being paid for.
+3. **Checkout.** `POST /api/v1/bookings/{id}/checkout/` creates a Stripe Checkout Session in PHP
+   centavos, keyed by an idempotency key of `booking-{id}`, so a repeated request returns the same
+   session rather than charging twice. Without Stripe keys the endpoint answers 503 and the page says
+   payments are unavailable.
+4. **Webhook.** `POST /api/v1/payments/stripe/webhook/` verifies the Stripe signature, then records the
+   event id before doing anything: a replayed event is recognised and ignored. Completed and
+   asynchronously succeeded payments confirm the booking; expiry and failure release it; a refund marks
+   it refunded. Unexpected errors are allowed to return 5xx so Stripe retries.
+5. **Result pages.** Because confirmation arrives by webhook and not in the redirect, `/booking/success/[id]`
+   polls the booking until it is confirmed and says so plainly if that takes more than a minute. The
+   cancelled page offers to reopen the same checkout session while the hold is still alive.
+
+Nothing deletes a booking. Unpaid holds are expired by the Celery beat task `expire-stale-booking-holds`,
+which runs every five minutes.
+
 ## Decisions
 
 - [Design spec and rebuild plan](specs/2026-09-17-rebuild-design.md)

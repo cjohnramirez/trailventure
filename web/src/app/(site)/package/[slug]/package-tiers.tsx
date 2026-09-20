@@ -3,6 +3,7 @@
 import { BoxIcon, MapPinIcon, RouteIcon } from "lucide-react";
 import * as React from "react";
 
+import { BookingCard } from "@/components/booking/booking-card";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,7 +16,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { PackageDetail, Tier } from "@/lib/catalog/types";
-import { formatCentavos, formatTime } from "@/lib/format";
+import { formatTime } from "@/lib/format";
 
 /**
  * The "Package Type" card and the itinerary column share the selected tier, as on the original
@@ -85,25 +86,22 @@ export function PackageTiers({
               description="Included with the selected package type."
               items={tier?.amenities ?? []}
             />
-
-            {tier ? (
-              <>
-                <Separator />
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="type-ui text-muted-foreground">Price per person</p>
-                  <p className="type-heading tabular-nums">{formatCentavos(tier.price)}</p>
-                </div>
-              </>
-            ) : null}
           </CardContent>
         </Card>
         {after}
       </div>
-      <aside
-        aria-labelledby="itinerary-title"
-        className="min-w-0 lg:sticky lg:top-28 lg:self-start"
-      >
-        <Itinerary tier={tier} />
+      <aside className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
+        {tier ? (
+          <BookingCard
+            packageSlug={pkg.slug}
+            tier={tier}
+            availableFrom={pkg.available_from}
+            availableUntil={pkg.available_until}
+          />
+        ) : null}
+        <section aria-labelledby="itinerary-title">
+          <Itinerary tier={tier} />
+        </section>
       </aside>
     </div>
   );

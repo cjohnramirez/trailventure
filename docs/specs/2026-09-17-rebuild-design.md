@@ -358,8 +358,10 @@ Warning states cover: few seats left, hold expiring, unverified email, demo-mode
   - Pick tier, date and quantity on the package page, then the booking page and invoice, then Checkout, then the success/cancelled pages.
   - Server-side quote, PHP centavos, idempotent webhook, unpaid bookings expire (never deleted by GET).
   - Checkout test-mode notice.
-- **M6:** User page and reviews: `/account` (profile, bookings with details dialog, reviews), profile editing (the old modify endpoint was never wired), and review create restricted to completed paid bookings.
-- **M7:** Parity hardening and release:
+- **M6:** Account, reviews and Cloudinary:
+  - `/account` (profile, bookings with details dialog, reviews), profile editing (the old modify endpoint was never wired), and review create restricted to completed paid bookings.
+  - Cloudinary configured: avatar and banner uploads (signed direct uploads), and catalog seed photos moved to Cloudinary (`seed_catalog` with `CLOUDINARY_URL`).
+- **M7:** Railway deployment, hardening and release:
   - axe and Lighthouse passes, visual comparison against the baseline, E2E of all parity flows in CI.
   - Railway production deploy and honest README.
   - PR `feat/rebuild → dev`, then `release: v1.0.0` (dev → main), with ready-to-paste PR text.

@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.accounts",
     "apps.catalog",
+    "apps.bookings",
+    "apps.payments",
 ]
 
 MIDDLEWARE = [
@@ -133,6 +135,11 @@ CSRF_COOKIE_SAMESITE = "Lax"
 
 ADMIN_URL = env.str("DJANGO_ADMIN_URL", default="django-admin/")
 
+# Payments (Stripe test mode in early access). Empty keys disable checkout with a clear error.
+STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY", default="")
+STRIPE_PUBLISHABLE_KEY = env.str("STRIPE_PUBLISHABLE_KEY", default="")
+STRIPE_WEBHOOK_SECRET = env.str("STRIPE_WEBHOOK_SECRET", default="")
+
 # Images: cloudinary://<api_key>:<api_secret>@<cloud_name>. Empty = seed photos as static files.
 CLOUDINARY_URL = env.str("CLOUDINARY_URL", default="")
 if CLOUDINARY_URL:
@@ -216,6 +223,12 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_ACKS_LATE = True
+CELERY_BEAT_SCHEDULE = {
+    "expire-stale-booking-holds": {
+        "task": "apps.bookings.tasks.expire_stale_holds",
+        "schedule": 300.0,
+    }
+}
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 
 LOGGING = {

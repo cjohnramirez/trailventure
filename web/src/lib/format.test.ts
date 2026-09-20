@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { formatCentavos, formatDateRange, formatPeso, formatTime, toIsoDate } from "./format";
+import {
+  formatApiDate,
+  formatCentavos,
+  formatDateRange,
+  formatPeso,
+  formatTime,
+  toIsoDate,
+} from "./format";
 
 describe("formatPeso", () => {
   it("adds the peso sign and thousands separators", () => {
@@ -48,5 +55,11 @@ describe("formatTime", () => {
 
   it("returns null without a time", () => {
     expect(formatTime(null)).toBeNull();
+  });
+});
+
+describe("formatApiDate", () => {
+  it("formats an API calendar date without shifting the day", () => {
+    expect(formatApiDate("2026-09-30")).toBe("Sep 30, 2026");
   });
 });

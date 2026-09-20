@@ -16,6 +16,7 @@ dependencies = [
     "gunicorn>=26.2.0",
     "psycopg[binary]>=3.3.5",
     "redis>=8.1.0",
+    "stripe>=15.6.1",
     "whitenoise>=6.12.0",
 ]
 
@@ -45,6 +46,7 @@ select = ["E", "F", "I", "UP", "B", "DJ", "S"]
 [tool.ruff.lint.per-file-ignores]
 "config/settings/*" = ["F403", "F405", "E402"]
 "**/tests/*" = ["S101", "S105", "S106"]
+"conftest.py" = ["S105", "S106"]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.test"

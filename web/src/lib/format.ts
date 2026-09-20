@@ -39,3 +39,15 @@ export function formatTime(value: string | null): string | null {
   const hour12 = hours % 12 === 0 ? 12 : hours % 12;
   return `${hour12}:${String(minutes).padStart(2, "0")} ${suffix}`;
 }
+
+const longDate = new Intl.DateTimeFormat("en-PH", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+
+/** Formats an API calendar date ("2026-10-01") for display, e.g. "Oct 1, 2026". */
+export function formatApiDate(value: string): string {
+  const [year, month, day] = value.split("-").map(Number);
+  return longDate.format(new Date(year, month - 1, day));
+}

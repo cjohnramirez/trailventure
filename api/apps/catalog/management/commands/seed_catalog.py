@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
+from apps.bookings.models import FeeSchedule
 from apps.catalog.models import Amenity, Destination, ItineraryStop, Package, PackageImage, Tier
 from apps.catalog.services import refresh_package_pricing
 from apps.core.images import cloudinary_enabled, upload_image
@@ -37,6 +38,16 @@ class Command(BaseCommand):
             if use_cloudinary
             else "Images: CLOUDINARY_URL not set, using static files"
         )
+
+        fees = data.get("fees")
+        if fees:
+            FeeSchedule.objects.update_or_create(
+                is_active=True,
+                defaults={
+                    "tax_percent": fees["tax_percent"],
+                    "site_fee_percent": fees["site_fee_percent"],
+                },
+            )
 
         destinations = {}
         for item in data["destinations"]:
