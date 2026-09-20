@@ -15,6 +15,7 @@ Screenshots of the running legacy app are in [`baseline/`](baseline/). They are 
 - **Muted text** is slightly darker in light mode (`hsl(240 4% 41%)` instead of zinc-500) so it passes WCAG AA on the grey footer and filter surfaces.
 - **Text on teal is `zinc-950`**, because white on `teal-500` fails WCAG AA.
 - **Other agreed improvements:** skeletons instead of the full-screen loader, the same header and footer on every page, the Airbnb-style booking card, toasts, inline form errors, pending buttons, and ₱ formatting.
+- **Booking card placement:** the original put the date, quantity and price inside the Package Type card. The rebuild gives them their own card, sticky beside the itinerary on large screens; below `lg` a bar fixed to the bottom of the package page shows the price and opens the same controls in a Drawer, so the booking action is always in reach.
 
 ## Tokens
 **Colors.** The base palette is shadcn "new-york" zinc, in HSL, from `src/index.css`.
@@ -148,6 +149,7 @@ Screenshots of the running legacy app are in [`baseline/`](baseline/). They are 
 ### Booking success / cancelled
 - **Success:** confetti, CircleCheck 120px `#38b2ac`, "Booking Successful!", a 2×2 detail grid, **Go to Home**.
 - **Cancelled:** CircleX `#f56565` and a 2×2 grid with booking id, package, type and quantity.
+- **Rebuilt as:** the same centered card and 2×2 grid, inside the normal header and footer. The status icon uses the scale's 48px step rather than 120px, and the colors are the `--brand` and `--destructive` tokens. Confetti only fires for a confirmed booking, and never when the visitor asked for reduced motion. Because Stripe confirms by webhook, the success page also has a waiting state that polls, and the cancelled page reopens the same checkout while the hold is alive — the original had neither, and its cancelled page never loaded at all.
 
 ### User page (becomes `/account`)
 - **Banner:** `max-h-[300px] rounded-2xl object-cover`.

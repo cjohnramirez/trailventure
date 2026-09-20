@@ -37,10 +37,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ApiError } from "@/lib/api/client";
 import { createBooking, fetchQuote, startCheckout } from "@/lib/bookings/api";
 import type { PackageDetail } from "@/lib/catalog/types";
@@ -157,23 +158,29 @@ export function BookingForm({
           <CardContent className="flex flex-col gap-6">
             <Separator />
             <Field>
-              <FieldLabel htmlFor="package-type">Package type</FieldLabel>
-              <div id="package-type" className="flex flex-wrap gap-2">
+              <FieldLabel>Package type</FieldLabel>
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                value={String(tierId)}
+                onValueChange={(value) => value && setTierId(Number(value))}
+                aria-label="Package type"
+                className="flex flex-wrap gap-2"
+              >
                 {pkg.tiers.map((item) => (
-                  <Button
+                  <ToggleGroupItem
                     key={item.id}
-                    type="button"
-                    variant={item.id === tierId ? "brand" : "outline"}
-                    onClick={() => setTierId(item.id)}
-                    aria-pressed={item.id === tierId}
+                    value={String(item.id)}
+                    className="h-10 rounded-full px-4 data-[state=on]:border-brand data-[state=on]:bg-brand data-[state=on]:text-brand-foreground"
                   >
+                    <PackageIcon />
                     {item.name}
-                  </Button>
+                  </ToggleGroupItem>
                 ))}
-              </div>
+              </ToggleGroup>
             </Field>
 
-            <div className="grid gap-6 sm:grid-cols-2">
+            <FieldGroup className="grid gap-6 sm:grid-cols-2">
               <Field>
                 <FieldLabel htmlFor="start-date">Start date</FieldLabel>
                 <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
@@ -200,9 +207,9 @@ export function BookingForm({
               </Field>
               <Field>
                 <FieldLabel htmlFor="guests">Number of people</FieldLabel>
-                <GuestStepper value={guests} onChange={setGuests} />
+                <GuestStepper id="guests" value={guests} onChange={setGuests} />
               </Field>
-            </div>
+            </FieldGroup>
           </CardContent>
         </Card>
 

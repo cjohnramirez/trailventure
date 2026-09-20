@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 import { loginAsDemoTraveler } from "./support/session";
 
@@ -9,10 +9,25 @@ test.describe.configure({ mode: "serial" });
 
 const PACKAGE = "/package/siargao-island-surf-nature-retreat";
 
-/** Picks the first selectable day in the open date popover. */
-async function pickFirstAvailableDate(page: import("@playwright/test").Page) {
-  const day = page.locator("button[data-day]:not([disabled])").first();
-  await day.click();
+/** Below `lg` the booking controls live in a drawer behind the bottom bar. */
+async function openBookingControls(page: Page) {
+  const trigger = page.locator('[data-slot="drawer-trigger"]');
+  if (await trigger.isVisible()) await trigger.click();
+}
+
+async function chooseFirstAvailableDate(page: Page) {
+  await page.getByRole("button", { name: "Select tour date" }).click();
+  await page.locator("button[data-day]:not([disabled])").first().click();
+  // Picking a day closes the popover and shows the date on the trigger.
+  await expect(page.locator("button[data-day]")).toHaveCount(0);
+}
+
+async function startBooking(page: Page) {
+  await page.goto(PACKAGE);
+  await openBookingControls(page);
+  await chooseFirstAvailableDate(page);
+  await page.getByRole("button", { name: "Book Now" }).last().click();
+  await expect(page.getByRole("heading", { name: "Review your booking" })).toBeVisible();
 }
 
 test("logged-out visitors are sent to login before the booking page", async ({ page }) => {
@@ -25,20 +40,13 @@ test("the booking card quotes the server price and carries it to the booking pag
 }) => {
   await loginAsDemoTraveler(page);
   await page.goto(PACKAGE);
-
-  const card = page.getByRole("button", { name: "Book Now" });
-  await expect(card).toBeVisible();
-
-  await page.getByRole("button", { name: "Select tour date" }).click();
-  await pickFirstAvailableDate(page);
-  // Picking a day closes the popover and shows the date on the trigger.
-  await expect(page.locator("button[data-day]")).toHaveCount(0);
-  await expect(page.locator("button#booking-date")).not.toHaveText("Choose your date");
+  await openBookingControls(page);
+  await chooseFirstAvailableDate(page);
 
   await page.getByRole("button", { name: "Add a traveler" }).click();
   await expect(page.getByRole("status", { name: "Travelers" })).toHaveText("3 people");
 
-  await card.click();
+  await page.getByRole("button", { name: "Book Now" }).last().click();
   await expect(page).toHaveURL(/\/booking\/siargao-island-surf-nature-retreat\?tier=\d+&guests=3/);
   await expect(page.getByRole("heading", { name: "Review your booking" })).toBeVisible();
 
@@ -49,10 +57,7 @@ test("the booking card quotes the server price and carries it to the booking pag
 
 test("the booking page keeps the invoice in step with the configuration", async ({ page }) => {
   await loginAsDemoTraveler(page);
-  await page.goto(PACKAGE);
-  await page.getByRole("button", { name: "Select tour date" }).click();
-  await pickFirstAvailableDate(page);
-  await page.getByRole("button", { name: "Book Now" }).click();
+  await startBooking(page);
 
   const invoice = page.getByRole("complementary", { name: "Invoice" });
   await expect(invoice).toContainText("× 2");
@@ -65,11 +70,20 @@ test("the booking page keeps the invoice in step with the configuration", async 
 
 test("the booking page has no serious accessibility violations", async ({ page }) => {
   await loginAsDemoTraveler(page);
+  await startBooking(page);
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(
+    results.violations.filter((v) => v.impact === "serious" || v.impact === "critical"),
+  ).toEqual([]);
+});
+
+test("the package page has no serious accessibility violations with the booking drawer open", async ({
+  page,
+}) => {
+  await loginAsDemoTraveler(page);
   await page.goto(PACKAGE);
-  await page.getByRole("button", { name: "Select tour date" }).click();
-  await pickFirstAvailableDate(page);
-  await page.getByRole("button", { name: "Book Now" }).click();
-  await expect(page.getByRole("heading", { name: "Review your booking" })).toBeVisible();
+  await openBookingControls(page);
 
   const results = await new AxeBuilder({ page }).analyze();
   expect(

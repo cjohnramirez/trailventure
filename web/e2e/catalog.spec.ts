@@ -57,11 +57,12 @@ test("package page switches tiers, amenities and itinerary", async ({ page }) =>
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Siargao Island Surf & Nature Retreat",
   );
-  await expect(page.getByText("₱12,000").last()).toBeVisible();
+  // The price shows in the sticky card on desktop and in the bottom bar on phones.
+  await expect(page.getByText("₱12,000").filter({ visible: true }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Cloud 9 Surfing Spot" })).toBeVisible();
 
   await page.getByRole("radio", { name: /Luxury Beachfront Retreat/ }).click();
-  await expect(page.getByText("₱25,000").last()).toBeVisible();
+  await expect(page.getByText("₱25,000").filter({ visible: true }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Sugba Lagoon" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Cloud 9 Surfing Spot" })).toBeHidden();
 });

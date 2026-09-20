@@ -4,6 +4,7 @@ import { BoxIcon, MapPinIcon, RouteIcon } from "lucide-react";
 import * as React from "react";
 
 import { BookingCard } from "@/components/booking/booking-card";
+import { MobileBookingBar } from "@/components/booking/mobile-booking-bar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -92,12 +93,20 @@ export function PackageTiers({
       </div>
       <aside className="flex min-w-0 flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
         {tier ? (
-          <BookingCard
-            packageSlug={pkg.slug}
-            tier={tier}
-            availableFrom={pkg.available_from}
-            availableUntil={pkg.available_until}
-          />
+          <>
+            <BookingCard
+              packageSlug={pkg.slug}
+              tier={tier}
+              availableFrom={pkg.available_from}
+              availableUntil={pkg.available_until}
+            />
+            <MobileBookingBar
+              packageSlug={pkg.slug}
+              tier={tier}
+              availableFrom={pkg.available_from}
+              availableUntil={pkg.available_until}
+            />
+          </>
         ) : null}
         <section aria-labelledby="itinerary-title">
           <Itinerary tier={tier} />
