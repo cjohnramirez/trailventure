@@ -36,6 +36,9 @@ Catalog photos and profile pictures are served from Cloudinary when `CLOUDINARY_
 without it, `seed_catalog` points the catalog at static files and the account page hides its
 photo controls, so the app still runs.
 
+Google sign-in needs a domain Google will accept as a redirect target, which rules out the free
+host's `*.code.run` subdomain. Without the credentials set, the button is simply not rendered.
+
 Mail goes to Mailpit locally even when Mailjet credentials are present, so end-to-end runs can
 read verification codes and no real address is written to. Set `USE_MAILJET=true` to check that
 the Mailjet account really sends.
