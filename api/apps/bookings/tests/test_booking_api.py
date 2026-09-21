@@ -129,3 +129,19 @@ def test_expired_holds_are_released_but_confirmed_bookings_are_kept(client, tier
     assert expire_stale_holds() == 1
     assert Booking.objects.get(pk=stale_id).status == Booking.Status.EXPIRED
     assert Booking.objects.get(pk=confirmed_id).status == Booking.Status.CONFIRMED
+
+
+def test_expire_stale_holds_task_releases_timed_out_bookings(traveler, tier, fees, start_date):
+    """The Celery beat task is the backstop for a webhook that never arrives."""
+    from apps.bookings import services, tasks
+
+    booking = services.create_booking(user=traveler, tier=tier, start_date=start_date, guests=2)
+    booking.hold_expires_at = timezone.now() - timedelta(minutes=1)
+    booking.save(update_fields=["hold_expires_at"])
+
+    assert tasks.expire_stale_holds() == 1
+
+    booking.refresh_from_db()
+    assert booking.status == Booking.Status.EXPIRED
+    # Running again finds nothing left to expire.
+    assert tasks.expire_stale_holds() == 0

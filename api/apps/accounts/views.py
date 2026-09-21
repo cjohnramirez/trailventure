@@ -52,11 +52,11 @@ def me(request):
     return Response(MeSerializer({"user": user}).data)
 
 
-class PhotoUploadRequestSerializer(serializers.Serializer):
+class ProfilePhotoKindSerializer(serializers.Serializer):
     kind = serializers.ChoiceField(choices=services.PHOTO_KINDS)
 
 
-class PhotoUploadSignatureSerializer(serializers.Serializer):
+class ProfilePhotoSignatureSerializer(serializers.Serializer):
     public_id = serializers.CharField()
     timestamp = serializers.IntegerField()
     overwrite = serializers.CharField()
@@ -67,7 +67,7 @@ class PhotoUploadSignatureSerializer(serializers.Serializer):
     upload_url = serializers.URLField()
 
 
-class PhotoSerializer(serializers.Serializer):
+class ProfilePhotoSerializer(serializers.Serializer):
     kind = serializers.ChoiceField(choices=services.PHOTO_KINDS)
     version = serializers.IntegerField(min_value=1)
 
@@ -93,28 +93,28 @@ def account(request):
     return Response(AccountSerializer(request.user).data)
 
 
-@extend_schema(request=PhotoUploadRequestSerializer, responses=PhotoUploadSignatureSerializer)
+@extend_schema(request=ProfilePhotoKindSerializer, responses=ProfilePhotoSignatureSerializer)
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def photo_upload_signature(request):
     """Sign a direct browser upload to Cloudinary; the file never passes through this service."""
-    payload = PhotoUploadRequestSerializer(data=request.data)
+    payload = ProfilePhotoKindSerializer(data=request.data)
     payload.is_valid(raise_exception=True)
     signature = services.build_upload_signature(
         user=request.user, kind=payload.validated_data["kind"]
     )
-    return Response(PhotoUploadSignatureSerializer(signature).data)
+    return Response(ProfilePhotoSignatureSerializer(signature).data)
 
 
 @extend_schema(
     methods=["POST"],
-    request=PhotoSerializer,
+    request=ProfilePhotoSerializer,
     responses=AccountSerializer,
     operation_id="accounts_photo_set",
 )
 @extend_schema(
     methods=["DELETE"],
-    request=PhotoUploadRequestSerializer,
+    request=ProfilePhotoKindSerializer,
     responses=AccountSerializer,
     operation_id="accounts_photo_clear",
 )
@@ -123,11 +123,11 @@ def photo_upload_signature(request):
 def photo(request):
     """Point the profile at an uploaded photo, or remove the current one."""
     if request.method == "DELETE":
-        removal = PhotoUploadRequestSerializer(data=request.data)
+        removal = ProfilePhotoKindSerializer(data=request.data)
         removal.is_valid(raise_exception=True)
         services.clear_profile_photo(user=request.user, kind=removal.validated_data["kind"])
     else:
-        upload = PhotoSerializer(data=request.data)
+        upload = ProfilePhotoSerializer(data=request.data)
         upload.is_valid(raise_exception=True)
         services.set_profile_photo(user=request.user, **upload.validated_data)
     request.user.refresh_from_db()
