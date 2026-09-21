@@ -68,7 +68,7 @@ export function RegisterForm() {
     >
       <div className="flex flex-col gap-5">
         <FormAlert message={formError} />
-        <GoogleButton />
+        <GoogleButton next={next} />
         <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
           <FieldGroup className="gap-5">
             <div className="grid gap-5 sm:grid-cols-2">

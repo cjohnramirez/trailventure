@@ -65,7 +65,7 @@ export function LoginForm() {
         <FormAlert
           message={formError ?? (searchParams.get("error") === "social" ? SOCIAL_ERROR : null)}
         />
-        <GoogleButton />
+        <GoogleButton next={next} />
         <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
           <FieldGroup className="gap-5">
             <Controller

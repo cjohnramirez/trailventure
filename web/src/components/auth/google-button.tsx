@@ -1,7 +1,13 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import * as React from "react";
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
+import { ensureCsrfToken } from "@/lib/api/client";
+import { PROVIDER_REDIRECT_URL, allauth } from "@/lib/auth/allauth";
 
 function GoogleLogo() {
   return (
@@ -27,29 +33,85 @@ function GoogleLogo() {
 }
 
 /**
- * "Continue with Google", greyed out: sign-in is not available yet.
+ * "Continue with Google". allauth's provider redirect must be a real (non-XHR) form POST.
  *
  * When the server has no Google credentials the button is shown disabled rather than removed,
  * so the page doesn't silently differ between environments and a visitor can see the option
  * exists. The demo host's domain is not one Google accepts as a redirect target.
  */
-export function GoogleButton() {
+export function GoogleButton({ next }: { next: string }) {
+  const { data: providers, isPending: loadingProviders } = useQuery({
+    queryKey: ["auth-providers"],
+    queryFn: allauth.providers,
+    staleTime: Infinity,
+  });
+  const [pending, setPending] = React.useState(false);
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const csrfRef = React.useRef<HTMLInputElement>(null);
+
+  // Nothing is drawn until the answer is known, so the button never flickers between states.
+  if (loadingProviders) return null;
+
+  if (!providers?.some((provider) => provider.id === "google")) {
+    return (
+      <>
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full"
+          disabled
+          aria-describedby="google-unavailable"
+        >
+          <GoogleLogo />
+          Continue with Google
+        </Button>
+        <p id="google-unavailable" className="text-center type-caption text-muted-foreground">
+          Unavailable on this demo. Sign in with your email instead.
+        </p>
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <Separator className="flex-1" />
+          or
+          <Separator className="flex-1" />
+        </div>
+      </>
+    );
+  }
+
+  const start = async () => {
+    setPending(true);
+    try {
+      if (csrfRef.current) csrfRef.current.value = await ensureCsrfToken();
+      formRef.current?.submit();
+    } catch {
+      setPending(false);
+    }
+  };
+
   return (
     <>
-      <Button
-        type="button"
-        variant="outline"
-        size="lg"
-        className="w-full"
-        disabled
-        aria-describedby="google-unavailable"
-      >
-        <GoogleLogo />
-        Continue with Google
-      </Button>
-      <p id="google-unavailable" className="text-center type-caption text-muted-foreground">
-        Unavailable on this demo. Sign in with your email instead.
-      </p>
+      <form ref={formRef} method="post" action={PROVIDER_REDIRECT_URL} className="contents">
+        <input type="hidden" name="provider" value="google" />
+        <input type="hidden" name="process" value="login" />
+        <input
+          type="hidden"
+          name="callback_url"
+          value={`/auth/callback?next=${encodeURIComponent(next)}`}
+        />
+        <input ref={csrfRef} type="hidden" name="csrfmiddlewaretoken" />
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full"
+          onClick={start}
+          disabled={pending}
+          aria-busy={pending}
+        >
+          {pending ? <Spinner data-icon="inline-start" /> : <GoogleLogo />}
+          Continue with Google
+        </Button>
+      </form>
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
         <Separator className="flex-1" />
         or
