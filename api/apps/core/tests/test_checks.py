@@ -64,3 +64,22 @@ def test_host_lists_ignore_the_spaces_people_type_after_commas(monkeypatch, raw,
     monkeypatch.setenv("SOME_HOSTS", raw)
 
     assert _hosts("SOME_HOSTS") == expected
+
+
+@pytest.mark.parametrize(
+    "enabled,client_id,secret,expected",
+    [
+        (True, "id", "secret", 1),
+        (False, "id", "secret", 0),
+        (True, "", "secret", 0),
+        (True, "id", "", 0),
+    ],
+)
+def test_google_is_offered_only_when_enabled_and_configured(enabled, client_id, secret, expected):
+    """GOOGLE_OAUTH_ENABLED=false turns the provider off without discarding its credentials."""
+    from config.settings.base import google_provider_apps
+
+    apps_for_provider = google_provider_apps(enabled, client_id, secret)
+
+    assert len(apps_for_provider) == expected
+    assert all(app["client_id"] == client_id for app in apps_for_provider)

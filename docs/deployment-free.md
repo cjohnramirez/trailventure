@@ -107,6 +107,7 @@ service's name. It is read per request by `web/src/proxy.ts`, so changing it nee
 | `STRIPE_WEBHOOK_SECRET` | filled in at step 3 |
 | `CLOUDINARY_URL` | `cloudinary://<key>:<secret>@<cloud>` |
 | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` | from Google Cloud |
+| `GOOGLE_OAUTH_ENABLED` | `false` on a `*.code.run` domain — see step 3 |
 
 ### Migrations
 
@@ -129,7 +130,7 @@ Link the Postgres secret group and set `DJANGO_SECRET_KEY`; it needs nothing els
    whose domain is a registered public suffix. `code.run` is not on the Public Suffix List (unlike
    `vercel.app` or `onrender.com`), so it resolves to Northflank's own domain and the console
    rejects it with *"must use a domain that is a valid top private domain"*. Leave
-   `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` unset and the sign-in button does not
+   `GOOGLE_OAUTH_ENABLED=false` (or the credentials unset) and the sign-in button does not
    render; email and password work as normal. Attaching a custom domain makes it work, and then
    the redirect URI is `https://<your domain>/accounts/google/login/callback/`, with the consent
    screen published or your address added as a test user.
