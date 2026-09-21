@@ -227,8 +227,22 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+
+def _celery_redis_url(url: str) -> str:
+    """Celery rejects a `rediss://` URL that does not say how to verify the certificate.
+
+    Managed Redis (Upstash and others) is TLS-only, so the plain URL they hand out fails at
+    import time — and with tasks running eagerly that surfaces as a broken email send rather
+    than a broken worker.
+    """
+    if not url.startswith("rediss://") or "ssl_cert_reqs" in url:
+        return url
+    separator = "&" if "?" in url else "?"
+    return f"{url}{separator}ssl_cert_reqs=CERT_REQUIRED"
+
+
+CELERY_BROKER_URL = _celery_redis_url(REDIS_URL)
+CELERY_RESULT_BACKEND = _celery_redis_url(REDIS_URL)
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_ACKS_LATE = True
 # Shared key for the scheduled-job endpoint, used where no Celery beat process runs.

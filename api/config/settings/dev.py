@@ -1,9 +1,11 @@
 import os
 
 os.environ.setdefault("DJANGO_SECRET_KEY", "dev-only-insecure-key")
-os.environ.setdefault(
-    "DATABASE_URL", "postgres://trailventure:trailventure@localhost:5433/trailventure"
-)
+
+# DATABASE_URL deliberately has no default. It used to fall back to the local Compose
+# database, which meant anything accidentally running these settings in a container failed
+# with "connection refused on localhost:5433" instead of saying the variable was missing.
+# `cp .env.example .env` supplies it locally.
 
 from .base import *
 
