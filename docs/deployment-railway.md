@@ -2,6 +2,25 @@
 
 Architecture and reasoning are in [ADR 0002](adr/0002-host-on-railway.md).
 
+## 0. Before the first public deploy
+
+**Revoke the credentials still in git history.** The first version of the site committed
+`backend/.env` in March 2025. It is gone from every branch tip, but it stays reachable through
+the `legacy-v1` tag and the commits before it, so anyone who clones the repository can read it.
+Two values are exposed, neither of them in use today:
+
+| Value | Risk | Action |
+|---|---|---|
+| A Stripe **test** secret key (`sk_test_51Qvhbi…`) | Test mode only, and on a different Stripe account than the one configured now, so no real money is reachable. It can still read and write that account's test data. | Roll it in the old account's dashboard, or delete the account. |
+| The legacy Django `SECRET_KEY` | Signed that deployment's sessions and password-reset tokens. The rebuild generates its own. | Nothing to do beyond never reusing it. |
+
+No Cloudinary, Mailjet or Google credentials were ever committed — those services arrived with
+the rebuild, and their keys live only in a gitignored `.env`.
+
+**Check the sender address.** `manage.py check --deploy` fails when `DEFAULT_FROM_EMAIL` still
+uses a placeholder domain, because Mailjet only delivers from an address the account has
+validated. Run it with the production settings before deploying.
+
 ## 1. Create the project
 1. **New project from the repo.** In Railway, create a project from `cjohnramirez/trailventure`.
 2. **Databases.** Add a **PostgreSQL** and a **Redis** database.
