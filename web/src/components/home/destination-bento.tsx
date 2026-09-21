@@ -32,7 +32,15 @@ export function DestinationBento({ destinations }: { destinations: Destination[]
               src={destination.photo.url}
               alt={destination.photo.alt}
               fill
-              sizes="(min-width: 1024px) 18rem, 50vw"
+              // `sizes` describes width, but a tall tile is roughly twice as high as it is
+              // wide and these photos are landscape, so `object-cover` scales them to fit the
+              // height. Asking for the tile's width alone would fetch something half the size
+              // it gets drawn at, which is visibly soft.
+              sizes={
+                isTall(index)
+                  ? "(min-width: 1024px) 36rem, 50vw"
+                  : "(min-width: 1024px) 18rem, 50vw"
+              }
               className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
             <div className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-2xl border bg-background px-4 py-3">
