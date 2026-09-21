@@ -1,0 +1,226 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * TrailVenture theme.
+ * Colors are the original site's shadcn "new-york" zinc palette plus its teal brand color
+ * (docs/design/legacy-ui-reference.md). There are deliberately no shadow tokens: surfaces are
+ * separated with borders and background tone. Ink and dark backgrounds use the off-black #131413
+ * rather than the original near-black #09090b.
+ */
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-alumni-sans), "Arial Narrow", ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-sans);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Brand */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-hover-foreground: var(--brand-hover-foreground);
+  --color-rating: var(--rating);
+  --color-surface-muted: var(--surface-muted);
+  --color-hero-title: var(--hero-title);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 16px);
+  --radius-4xl: calc(var(--radius) + 24px);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  --background: hsl(0 0% 100%);
+  --foreground: #131413;
+  --card: hsl(0 0% 100%);
+  --card-foreground: #131413;
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: #131413;
+  --primary: #131413;
+  --primary-foreground: hsl(0 0% 98%);
+  --secondary: hsl(240 4.8% 95.9%);
+  --secondary-foreground: #131413;
+  --muted: hsl(240 4.8% 95.9%);
+  --muted-foreground: hsl(
+    240 4% 41%
+  ); /* darker than the original zinc-500 so it passes AA on surface-muted */
+  --accent: hsl(240 4.8% 95.9%);
+  --accent-foreground: #131413;
+  --destructive: hsl(0 72% 51%);
+  --border: hsl(240 5.9% 90%);
+  --input: hsl(240 5.9% 90%);
+  --ring: hsl(173 80% 36%);
+  --chart-1: hsl(12 76% 61%);
+  --chart-2: hsl(173 58% 39%);
+  --chart-3: hsl(197 37% 24%);
+  --chart-4: hsl(43 74% 66%);
+  --chart-5: hsl(27 87% 67%);
+  --sidebar: hsl(0 0% 100%);
+  --sidebar-foreground: #131413;
+  --sidebar-primary: #131413;
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: #131413;
+  --sidebar-border: hsl(240 5.9% 90%);
+  --sidebar-ring: hsl(173 80% 36%);
+
+  /* teal-500, with zinc-950 text on it (white on teal-500 fails WCAG AA). */
+  --brand: hsl(173 80% 40%);
+  --brand-foreground: #131413;
+  /* teal-300: hover fill on outline buttons, as in the original. */
+  --brand-hover: hsl(171 77% 64%);
+  --brand-hover-foreground: #131413;
+  --rating: hsl(173 79% 41%);
+  --surface-muted: hsl(240 4.8% 95.9%);
+  /* Home hero: EXPLORE over the darkened photo. */
+  --hero-title: hsl(240 4.8% 95.9%);
+  --success: hsl(173 80% 32%);
+  --warning: hsl(38 92% 50%);
+  --warning-foreground: #131413;
+}
+
+.dark {
+  --background: #131413;
+  --foreground: hsl(0 0% 98%);
+  --card: #131413;
+  --card-foreground: hsl(0 0% 98%);
+  --popover: #131413;
+  --popover-foreground: hsl(0 0% 98%);
+  --primary: hsl(0 0% 98%);
+  --primary-foreground: #131413;
+  --secondary: #232423;
+  --secondary-foreground: hsl(0 0% 98%);
+  --muted: #232423;
+  --muted-foreground: hsl(240 5% 64.9%);
+  --accent: #232423;
+  --accent-foreground: hsl(0 0% 98%);
+  --destructive: hsl(0 84% 60%);
+  --border: #2a2b2a;
+  --input: #2a2b2a;
+  --ring: hsl(172 66% 50%);
+  --chart-1: hsl(220 70% 50%);
+  --chart-2: hsl(160 60% 45%);
+  --chart-3: hsl(30 80% 55%);
+  --chart-4: hsl(280 65% 60%);
+  --chart-5: hsl(340 75% 55%);
+  --sidebar: #131413;
+  --sidebar-foreground: hsl(0 0% 98%);
+  --sidebar-primary: hsl(0 0% 98%);
+  --sidebar-primary-foreground: #131413;
+  --sidebar-accent: #232423;
+  --sidebar-accent-foreground: hsl(0 0% 98%);
+  --sidebar-border: #2a2b2a;
+  --sidebar-ring: hsl(172 66% 50%);
+
+  --brand: hsl(173 80% 40%);
+  --brand-foreground: #131413;
+  /* A bright teal fill with dark text is harsh on dark surfaces; use a teal tint instead. */
+  --brand-hover: hsl(173 80% 40% / 0.22);
+  --brand-hover-foreground: hsl(0 0% 98%);
+  --rating: hsl(173 79% 41%);
+  --surface-muted: #1a1b1a;
+  /* Home hero: EXPLORE uses the theme's default text color. */
+  --hero-title: var(--foreground);
+  --success: hsl(172 66% 50%);
+  --warning: hsl(43 96% 56%);
+  --warning-foreground: #131413;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* Condensed display type: wordmark, EXPLORE, section titles. */
+  .title {
+    @apply font-display leading-none tracking-tight uppercase;
+  }
+}
+
+/*
+ * Type scale. Use these roles instead of ad-hoc text sizes (docs/design/design-system.md).
+ * Icon sizes follow the same steps: 14px (size-3.5) with captions, 18px (size-4.5) with UI and
+ * body text, 24px (size-6) for empty-state media, 48px (size-12) for decorative feature icons.
+ */
+@utility type-page-title {
+  @apply font-display text-5xl leading-none font-bold tracking-tight uppercase sm:text-6xl;
+}
+@utility type-section-title {
+  @apply font-display text-[2.5rem] leading-none font-semibold tracking-tight uppercase lg:text-[3.5rem];
+}
+@utility type-heading {
+  @apply text-2xl leading-tight font-semibold;
+}
+@utility type-card-title {
+  @apply text-xl leading-snug font-semibold;
+}
+@utility type-body {
+  @apply text-base leading-relaxed;
+}
+@utility type-ui {
+  @apply text-sm;
+}
+@utility type-caption {
+  @apply text-xs;
+}

@@ -1,0 +1,6 @@
+{% autoescape off %}Hi from TrailVenture!
+
+{% block content %}{% endblock content %}
+
+— The TrailVenture team
+TrailVenture is an early-access portfolio project.{% endautoescape %}
