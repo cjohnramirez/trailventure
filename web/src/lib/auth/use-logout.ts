@@ -21,8 +21,11 @@ export function useLogout() {
         toast.error(result.formError ?? "We couldn’t log you out. Try again.");
         return;
       }
+      // Drop every cached query rather than refetching them: the previous user's profile,
+      // bookings and reviews must not linger in memory, and refetching them as an anonymous
+      // visitor only produces a burst of 403s that delays the toast and the redirect.
+      queryClient.clear();
       queryClient.setQueryData(sessionQueryKey, null);
-      await queryClient.invalidateQueries();
       toast.success("You’re logged out.");
       router.replace("/");
       router.refresh();

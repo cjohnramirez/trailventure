@@ -8,6 +8,14 @@ import { Hero } from "@/components/home/hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getDestinations } from "@/lib/catalog/api";
 
+/**
+ * Rendered per request rather than prerendered. The image is built where the API isn't reachable
+ * (Railway builds before the service is wired up), and a prerendered home page would ship the
+ * "couldn't load destinations" state baked in. Django caches these reads in Redis, so the cost of
+ * rendering on demand is small.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const destinations = await getDestinations().catch(() => []);
   return (

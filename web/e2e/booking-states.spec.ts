@@ -46,10 +46,9 @@ function booking(overrides: Record<string, unknown> = {}) {
   };
 }
 
-async function signedIn(page: Page) {
-  await page
-    .context()
-    .addCookies([{ name: "sessionid", value: "e2e-session", url: "http://localhost:3000" }]);
+async function signedIn(page: Page, baseURL: string) {
+  // Tied to the run's base URL, not a hardcoded port, so the cookie is actually sent.
+  await page.context().addCookies([{ name: "sessionid", value: "e2e-session", url: baseURL }]);
   await page.route("**/api/v1/auth/me/", (route) => route.fulfill({ json: { user: USER } }));
 }
 
@@ -64,8 +63,8 @@ async function serveBooking(page: Page, ...responses: Array<Record<string, unkno
   });
 }
 
-test.beforeEach(async ({ page }) => {
-  await signedIn(page);
+test.beforeEach(async ({ page, baseURL }) => {
+  await signedIn(page, baseURL!);
 });
 
 test("a confirmed booking shows the transaction details", async ({ page }) => {

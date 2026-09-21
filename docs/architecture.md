@@ -1,7 +1,7 @@
 # Architecture
 
 ```
-Browser ──▶ web (Next.js) ──rewrites /api, /_allauth, /django-admin──▶ api (Django + gunicorn)
+Browser ──▶ web (Next.js) ──proxy.ts: /api, /_allauth, /django-admin──▶ api (Django + gunicorn)
                                                                         │
                                                         ┌───────────────┼───────────────┐
                                                      Postgres         Redis        worker / beat (Celery)
@@ -11,13 +11,23 @@ Browser ──▶ web (Next.js) ──rewrites /api, /_allauth, /django-admin─
 
 ## Why one origin
 
-The browser only talks to the web service. Next.js rewrites `/api/*`, `/_allauth/*` and `/django-admin/*` to Django over Railway's private network. The benefits:
+The browser only talks to the web service. `web/src/proxy.ts` forwards `/api/*`, `/_allauth/*`,
+`/django-admin/*`, `/accounts/*` and `/static/*` to Django over Railway's private network. The
+benefits:
 
 - **Auth cookies stay first-party.** The Django session and CSRF cookies are `httpOnly`, `Secure` and `SameSite=Lax`, so no auth token ever lives in `localStorage`.
 - **No CORS setup.** Nothing to configure or get wrong.
-- **One public service.** Only the web service needs a public domain. The Stripe webhook reaches Django through the same rewrite.
+- **One public service.** Only the web service needs a public domain. The Stripe webhook reaches Django through the same proxy.
 
 Server Components call Django directly (`API_ORIGIN`) and forward the incoming request's cookies.
+
+The forwarding deliberately lives in `proxy.ts` rather than in `next.config.ts` `rewrites()`.
+A rewrite destination is resolved during `next build` and written into `routes-manifest.json`,
+so an image built without `API_ORIGIN` — which is how Railway builds it, before the service is
+wired up — would forward every browser request to `localhost:8000` inside the web container.
+Pages would still render, because Server Components read `API_ORIGIN` at runtime, but every
+login, quote and booking would fail. Resolving it per request keeps one image correct in every
+environment.
 
 ## API (`api/`)
 

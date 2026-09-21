@@ -9,8 +9,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  // `next dev` compiles routes on first visit, so allow slower assertions locally.
-  expect: { timeout: process.env.CI ? 5_000 : 15_000 },
+  // `next dev` compiles routes on first visit, so allow slower assertions locally. CI runs three
+  // browser projects in parallel against one Django process, so give assertions room there too.
+  expect: { timeout: process.env.CI ? 10_000 : 15_000 },
   reporter: process.env.CI ? [["html", { open: "never" }], ["github"]] : "list",
   use: {
     baseURL,

@@ -112,10 +112,106 @@ jobs:
         run: npm run test
       - name: Build
         run: npm run build
+
+  e2e:
+    needs: changes
+    if: needs.changes.outputs.api == 'true' || needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: trailventure
+          POSTGRES_USER: trailventure
+          POSTGRES_PASSWORD: trailventure
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U trailventure"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:8-alpine
+        ports: ["6379:6379"]
+      mailpit:
+        image: axllent/mailpit:latest
+        ports: ["1025:1025", "8025:8025"]
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_SECRET_KEY: ci-e2e-insecure-key
+      DATABASE_URL: postgres://trailventure:trailventure@localhost:5432/trailventure
+      REDIS_URL: redis://localhost:6379/0
+      EMAIL_URL: smtp://localhost:1025
+      API_ORIGIN: http://localhost:8000
+      MAILPIT_URL: http://localhost:8025
+      # Drives the specs that need a real API instead of mocked responses.
+      E2E_FULL_STACK: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.1.0
+        with:
+          enable-cache: true
+      - name: Install API dependencies
+        working-directory: api
+        run: uv sync --locked
+      - name: Prepare the database
+        working-directory: api
+        run: |
+          uv run python manage.py migrate
+          uv run python manage.py seed_catalog
+          uv run python manage.py seed_demo_users
+      - name: Start the API
+        working-directory: api
+        run: |
+          uv run python manage.py runserver 8000 --noreload > "${RUNNER_TEMP}/api.log" 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8000/api/v1/health/ > /dev/null; then
+              echo "API ready"; exit 0
+            fi
+            sleep 2
+          done
+          echo "API did not start"; cat "${RUNNER_TEMP}/api.log"; exit 1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci
+      - name: Build
+        working-directory: web
+        run: npm run build
       - name: Install Playwright browser
+        working-directory: web
         run: npx playwright install --with-deps chromium
+      - name: Start the web app
+        working-directory: web
+        run: |
+          npm run start:standalone > "${RUNNER_TEMP}/web.log" 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:3000/ > /dev/null; then
+              echo "web ready"
+              # The hero photo is resized on first request, once per width the browser asks for.
+              # Warm every default width so no test is the one paying for it.
+              for w in 640 750 828 1080 1200 1920 2048 3840; do
+                curl -s -o /dev/null -H "Accept: image/avif,image/webp,*/*"                   "http://localhost:3000/_next/image?url=%2Fimages%2Fhero-section.jpg&w=${w}&q=75"
+              done
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "web app did not start"; cat "${RUNNER_TEMP}/web.log"; exit 1
       - name: End-to-end tests
+        working-directory: web
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
         run: npm run e2e
+      - name: Server logs
+        if: failure()
+        run: |
+          echo "--- api ---"; cat "${RUNNER_TEMP}/api.log" || true
+          echo "--- web ---"; cat "${RUNNER_TEMP}/web.log" || true
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v5
@@ -144,16 +240,17 @@ jobs:
   # The single required status check for branch protection. Skipped jobs count as passing.
   ci-passed:
     if: always()
-    needs: [api, web, audit]
+    needs: [api, web, e2e, audit]
     runs-on: ubuntu-latest
     steps:
       - name: Verify job results
         env:
           API_RESULT: ${{ needs.api.result }}
           WEB_RESULT: ${{ needs.web.result }}
+          E2E_RESULT: ${{ needs.e2e.result }}
           AUDIT_RESULT: ${{ needs.audit.result }}
         run: |
-          echo "api=$API_RESULT web=$WEB_RESULT audit=$AUDIT_RESULT"
-          for r in "$API_RESULT" "$WEB_RESULT" "$AUDIT_RESULT"; do
+          echo "api=$API_RESULT web=$WEB_RESULT e2e=$E2E_RESULT audit=$AUDIT_RESULT"
+          for r in "$API_RESULT" "$WEB_RESULT" "$E2E_RESULT" "$AUDIT_RESULT"; do
             if [ "$r" != "success" ] && [ "$r" != "skipped" ]; then exit 1; fi
           done

@@ -42,5 +42,5 @@ Later milestones add Stripe, Mailjet, Cloudinary and Google OAuth keys. Each one
 
 ## 3. Verify a deploy
 - **API:** the deploy log shows `migrate` finishing, and the health check `/api/v1/health/` returns `{"status":"ok","database":"ok","cache":"ok"}`.
-- **Web:** `https://<web domain>/` loads, and `https://<web domain>/api/v1/health/` reaches Django through the rewrite.
+- **Web:** `https://<web domain>/` loads, and `https://<web domain>/api/v1/health/` reaches Django through the proxy.
 - **Worker:** logs show `celery@... ready`.
