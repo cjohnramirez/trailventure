@@ -12,12 +12,22 @@ const PACKAGE = "/package/siargao-island-surf-nature-retreat";
 /** Below `lg` the booking controls live in a drawer behind the bottom bar. */
 async function openBookingControls(page: Page) {
   const trigger = page.locator('[data-slot="drawer-trigger"]');
-  if (await trigger.isVisible()) await trigger.click();
+  if (!(await trigger.isVisible())) return;
+  await trigger.click();
+  // The drawer animates in, and its overlay swallows clicks until it has settled.
+  await expect(page.getByRole("button", { name: "Select tour date" })).toBeVisible();
 }
 
 async function chooseFirstAvailableDate(page: Page) {
   await page.getByRole("button", { name: "Select tour date" }).click();
-  await page.locator("button[data-day]:not([disabled])").first().click();
+
+  // Wait for the calendar itself rather than clicking into an overlay that is still moving:
+  // inside the mobile drawer the day is present before it is hittable, and the click would
+  // otherwise retry against the overlay until the test timed out.
+  const day = page.locator("button[data-day]:not([disabled])").first();
+  await expect(day).toBeVisible();
+  await day.click();
+
   // Picking a day closes the popover and shows the date on the trigger.
   await expect(page.locator("button[data-day]")).toHaveCount(0);
 }
