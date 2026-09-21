@@ -216,6 +216,19 @@ SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_STORE_TOKENS = False
 GOOGLE_OAUTH_CLIENT_ID = env.str("GOOGLE_OAUTH_CLIENT_ID", default="")
 GOOGLE_OAUTH_CLIENT_SECRET = env.str("GOOGLE_OAUTH_CLIENT_SECRET", default="")
+# Lets a deployment turn Google sign-in off while keeping its credentials. Google only accepts
+# a redirect URI on a registered public suffix, which the free host's domain is not, so the
+# provider has to stay off there until a custom domain exists.
+GOOGLE_OAUTH_ENABLED = env.bool("GOOGLE_OAUTH_ENABLED", default=True)
+
+
+def google_provider_apps(enabled: bool, client_id: str, secret: str) -> list[dict]:
+    """The provider is registered only when it is switched on and actually configured."""
+    if not (enabled and client_id and secret):
+        return []
+    return [{"client_id": client_id, "secret": secret, "key": ""}]
+
+
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": ["profile", "email"],
@@ -223,17 +236,10 @@ SOCIALACCOUNT_PROVIDERS = {
         "OAUTH_PKCE_ENABLED": True,
         "EMAIL_AUTHENTICATION": True,
         "VERIFIED_EMAIL": True,
-        # Without credentials the provider is simply not offered (the web app hides the button).
-        "APPS": (
-            [
-                {
-                    "client_id": GOOGLE_OAUTH_CLIENT_ID,
-                    "secret": GOOGLE_OAUTH_CLIENT_SECRET,
-                    "key": "",
-                }
-            ]
-            if GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET
-            else []
+        # Without credentials, or with the switch off, the provider is simply not offered and
+        # the web app shows its sign-in button disabled.
+        "APPS": google_provider_apps(
+            GOOGLE_OAUTH_ENABLED, GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET
         ),
     }
 }
