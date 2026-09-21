@@ -27,3 +27,22 @@ def test_a_real_sender_passes(settings, address):
     settings.DEFAULT_FROM_EMAIL = address
 
     assert from_address_is_deliverable(None) == []
+
+
+@pytest.mark.parametrize(
+    "url,expected",
+    [
+        ("redis://localhost:6379/0", "redis://localhost:6379/0"),
+        ("rediss://host:6379", "rediss://host:6379?ssl_cert_reqs=CERT_REQUIRED"),
+        ("rediss://host:6379?db=0", "rediss://host:6379?db=0&ssl_cert_reqs=CERT_REQUIRED"),
+        (
+            "rediss://host:6379?ssl_cert_reqs=CERT_NONE",
+            "rediss://host:6379?ssl_cert_reqs=CERT_NONE",
+        ),
+    ],
+)
+def test_celery_is_told_how_to_verify_a_tls_redis_certificate(url, expected):
+    """Managed Redis is TLS-only, and Celery refuses such a URL without this parameter."""
+    from config.settings.base import _celery_redis_url
+
+    assert _celery_redis_url(url) == expected
