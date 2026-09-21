@@ -1,0 +1,29 @@
+name: Scheduled jobs
+
+# The free deployment has no Celery beat process, so the periodic work is driven from here.
+# The same request keeps the API warm, which is what stops a visitor meeting a cold start.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  expire-holds:
+    runs-on: ubuntu-latest
+    # Set API_URL (e.g. https://trailventure-api.onrender.com) and CRON_SECRET in repository
+    # settings. Without them the job is skipped rather than failing every 15 minutes.
+    if: vars.API_URL != ''
+    steps:
+      - name: Release bookings whose hold ran out
+        env:
+          API_URL: ${{ vars.API_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          response=$(curl -sS -m 90 -o /tmp/body -w "%{http_code}" -X POST \
+            -H "X-Cron-Key: ${CRON_SECRET}" \
+            "${API_URL%/}/api/v1/bookings/expire-holds/")
+          echo "status $response"; cat /tmp/body; echo
+          [ "$response" = "200" ]

@@ -2,12 +2,14 @@ from django.conf import settings
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
+from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from apps.catalog.models import PackageImage
+from apps.core.cron import check_cron_key
 from apps.payments.serializers import CheckoutRequestSerializer
 from apps.payments.services import create_checkout_session
 
@@ -87,3 +89,16 @@ def checkout(request, booking_id):
         cancel_url=f"{settings.FRONTEND_URL}/booking/cancelled/{booking.id}",
     )
     return Response(CheckoutSerializer({"checkout_url": session.url}).data)
+
+
+class ExpiredHoldsSerializer(serializers.Serializer):
+    expired = serializers.IntegerField()
+
+
+@extend_schema(request=None, responses=ExpiredHoldsSerializer, operation_id="bookings_expire_holds")
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def expire_holds(request):
+    """Release bookings whose hold ran out, for deployments without a Celery beat process."""
+    check_cron_key(request)
+    return Response(ExpiredHoldsSerializer({"expired": services.expire_stale_holds()}).data)

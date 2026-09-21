@@ -231,6 +231,14 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_ACKS_LATE = True
+# Shared key for the scheduled-job endpoint, used where no Celery beat process runs.
+CRON_SECRET = env.str("CRON_SECRET", default="")
+
+# Free hosting has no always-on worker, so tasks can be run inside the request instead. Emails
+# then add a few hundred milliseconds to a signup; nothing else changes.
+CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=False)
+CELERY_TASK_EAGER_PROPAGATES = False
+
 CELERY_BEAT_SCHEDULE = {
     "expire-stale-booking-holds": {
         "task": "apps.bookings.tasks.expire_stale_holds",

@@ -23,7 +23,7 @@ if not env.bool("USE_MAILJET", default=False):
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     vars().update(env.email("EMAIL_URL", default="smtp://localhost:1025"))
 
-# Run Celery tasks (e.g. emails) inline; set CELERY_TASK_ALWAYS_EAGER=false with a worker.
+# Locally there is no worker unless one is started, so tasks run inline by default.
 CELERY_TASK_ALWAYS_EAGER = env.bool("CELERY_TASK_ALWAYS_EAGER", default=True)
 
 # Local development and end-to-end runs sign up many accounts from one IP; keep limits loose here.
