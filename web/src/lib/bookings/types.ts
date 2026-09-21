@@ -36,4 +36,6 @@ export type Booking = {
   is_hold_active: boolean;
   confirmed_at: string | null;
   created_at: string;
+  can_review: boolean;
+  review_blocked_because: string | null;
 };

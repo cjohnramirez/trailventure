@@ -4,6 +4,7 @@ from pathlib import Path
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.db.models import ProtectedError
 from django.utils import timezone
 
 from apps.bookings.models import FeeSchedule
@@ -81,19 +82,26 @@ class Command(BaseCommand):
                 for image in item["images"]
             )
 
-            package.tiers.all().delete()
+            # Tiers are matched by name rather than recreated: bookings reference them, and their
+            # price snapshots must survive a re-seed.
+            seeded_tiers = []
             for position, tier_item in enumerate(item["tiers"]):
-                tier = Tier.objects.create(
+                tier, _ = Tier.objects.update_or_create(
                     package=package,
                     name=tier_item["name"],
-                    description=tier_item["description"],
-                    price=tier_item["price"],
-                    position=position,
+                    defaults={
+                        "description": tier_item["description"],
+                        "price": tier_item["price"],
+                        "position": position,
+                    },
                 )
+                seeded_tiers.append(tier.pk)
                 tier.amenities.set(self._amenities(tier_item["amenities"]))
+                tier.itinerary.all().delete()
                 ItineraryStop.objects.bulk_create(
                     ItineraryStop(tier=tier, **stop) for stop in tier_item["itinerary"]
                 )
+            self._retire_missing_tiers(package, keep=seeded_tiers)
             refresh_package_pricing(package.pk)
 
         self.stdout.write(
@@ -102,6 +110,16 @@ class Command(BaseCommand):
                 f"and {len(data['packages'])} packages."
             )
         )
+
+    def _retire_missing_tiers(self, package: Package, *, keep: list[int]) -> None:
+        """Drop tiers the seed no longer lists, unless a booking still points at one."""
+        for tier in package.tiers.exclude(pk__in=keep):
+            try:
+                tier.delete()
+            except ProtectedError:
+                self.stdout.write(
+                    self.style.WARNING(f"Kept booked tier {tier.name} on {package.slug}")
+                )
 
     @staticmethod
     def _image_key(relative_path: str, use_cloudinary: bool) -> str:

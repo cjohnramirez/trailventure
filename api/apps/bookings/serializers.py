@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.catalog.models import Tier
 from apps.core.images import image_url
+from apps.reviews.services import review_blocker
 
 from .models import MAX_GUESTS, Booking
 
@@ -35,6 +36,8 @@ class BookingSerializer(serializers.ModelSerializer):
     package = serializers.SerializerMethodField()
     tier = serializers.SerializerMethodField()
     is_hold_active = serializers.BooleanField(read_only=True)
+    can_review = serializers.SerializerMethodField()
+    review_blocked_because = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
@@ -56,6 +59,8 @@ class BookingSerializer(serializers.ModelSerializer):
             "is_hold_active",
             "confirmed_at",
             "created_at",
+            "can_review",
+            "review_blocked_because",
         ]
         read_only_fields = fields
 
@@ -73,6 +78,12 @@ class BookingSerializer(serializers.ModelSerializer):
 
     def get_tier(self, booking: Booking) -> dict:
         return {"id": booking.tier_id, "name": booking.tier.name}
+
+    def get_can_review(self, booking: Booking) -> bool:
+        return review_blocker(booking) is None
+
+    def get_review_blocked_because(self, booking: Booking) -> str | None:
+        return review_blocker(booking)
 
 
 class CheckoutSerializer(serializers.Serializer):

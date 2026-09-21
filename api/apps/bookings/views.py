@@ -25,7 +25,9 @@ from .serializers import (
 def _bookings_for(user):
     cover = Prefetch("package__images", queryset=PackageImage.objects.order_by("position", "id"))
     return (
-        Booking.objects.filter(user=user).select_related("package", "tier").prefetch_related(cover)
+        Booking.objects.filter(user=user)
+        .select_related("package", "tier", "review")
+        .prefetch_related(cover)
     )
 
 

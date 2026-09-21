@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 
 import { PackageGallery } from "@/components/catalog/package-gallery";
 import { Rating } from "@/components/catalog/rating";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReviewCard } from "@/components/reviews/review-card";
+import { WriteReview } from "@/components/reviews/write-review";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Empty,
   EmptyDescription,
@@ -13,6 +15,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { getPackage } from "@/lib/catalog/api";
+import { getPackageReviews } from "@/lib/reviews/server";
 import { formatCentavos } from "@/lib/format";
 
 import { PackageTiers } from "./package-tiers";
@@ -42,6 +45,7 @@ export default async function PackagePage({ params }: PageProps<"/package/[slug]
   // API outages throw and render error.tsx; unknown slugs render the 404 page.
   const pkg = await getPackage(slug);
   if (!pkg) notFound();
+  const reviews = await getPackageReviews(slug);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -107,22 +111,33 @@ export default async function PackagePage({ params }: PageProps<"/package/[slug]
           </Card>
         }
         after={
-          <Card id="reviews" className="scroll-mt-28 rounded-2xl">
+          <Card id="reviews" className="scroll-mt-28 rounded-2xl" aria-labelledby="reviews-title">
             <CardHeader>
-              <CardTitle>Reviews</CardTitle>
+              <CardTitle id="reviews-title">Reviews</CardTitle>
+              <CardAction>
+                <WriteReview packageSlug={pkg.slug} />
+              </CardAction>
             </CardHeader>
             <CardContent>
-              <Empty className="rounded-xl border py-10">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <MessageSquareIcon />
-                  </EmptyMedia>
-                  <EmptyTitle>No reviews yet</EmptyTitle>
-                  <EmptyDescription>
-                    Travelers who complete this trip can leave the first review.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
+              {reviews.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {reviews.map((review) => (
+                    <ReviewCard key={review.id} review={review} />
+                  ))}
+                </div>
+              ) : (
+                <Empty className="rounded-xl border py-10">
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <MessageSquareIcon />
+                    </EmptyMedia>
+                    <EmptyTitle>No reviews yet</EmptyTitle>
+                    <EmptyDescription>
+                      Travelers who complete this trip can leave the first review.
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
+              )}
             </CardContent>
           </Card>
         }

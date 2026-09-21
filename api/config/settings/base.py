@@ -12,6 +12,13 @@ DEBUG = env.bool("DJANGO_DEBUG", default=False)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 
+# Every request arrives through the web app's proxy, which sends its own Host and puts the public
+# one in X-Forwarded-Host. Absolute URLs Django builds — above all the OAuth callback — have to use
+# the public host, or they point at this service, which isn't reachable from a browser. Trusting the
+# header is safe because nothing reaches this service except through that proxy, and ALLOWED_HOSTS
+# still validates the result.
+USE_X_FORWARDED_HOST = True
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -33,6 +40,7 @@ INSTALLED_APPS = [
     "apps.catalog",
     "apps.bookings",
     "apps.payments",
+    "apps.reviews",
 ]
 
 MIDDLEWARE = [

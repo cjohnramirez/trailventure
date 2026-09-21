@@ -1,38 +1,26 @@
 "use client";
 
-import { RotateCcwIcon, TriangleAlertIcon } from "lucide-react";
 import Link from "next/link";
 
+import { AccountHeader, AccountHeaderSkeleton } from "@/components/account/account-header";
+import { BookingsSection } from "@/components/account/bookings-section";
+import { ReviewsSection } from "@/components/account/reviews-section";
+import { UserDetails, UserDetailsSkeleton } from "@/components/account/user-details";
+import { ErrorState } from "@/components/app/error-state";
 import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useSession } from "@/lib/auth/session";
+import { Separator } from "@/components/ui/separator";
+import { useAccount, useCapabilities } from "@/lib/account/use-account";
 
-/**
- * The original user page's "User Details" section. Avatar, banner, bookings and reviews join this
- * page in M6.
- */
+/** The original user page: banner and profile, User Details, Your Bookings and Your Reviews. */
 export function AccountDetails() {
-  const { data: user, isPending, isError, refetch, isRefetching } = useSession();
+  const account = useAccount();
+  const capabilities = useCapabilities();
 
-  if (isError) {
-    return (
-      <Alert variant="destructive">
-        <TriangleAlertIcon />
-        <AlertTitle>We couldn’t load your account</AlertTitle>
-        <AlertDescription>Check your connection and try again.</AlertDescription>
-        <AlertAction>
-          <Button size="sm" variant="outline" onClick={() => refetch()} disabled={isRefetching}>
-            <RotateCcwIcon data-icon="inline-start" />
-            Try again
-          </Button>
-        </AlertAction>
-      </Alert>
-    );
-  }
-
-  if (!isPending && !user) {
-    return (
+  if (account.isError) {
+    // A 403 means the session ended while the page was open.
+    const loggedOut = account.error instanceof Error && account.error.message.includes("session");
+    return loggedOut ? (
       <Alert>
         <AlertTitle>You’re logged out</AlertTitle>
         <AlertDescription>Log in again to see your account.</AlertDescription>
@@ -42,33 +30,31 @@ export function AccountDetails() {
           </Button>
         </AlertAction>
       </Alert>
+    ) : (
+      <ErrorState
+        title="We couldn’t load your account"
+        description="Check your connection and try again."
+        onRetry={() => void account.refetch()}
+      />
     );
   }
 
-  const rows = [
-    { label: "First Name", value: user?.first_name },
-    { label: "Last Name", value: user?.last_name },
-    { label: "Email", value: user?.email },
-  ];
-
   return (
-    <section
-      aria-labelledby="details-title"
-      className="flex flex-col gap-6 rounded-2xl border p-6 sm:p-8"
-    >
-      <h2 id="details-title" className="type-card-title">
-        User Details
-      </h2>
-      <dl className="grid gap-4 md:grid-cols-2">
-        {rows.map((row) => (
-          <div key={row.label} className="flex items-center gap-4 rounded-2xl border p-4 sm:p-5">
-            <dt className="w-28 shrink-0 border-r pr-4 text-muted-foreground">{row.label}</dt>
-            <dd className="min-w-0 truncate font-medium">
-              {isPending ? <Skeleton className="h-5 w-40" /> : row.value || "—"}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </section>
+    <div className="flex flex-col gap-10">
+      {account.isPending ? (
+        <AccountHeaderSkeleton />
+      ) : (
+        <AccountHeader
+          account={account.data}
+          canUploadPhotos={capabilities.data?.photo_uploads ?? false}
+        />
+      )}
+
+      {account.isPending ? <UserDetailsSkeleton /> : <UserDetails account={account.data} />}
+      <Separator />
+      <BookingsSection />
+      <Separator />
+      <ReviewsSection />
+    </div>
   );
 }

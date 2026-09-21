@@ -159,6 +159,7 @@ Screenshots of the running legacy app are in [`baseline/`](baseline/). They are 
   - User Details: grid of label | value rows (`rounded-2xl border p-4`).
   - Your Booking: cards with image, name, tier and **See Booking Details** (dialog).
   - Your Reviews.
+- **Rebuilt as:** the same banner, overlapping avatar, profile card and three sections. The details grid became editable, which the original's modify endpoint never managed. Lucide dropped its brand icons, so the Facebook / X / Instagram logo pills are labelled links instead. Photo controls only appear when the API has Cloudinary configured.
 
 ### Login / Register
 - Centered card `max-w-[800px]`, with a photo on the left half (hidden on mobile for register) and the form on the right.

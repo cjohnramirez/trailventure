@@ -59,6 +59,21 @@ Prices are decided by the server and never by the client. The flow mirrors the o
 Nothing deletes a booking. Unpaid holds are expired by the Celery beat task `expire-stale-booking-holds`,
 which runs every five minutes.
 
+## Reviews and profile photos
+
+A review belongs to a **booking**, not to a package. That is what makes it trustworthy: the API
+only accepts one from the traveler who owns a paid booking whose start date has passed, and only
+once per booking. Saving a review recomputes the package's `rating_avg` and `rating_count` and
+bumps the catalog cache version, so cards, filters and JSON-LD follow along. Hidden reviews drop
+out of both the list and the rating, which is what the Phase B moderation tools will use.
+
+Profile photos never pass through Django. The API signs an upload for one public ID it chooses
+itself — `trailventure/accounts/avatars/<user id>` — the browser uploads the file straight to
+Cloudinary, and then tells the API which version to show. A client cannot point its profile at
+someone else's image, because it never supplies the key. The version is part of the stored key,
+so a replaced photo gets a fresh URL instead of a cached copy of the old one. Without
+`CLOUDINARY_URL` the signing endpoint refuses and the account page hides its photo controls.
+
 ## Decisions
 
 - [Design spec and rebuild plan](specs/2026-09-17-rebuild-design.md)

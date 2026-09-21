@@ -8,6 +8,13 @@ os.environ.setdefault(
 from .base import *
 
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
+# Never touch real accounts from a test run, whatever the developer has in .env. The tests that
+# cover Cloudinary set this themselves and patch the upload.
+CLOUDINARY_URL = ""
+STRIPE_SECRET_KEY = "sk_test_unit"  # noqa: S105  (placeholder; no request ever leaves the suite)
+STRIPE_PUBLISHABLE_KEY = "pk_test_unit"
+STRIPE_WEBHOOK_SECRET = "whsec_unit"  # noqa: S105
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 CELERY_TASK_ALWAYS_EAGER = True
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}

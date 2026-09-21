@@ -15,7 +15,7 @@ This README only lists what exists today:
 
 | Area    | Implemented                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| API     | Django 5.2 project, health check (database + Redis), OpenAPI docs; catalog of destinations, packages, tiers and itineraries with search filters (destination, dates, price, rating), pagination and Redis-cached reads; accounts with email + password, 6-digit email verification and password-reset codes (sent via Mailjet, Celery), Google sign-in, rate limits in Redis, and a server-controlled `role`; bookings priced entirely on the server, held for 30 minutes and paid through Stripe Checkout, with a signature-checked webhook that ignores repeated events and a Celery task that expires unpaid holds |
+| API     | Django 5.2 project, health check (database + Redis), OpenAPI docs; catalog of destinations, packages, tiers and itineraries with search filters (destination, dates, price, rating), pagination and Redis-cached reads; accounts with email + password, 6-digit email verification and password-reset codes (sent via Mailjet, Celery), Google sign-in, rate limits in Redis, and a server-controlled `role`; bookings priced entirely on the server, held for 30 minutes and paid through Stripe Checkout, with a signature-checked webhook that ignores repeated events and a Celery task that expires unpaid holds; traveler profiles with Cloudinary photo uploads signed for direct browser upload, and reviews that only a paid booking whose trip has started can leave, one per booking |
 | Web     | Original TrailVenture look (theme, logo, header with search pill, footer, early-access notices) on a standardized type and icon scale; home page (hero, featured destinations, choose us), search page with filters, package page with tiers and itinerary, About page; login, register, email verification, forgot/reset password, Google sign-in and a signed-in account page; booking card on the package page (a bottom bar and drawer on phones), booking review page with the live invoice, and the success and cancelled pages                                                                                 |
 | Tooling | Docker images for web and API, Railway service configs, CI (lint, types, tests, deploy checks, dependency audit)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
@@ -29,6 +29,16 @@ This README only lists what exists today:
 | **Hosting**      | Railway: web, API, Celery worker and beat, Postgres, Redis                                                     |
 
 Read [docs/architecture.md](docs/architecture.md) for how the pieces fit together.
+
+### Images and email
+
+Catalog photos and profile pictures are served from Cloudinary when `CLOUDINARY_URL` is set;
+without it, `seed_catalog` points the catalog at static files and the account page hides its
+photo controls, so the app still runs.
+
+Mail goes to Mailpit locally even when Mailjet credentials are present, so end-to-end runs can
+read verification codes and no real address is written to. Set `USE_MAILJET=true` to check that
+the Mailjet account really sends.
 
 ## Running locally
 
@@ -61,8 +71,13 @@ them the booking page says payments are unavailable instead of failing. To confi
 forward the webhook and copy the signing secret it prints into `STRIPE_WEBHOOK_SECRET`:
 
 ```bash
-stripe listen --forward-to localhost:8000/api/v1/payments/stripe/webhook/
+stripe listen \
+  --events checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.expired,checkout.session.async_payment_failed,charge.refunded \
+  --forward-to localhost:8000/api/v1/payments/stripe/webhook/
 ```
+
+The CLI must be pointed at the same Stripe sandbox the keys came from, or checkout will work
+but bookings will never confirm. Run `stripe switch` to pick one; never `--live`.
 
 Pay with card `4242 4242 4242 4242`, any future expiry and any CVC.
 

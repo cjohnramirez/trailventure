@@ -38,7 +38,8 @@ test("register, verify with the emailed code, see the account, log out and back 
 
   await page.goto("/account");
   await expect(page.getByText(email)).toBeVisible();
-  await expect(page.getByText("Santos")).toBeVisible();
+  // The name appears in the profile card and again in the details grid.
+  await expect(page.getByRole("heading", { name: "Maria Santos" })).toBeVisible();
 
   await page.getByRole("button", { name: "Menu" }).click();
   await page.getByRole("menuitem", { name: "Logout" }).click();

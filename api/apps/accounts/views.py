@@ -2,10 +2,14 @@ from allauth.account.models import EmailAddress
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from apps.core.images import cloudinary_enabled
+
+from . import services
 from .models import User
+from .serializers import AccountSerializer
 
 
 class MeUserSerializer(serializers.ModelSerializer):
@@ -46,3 +50,97 @@ def me(request):
     """
     user = request.user if request.user.is_authenticated else None
     return Response(MeSerializer({"user": user}).data)
+
+
+class PhotoUploadRequestSerializer(serializers.Serializer):
+    kind = serializers.ChoiceField(choices=services.PHOTO_KINDS)
+
+
+class PhotoUploadSignatureSerializer(serializers.Serializer):
+    public_id = serializers.CharField()
+    timestamp = serializers.IntegerField()
+    overwrite = serializers.CharField()
+    invalidate = serializers.CharField()
+    signature = serializers.CharField()
+    api_key = serializers.CharField()
+    cloud_name = serializers.CharField()
+    upload_url = serializers.URLField()
+
+
+class PhotoSerializer(serializers.Serializer):
+    kind = serializers.ChoiceField(choices=services.PHOTO_KINDS)
+    version = serializers.IntegerField(min_value=1)
+
+
+@extend_schema(
+    methods=["GET"], responses=AccountSerializer, operation_id="accounts_account_retrieve"
+)
+@extend_schema(
+    methods=["PATCH"],
+    request=AccountSerializer,
+    responses=AccountSerializer,
+    operation_id="accounts_account_update",
+)
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+def account(request):
+    """Read or edit the signed-in traveler's own details."""
+    if request.method == "PATCH":
+        serializer = AccountSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    return Response(AccountSerializer(request.user).data)
+
+
+@extend_schema(request=PhotoUploadRequestSerializer, responses=PhotoUploadSignatureSerializer)
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def photo_upload_signature(request):
+    """Sign a direct browser upload to Cloudinary; the file never passes through this service."""
+    payload = PhotoUploadRequestSerializer(data=request.data)
+    payload.is_valid(raise_exception=True)
+    signature = services.build_upload_signature(
+        user=request.user, kind=payload.validated_data["kind"]
+    )
+    return Response(PhotoUploadSignatureSerializer(signature).data)
+
+
+@extend_schema(
+    methods=["POST"],
+    request=PhotoSerializer,
+    responses=AccountSerializer,
+    operation_id="accounts_photo_set",
+)
+@extend_schema(
+    methods=["DELETE"],
+    request=PhotoUploadRequestSerializer,
+    responses=AccountSerializer,
+    operation_id="accounts_photo_clear",
+)
+@api_view(["POST", "DELETE"])
+@permission_classes([IsAuthenticated])
+def photo(request):
+    """Point the profile at an uploaded photo, or remove the current one."""
+    if request.method == "DELETE":
+        removal = PhotoUploadRequestSerializer(data=request.data)
+        removal.is_valid(raise_exception=True)
+        services.clear_profile_photo(user=request.user, kind=removal.validated_data["kind"])
+    else:
+        upload = PhotoSerializer(data=request.data)
+        upload.is_valid(raise_exception=True)
+        services.set_profile_photo(user=request.user, **upload.validated_data)
+    request.user.refresh_from_db()
+    return Response(AccountSerializer(request.user).data)
+
+
+class UploadsEnabledSerializer(serializers.Serializer):
+    photo_uploads = serializers.BooleanField()
+
+
+@extend_schema(responses=UploadsEnabledSerializer)
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def capabilities(request):
+    """What the account page can offer; photo uploads need Cloudinary to be configured."""
+    return Response(UploadsEnabledSerializer({"photo_uploads": cloudinary_enabled()}).data)
