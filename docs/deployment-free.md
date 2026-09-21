@@ -32,8 +32,14 @@ Hold expiry is housekeeping either way: `Booking.is_hold_active` is computed fro
 checkout refuses an expired hold on its own, so a missed run only leaves a booking still labelled
 "awaiting payment".
 
-**Small containers.** Sandbox services are modest, so the API runs fewer gunicorn workers
-(`WEB_CONCURRENCY=2`). If the API restarts under memory pressure, drop it to 1.
+**Small containers.** A Sandbox instance is `nf-compute-10`: 0.1 vCPU and 256 MB. Django with
+its dependencies is roughly 150 MB resident, so the API runs a single gunicorn worker
+(`WEB_CONCURRENCY=1`). Two workers exhaust the container and it is killed for running out of
+memory.
+
+The **Shell** runs inside that same container and shares the same 256 MB, so a management
+command loads Django again alongside the running server. Anything heavier than a quick query —
+`migrate`, `seed_catalog` — is better run as a **job**, which gets a container of its own.
 
 ## 0. Before the first public deploy
 
@@ -62,7 +68,7 @@ than you copying a password around.
 Create this one first: the API's variables reference its domain.
 
 1. **Create new → Service → Combined service**, pointed at the repository and branch `main`.
-2. Build type **Dockerfile**, **Dockerfile path** `/web/Dockerfile`, **build context** `/web`.
+2. Build type **Dockerfile**, **Dockerfile location** `/web/Dockerfile`, **build context** `/web`.
 3. Northflank reads the port from the Dockerfile. On port **3000**, protocol HTTP, turn
    **Public** on — this is the only public entry point. Note the DNS it assigns.
 4. Environment variables:
@@ -78,7 +84,7 @@ service's name. It is read per request by `web/src/proxy.ts`, so changing it nee
 ### API service
 
 1. Another **combined service**, same repository and branch.
-2. Build type **Dockerfile**, **Dockerfile path** `/api/Dockerfile`, **build context** `/api`.
+2. Build type **Dockerfile**, **Dockerfile location** `/api/Dockerfile`, **build context** `/api`.
 3. On port **8000**, protocol HTTP, leave **Public** **off**. The service stays on the project's
    internal network and is reachable only as `<service name>:8000`.
 4. Link the Postgres addon's secret group, and add the rest:
@@ -93,7 +99,7 @@ service's name. It is read per request by `web/src/proxy.ts`, so changing it nee
 | `DJANGO_SECURE_SSL_REDIRECT` | `false` — TLS ends at the edge and internal traffic is plain HTTP |
 | `FRONTEND_URL` | `https://<web public domain>` — Stripe's success and cancel URLs come from it |
 | `CELERY_TASK_ALWAYS_EAGER` | `true` |
-| `WEB_CONCURRENCY` | `2` |
+| `WEB_CONCURRENCY` | `1` — a second worker will not fit in 256 MB |
 | `DJANGO_ADMIN_URL` | a non-obvious path, e.g. `django-admin-9f2c/` |
 | `DEFAULT_FROM_EMAIL` | an address on a domain Mailjet has validated |
 | `MAILJET_API_KEY`, `MAILJET_SECRET_KEY` | from Mailjet |
@@ -104,20 +110,20 @@ service's name. It is read per request by `web/src/proxy.ts`, so changing it nee
 
 ### Migrations
 
-Sandbox is small enough that migrations are worth running by hand: open the API service's
-**Shell** and run `python manage.py migrate --noinput`, once now and again after any deploy that
-adds a migration. The automated equivalent is a **release flow** with a migration node ahead of
-the deployment node, which is what a production project would use.
+Run migrations as a **job** rather than from the Shell, so they get their own memory: same
+repository, **build context** `/api`, command `python manage.py migrate --noinput`. Trigger it
+now and after any deploy that adds a migration. The automated equivalent is a **release flow**
+with a migration node ahead of the deployment node, which is what a production project uses.
 
 ### Cron job
 
-**Create new → Job → Cron job**, same repository, **Dockerfile path** `/api/Dockerfile` and
+**Create new → Job → Cron job**, same repository, **Dockerfile location** `/api/Dockerfile` and
 **build context** `/api`. Schedule `*/15 * * * *`, command `python manage.py expire_holds`.
 Link the Postgres secret group and set `DJANGO_SECRET_KEY`; it needs nothing else.
 
 ## 3. After the first deploy
 
-1. **Seed the catalog.** From the API service's **Shell**: `python manage.py seed_catalog`. It uploads
+1. **Seed the catalog.** As a job, for the same reason: `python manage.py seed_catalog`. It uploads
    the photos to Cloudinary and is safe to re-run.
 2. **Google OAuth.** Add `https://<web public domain>/accounts/google/login/callback/` to the
    client's authorized redirect URIs, and publish the consent screen — an unverified app only works
@@ -127,7 +133,8 @@ Link the Postgres secret group and set `DJANGO_SECRET_KEY`; it needs nothing els
    `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
    `checkout.session.expired`, `checkout.session.async_payment_failed` and `charge.refunded`. Copy
    its signing secret into `STRIPE_WEBHOOK_SECRET` and redeploy.
-4. **Create your admin user.** `python manage.py createsuperuser`.
+4. **Create your admin user.** `python manage.py createsuperuser` from the Shell — it is small
+   enough to run there.
 
 ## 4. Verify
 
