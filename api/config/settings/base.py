@@ -9,8 +9,19 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 SECRET_KEY = env.str("DJANGO_SECRET_KEY")
 DEBUG = env.bool("DJANGO_DEBUG", default=False)
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
-CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
+
+
+def _hosts(name: str) -> list[str]:
+    """A comma-separated list, tolerant of the spaces people type after the commas.
+
+    django-environ keeps that whitespace, and a host with a leading space silently matches
+    nothing — while Django's error asks you to add a value that is already there.
+    """
+    return [item.strip() for item in env.list(name, default=[]) if item.strip()]
+
+
+ALLOWED_HOSTS = _hosts("DJANGO_ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = _hosts("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 # Every request arrives through the web app's proxy, which sends its own Host and puts the public
 # one in X-Forwarded-Host. Absolute URLs Django builds — above all the OAuth callback — have to use
