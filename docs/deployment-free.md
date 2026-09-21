@@ -8,7 +8,7 @@ This is the deployment TrailVenture uses. It costs nothing, across two providers
 | API (Django) | Northflank | Sandbox service, always on, kept private |
 | Postgres | Northflank | Sandbox database |
 | Redis | Upstash | Command quota per day |
-| Hold expiry | Northflank cron | Two free cron jobs |
+| Hold expiry | Northflank cron job | Two free cron jobs |
 
 Northflank's Sandbox tier gives two services, one database and two cron jobs, and does not sleep,
 so there are no cold starts. It does require a card on file even though nothing is charged, and
@@ -47,27 +47,48 @@ is what Django's Redis cache expects, so the URL works as-is.
 
 ## 2. Northflank project
 
-Create a project on the **Sandbox** plan, in the region closest to your visitors.
+Create a project on the **Sandbox** plan, in the region closest to your visitors. Northflank's
+own terms are used below: an **addon** is a managed database, and a **combined service** builds
+from a Git repository and deploys the result.
 
-### Postgres
+### Postgres addon
 
-Add a **PostgreSQL** addon. Once it is running, copy its **internal** connection string — the
-services reach it without going over the internet.
+Add a **PostgreSQL** addon. When it is running, open its **Connection details** — the addon
+publishes its credentials as a **secret group**, which is what the services will read rather
+than you copying a password around.
 
-### API service
+### Web service
 
-1. New **service** → **Build and deploy from a repository**, branch `main`.
-2. Build type **Dockerfile**, build context `/api`, Dockerfile path `/api/Dockerfile`.
-3. Port **8000**, protocol HTTP, and leave it **without a public domain**.
-4. Health check path `/api/v1/health/`.
-5. Environment variables:
+Create this one first: the API's variables reference its domain.
+
+1. **Create new → Service → Combined service**, pointed at the repository and branch `main`.
+2. Build type **Dockerfile**, **Dockerfile path** `/web/Dockerfile`, **build context** `/web`.
+3. Northflank reads the port from the Dockerfile. On port **3000**, protocol HTTP, turn
+   **Public** on — this is the only public entry point. Note the DNS it assigns.
+4. Environment variables:
 
 | Variable | Value |
 |---|---|
-| `DJANGO_SECRET_KEY` | a long random string, unique to this environment |
-| `DATABASE_URL` | the Postgres addon's internal connection string |
+| `API_ORIGIN` | `http://<api service name>:8000` |
+| `PORT` | `3000` |
+
+Services in a project reach each other as `service-name:port`, so `API_ORIGIN` is just the API
+service's name. It is read per request by `web/src/proxy.ts`, so changing it needs no rebuild.
+
+### API service
+
+1. Another **combined service**, same repository and branch.
+2. Build type **Dockerfile**, **Dockerfile path** `/api/Dockerfile`, **build context** `/api`.
+3. On port **8000**, protocol HTTP, leave **Public** **off**. The service stays on the project's
+   internal network and is reachable only as `<service name>:8000`.
+4. Link the Postgres addon's secret group, and add the rest:
+
+| Variable | Value |
+|---|---|
+| `DATABASE_URL` | from the Postgres addon's secret group |
 | `REDIS_URL` | the Upstash `rediss://` URL |
-| `DJANGO_ALLOWED_HOSTS` | the API's internal hostname, plus the web service's public domain |
+| `DJANGO_SECRET_KEY` | a long random string, unique to this environment |
+| `DJANGO_ALLOWED_HOSTS` | the API service's name, plus the web service's public domain |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<web public domain>` |
 | `DJANGO_SECURE_SSL_REDIRECT` | `false` — TLS ends at the edge and internal traffic is plain HTTP |
 | `FRONTEND_URL` | `https://<web public domain>` — Stripe's success and cancel URLs come from it |
@@ -77,30 +98,26 @@ services reach it without going over the internet.
 | `DEFAULT_FROM_EMAIL` | an address on a domain Mailjet has validated |
 | `MAILJET_API_KEY`, `MAILJET_SECRET_KEY` | from Mailjet |
 | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY` | from the Stripe sandbox |
-| `STRIPE_WEBHOOK_SECRET` | filled in at step 5 |
+| `STRIPE_WEBHOOK_SECRET` | filled in at step 3 |
 | `CLOUDINARY_URL` | `cloudinary://<key>:<secret>@<cloud>` |
 | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` | from Google Cloud |
 
-Migrations run before each release: set the release command to
-`python manage.py migrate --noinput`.
+### Migrations
 
-### Web service
-
-1. New **service** → same repository, build context `/web`, Dockerfile path `/web/Dockerfile`.
-2. Port **3000**, and **generate a public domain** — this is the only public entry point.
-3. Environment variables: `API_ORIGIN` = `http://<api internal hostname>:8000`, and `PORT` = `3000`.
-
-`API_ORIGIN` is read per request by `web/src/proxy.ts`, so changing it does not need a rebuild.
+Sandbox is small enough that migrations are worth running by hand: open the API service's
+**Shell** and run `python manage.py migrate --noinput`, once now and again after any deploy that
+adds a migration. The automated equivalent is a **release flow** with a migration node ahead of
+the deployment node, which is what a production project would use.
 
 ### Cron job
 
-Add a **cron job** from the same repository and Dockerfile as the API, schedule `*/15 * * * *`,
-command `python manage.py expire_holds`. Give it the same `DATABASE_URL` and `DJANGO_SECRET_KEY`;
-it needs nothing else.
+**Create new → Job → Cron job**, same repository, **Dockerfile path** `/api/Dockerfile` and
+**build context** `/api`. Schedule `*/15 * * * *`, command `python manage.py expire_holds`.
+Link the Postgres secret group and set `DJANGO_SECRET_KEY`; it needs nothing else.
 
 ## 3. After the first deploy
 
-1. **Seed the catalog.** From the API service's shell: `python manage.py seed_catalog`. It uploads
+1. **Seed the catalog.** From the API service's **Shell**: `python manage.py seed_catalog`. It uploads
    the photos to Cloudinary and is safe to re-run.
 2. **Google OAuth.** Add `https://<web public domain>/accounts/google/login/callback/` to the
    client's authorized redirect URIs, and publish the consent screen — an unverified app only works
