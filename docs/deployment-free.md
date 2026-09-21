@@ -1,118 +1,130 @@
 # Deploying on free tiers
 
-This is the deployment TrailVenture uses. It costs nothing, across four providers:
+This is the deployment TrailVenture uses. It costs nothing, across two providers:
 
 | Piece | Provider | Free tier |
 |---|---|---|
-| Web (Next.js) | Vercel | Hobby, non-commercial |
-| API (Django) | Render | Web service, sleeps after ~15 minutes idle |
-| Postgres | Neon | Autosuspends when idle |
+| Web (Next.js) | Northflank | Sandbox service, always on |
+| API (Django) | Northflank | Sandbox service, always on, kept private |
+| Postgres | Northflank | Sandbox database |
 | Redis | Upstash | Command quota per day |
+| Hold expiry | Northflank cron | Two free cron jobs |
 
-[ADR 0002](adr/0002-host-on-railway.md) records the alternative: everything on Railway for about
-US$5–10 a month, with private networking and real background processes. The code runs on either;
-what changes is configuration, not architecture.
+Northflank's Sandbox tier gives two services, one database and two cron jobs, and does not sleep,
+so there are no cold starts. It does require a card on file even though nothing is charged, and
+Northflank describes Sandbox as a tier for evaluating the platform — treat it as something that
+could change, and keep [the Railway guide](deployment-railway.md) in mind as the paid fallback.
+[ADR 0002](adr/0002-host-on-railway.md) records why.
+
+Only the web service gets a public domain. The API stays on Northflank's internal network, which
+is the arrangement `docs/architecture.md` describes: the browser only ever talks to one origin, and
+`web/src/proxy.ts` forwards Django's paths from there.
 
 ## What the free tier gives up
 
-**No always-on process.** There is no Celery worker and no beat, so:
+**No always-on worker.** There is no Celery worker and no beat process, so:
 
 - `CELERY_TASK_ALWAYS_EAGER=true` runs tasks inside the request. A verification email adds a few
   hundred milliseconds to signing up.
-- Payment-hold expiry moves to `.github/workflows/cron.yml`, which posts to
-  `/api/v1/bookings/expire-holds/` every 15 minutes with a shared key. That request also keeps the
-  API awake, which is what stops a visitor meeting a cold start.
+- Payment-hold expiry runs as a Northflank cron job calling `python manage.py expire_holds`.
 
 Hold expiry is housekeeping either way: `Booking.is_hold_active` is computed from the timestamp and
-checkout refuses an expired hold on its own, so the worst a missed run causes is a booking still
-labelled "awaiting payment".
+checkout refuses an expired hold on its own, so a missed run only leaves a booking still labelled
+"awaiting payment".
 
-**Cold starts.** A sleeping Render service takes 30–60 seconds to answer, and a suspended Neon
-branch adds a second or two on top. Warm, both are fast enough that the difference from a paid tier
-is not visible. The cron job above is what keeps them warm; if you disable it, expect the first
-visit after a quiet period to be slow.
-
-**Public API.** There is no private network between providers, so the API is reachable on the
-internet. `DJANGO_ALLOWED_HOSTS`, CSRF trusted origins and session cookies are what protect it, and
-the browser still only ever talks to the web domain.
+**Small containers.** Sandbox services are modest, so the API runs fewer gunicorn workers
+(`WEB_CONCURRENCY=2`). If the API restarts under memory pressure, drop it to 1.
 
 ## 0. Before the first public deploy
 
 Read [the pre-deploy section of the Railway guide](deployment-railway.md#0-before-the-first-public-deploy):
 the legacy key exposure and the sender-address check apply to any host.
 
-## 1. Postgres on Neon
+## 1. Redis on Upstash
 
-1. Create a project, choosing the region closest to your visitors.
-2. Copy the pooled connection string. It ends in `-pooler` and is the one to use; a serverless host
-   opens and drops connections constantly.
-3. Keep it for `DATABASE_URL` below.
+Create a database in the region closest to the Northflank one, and copy the `rediss://` URL. TLS
+is what Django's Redis cache expects, so the URL works as-is.
 
-## 2. Redis on Upstash
+## 2. Northflank project
 
-1. Create a database in the same region as the API.
-2. Copy the `rediss://` URL — TLS, which Django's Redis cache understands as-is.
+Create a project on the **Sandbox** plan, in the region closest to your visitors.
 
-## 3. API on Render
+### Postgres
 
-1. New **Web Service** from the repository, root directory `api`, runtime **Docker**.
-2. Instance type **Free**. Health check path `/api/v1/health/`.
-3. Pre-deploy command: `python manage.py migrate --noinput`.
-4. Environment variables:
+Add a **PostgreSQL** addon. Once it is running, copy its **internal** connection string — the
+services reach it without going over the internet.
+
+### API service
+
+1. New **service** → **Build and deploy from a repository**, branch `main`.
+2. Build type **Dockerfile**, build context `/api`, Dockerfile path `/api/Dockerfile`.
+3. Port **8000**, protocol HTTP, and leave it **without a public domain**.
+4. Health check path `/api/v1/health/`.
+5. Environment variables:
 
 | Variable | Value |
 |---|---|
 | `DJANGO_SECRET_KEY` | a long random string, unique to this environment |
-| `DATABASE_URL` | the Neon pooled connection string |
+| `DATABASE_URL` | the Postgres addon's internal connection string |
 | `REDIS_URL` | the Upstash `rediss://` URL |
-| `DJANGO_ALLOWED_HOSTS` | `<api>.onrender.com,<web>.vercel.app` |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<web>.vercel.app` |
-| `DJANGO_SECURE_SSL_REDIRECT` | `false` — Render terminates TLS, and its health check would otherwise loop |
-| `FRONTEND_URL` | `https://<web>.vercel.app` — Stripe's success and cancel URLs come from it |
+| `DJANGO_ALLOWED_HOSTS` | the API's internal hostname, plus the web service's public domain |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<web public domain>` |
+| `DJANGO_SECURE_SSL_REDIRECT` | `false` — TLS ends at the edge and internal traffic is plain HTTP |
+| `FRONTEND_URL` | `https://<web public domain>` — Stripe's success and cancel URLs come from it |
 | `CELERY_TASK_ALWAYS_EAGER` | `true` |
-| `CRON_SECRET` | a long random string, also stored as a repository secret |
+| `WEB_CONCURRENCY` | `2` |
 | `DJANGO_ADMIN_URL` | a non-obvious path, e.g. `django-admin-9f2c/` |
 | `DEFAULT_FROM_EMAIL` | an address on a domain Mailjet has validated |
 | `MAILJET_API_KEY`, `MAILJET_SECRET_KEY` | from Mailjet |
 | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY` | from the Stripe sandbox |
-| `STRIPE_WEBHOOK_SECRET` | filled in at step 6 |
+| `STRIPE_WEBHOOK_SECRET` | filled in at step 5 |
 | `CLOUDINARY_URL` | `cloudinary://<key>:<secret>@<cloud>` |
 | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` | from Google Cloud |
 
-## 4. Web on Vercel
+Migrations run before each release: set the release command to
+`python manage.py migrate --noinput`.
 
-1. Import the repository, root directory `web`, framework **Next.js**.
-2. Environment variable `API_ORIGIN` = `https://<api>.onrender.com`.
+### Web service
 
-`API_ORIGIN` is read per request by `web/src/proxy.ts`, so it is a runtime variable. Changing it
-does not need a rebuild.
+1. New **service** → same repository, build context `/web`, Dockerfile path `/web/Dockerfile`.
+2. Port **3000**, and **generate a public domain** — this is the only public entry point.
+3. Environment variables: `API_ORIGIN` = `http://<api internal hostname>:8000`, and `PORT` = `3000`.
 
-## 5. Scheduled jobs
+`API_ORIGIN` is read per request by `web/src/proxy.ts`, so changing it does not need a rebuild.
 
-In the repository settings add the variable `API_URL` (`https://<api>.onrender.com`) and the secret
-`CRON_SECRET`, matching the API's. `.github/workflows/cron.yml` skips itself until `API_URL` is
-set. Run it once by hand from the Actions tab to confirm it returns `{"expired": 0}`.
+### Cron job
 
-## 6. After the first deploy
+Add a **cron job** from the same repository and Dockerfile as the API, schedule `*/15 * * * *`,
+command `python manage.py expire_holds`. Give it the same `DATABASE_URL` and `DJANGO_SECRET_KEY`;
+it needs nothing else.
 
-1. **Seed the catalog.** From the Render shell: `python manage.py seed_catalog`. It uploads the
-   photos to Cloudinary and is safe to re-run.
-2. **Google OAuth.** Add `https://<web>.vercel.app/accounts/google/login/callback/` to the client's
-   authorized redirect URIs, and publish the consent screen — an unverified app only works for
-   accounts listed as testers.
+## 3. After the first deploy
+
+1. **Seed the catalog.** From the API service's shell: `python manage.py seed_catalog`. It uploads
+   the photos to Cloudinary and is safe to re-run.
+2. **Google OAuth.** Add `https://<web public domain>/accounts/google/login/callback/` to the
+   client's authorized redirect URIs, and publish the consent screen — an unverified app only works
+   for accounts listed as testers.
 3. **Stripe webhook.** Create an endpoint at
-   `https://<web>.vercel.app/api/v1/payments/stripe/webhook/` subscribed to
+   `https://<web public domain>/api/v1/payments/stripe/webhook/` subscribed to
    `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
    `checkout.session.expired`, `checkout.session.async_payment_failed` and `charge.refunded`. Copy
    its signing secret into `STRIPE_WEBHOOK_SECRET` and redeploy.
 4. **Create your admin user.** `python manage.py createsuperuser`.
 
-## 7. Verify
+## 4. Verify
 
-- `https://<web>.vercel.app/api/v1/health/` returns `{"status":"ok","database":"ok","cache":"ok"}`,
-  which proves the proxy, Neon and Upstash are all reachable.
+- `https://<web public domain>/api/v1/health/` returns `{"status":"ok","database":"ok","cache":"ok"}`,
+  which proves the proxy, Postgres and Upstash are all reachable.
 - The home page lists destinations, with photos served from Cloudinary.
 - A booking reaches Stripe Checkout, and paying with `4242 4242 4242 4242` flips the success page
   from "Confirming your payment" to "Booking Successful!" once the webhook lands.
 - Signing up delivers a verification code.
-- The Actions tab shows the scheduled job succeeding.
+- The cron job's first run logs `Expired 0 stale booking hold(s).`
+
+## Hosts without a scheduler
+
+Somewhere with no cron (a free Render service, say), `.github/workflows/cron.yml` does the same job
+over HTTP: it posts to `/api/v1/bookings/expire-holds/` with a shared `CRON_SECRET`, which also
+keeps a sleeping service awake. Set the repository variable `API_URL` and the secret `CRON_SECRET`
+to enable it; it skips itself until then. On Northflank it is redundant — the cron job is enough.

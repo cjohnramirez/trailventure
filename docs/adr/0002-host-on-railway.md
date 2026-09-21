@@ -23,16 +23,17 @@ Run everything as one Railway project, with each service built from its Dockerfi
 
 ## Amendment (2026-09-21)
 
-TrailVenture deploys on free tiers instead: Vercel, Render, Neon and Upstash, documented in
-[deployment-free.md](../deployment-free.md). The project is a portfolio piece and the owner
-declined a monthly cost for it.
+TrailVenture deploys on free tiers instead: Northflank for the web service, the API and
+Postgres, with Redis on Upstash, documented in [deployment-free.md](../deployment-free.md).
+The project is a portfolio piece and the owner declined a monthly cost for it.
 
 The reasoning above still holds on its own terms — serverless cannot host a Celery worker or
 beat. What changed is that those turned out not to be required. Emails run inside the request
-(`CELERY_TASK_ALWAYS_EAGER`), and hold expiry runs from a GitHub Actions schedule against a
-key-protected endpoint, because `Booking.is_hold_active` is computed from the timestamp and
-checkout refuses an expired hold without any background process having run.
+(`CELERY_TASK_ALWAYS_EAGER`), and hold expiry runs as a scheduled `manage.py expire_holds`,
+because `Booking.is_hold_active` is computed from the timestamp and checkout refuses an expired
+hold without any background process having run.
 
-The cost is cold starts: a sleeping Render service takes 30–60 seconds to answer. The same
-scheduled request that expires holds keeps it warm. The Railway path stays documented and its
-service configs stay in the repository, because moving back is a configuration change.
+Northflank's Sandbox tier does not sleep, so there are no cold starts; what it costs instead is
+small containers and a tier its own documentation frames as evaluation rather than production.
+The Railway path stays documented and its service configs stay in the repository, because
+moving back is a configuration change.
