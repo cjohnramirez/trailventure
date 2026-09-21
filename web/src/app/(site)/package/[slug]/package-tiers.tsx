@@ -128,7 +128,7 @@ function AmenityList({
   return (
     <section className="flex flex-col gap-3">
       <div>
-        <h3 className="type-body font-semibold">{title}</h3>
+        <h2 className="type-body font-semibold">{title}</h2>
         <p className="type-ui text-muted-foreground">{description}</p>
       </div>
       {items.length > 0 ? (
@@ -193,7 +193,7 @@ function Itinerary({ tier }: { tier?: Tier }) {
                     ) : null}
                   </div>
                   <div className="flex flex-col gap-1">
-                    <h4 className="type-body font-semibold">{stop.title}</h4>
+                    <h3 className="type-body font-semibold">{stop.title}</h3>
                     <p className="flex items-center gap-1.5 type-ui text-muted-foreground">
                       <MapPinIcon aria-hidden="true" className="size-4.5 shrink-0" />
                       {stop.location}

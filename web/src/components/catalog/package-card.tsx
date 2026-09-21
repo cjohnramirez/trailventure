@@ -32,7 +32,7 @@ export function PackageCard({ pkg }: { pkg: PackageCardData }) {
         </div>
         <div className="flex flex-1 flex-col gap-3 rounded-xl border p-4">
           <div className="flex flex-col gap-1.5">
-            <h3 className="line-clamp-2 type-card-title">{pkg.name}</h3>
+            <h2 className="line-clamp-2 type-card-title">{pkg.name}</h2>
             <p className="inline-flex items-center gap-1.5 type-ui text-muted-foreground">
               <MapPinIcon aria-hidden="true" className="size-4.5 shrink-0" />
               <span className="truncate">

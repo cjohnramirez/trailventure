@@ -17,6 +17,9 @@ export function Hero({ destinations }: { destinations: DestinationOption[] }) {
           alt="An aerial view of the coastal town of El Nido in the Philippines"
           fill
           priority
+          // Next preloads a priority image but doesn't mark it high priority; without this the
+          // browser discovers the LCP image late.
+          fetchPriority="high"
           sizes="100vw"
           className="object-cover"
         />

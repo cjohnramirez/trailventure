@@ -44,6 +44,8 @@ export function EarlyAccessBanner() {
             className="font-medium whitespace-nowrap underline underline-offset-4"
           >
             Learn more
+            {/* Keeps the visible banner short while the link still reads descriptively. */}
+            <span className="sr-only"> about TrailVenture’s early access</span>
           </Link>
         </p>
         <Button variant="ghost" size="icon" onClick={dismiss} aria-label="Dismiss notice">
