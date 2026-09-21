@@ -1,0 +1,8 @@
+{% extends "account/email/base_message.txt" %}
+{% block content %}{% autoescape off %}{% if code %}Enter this code to verify your email address:
+
+    {{ code }}
+
+The code expires in 15 minutes.{% else %}Confirm your email address: {{ activate_url }}{% endif %}
+
+If you didn't create a TrailVenture account, you can ignore this email.{% endautoescape %}{% endblock content %}

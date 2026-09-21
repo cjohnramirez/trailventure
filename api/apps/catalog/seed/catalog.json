@@ -1,0 +1,561 @@
+{
+  "source": "Imported from the original TrailVenture data (legacy-v1), without user data.",
+  "fees": {
+    "tax_percent": "12.00",
+    "site_fee_percent": "20.00"
+  },
+  "destinations": [
+    {
+      "slug": "siargao",
+      "name": "Siargao",
+      "region": "Surigao del Norte",
+      "country": "Philippines",
+      "description": "Known as the surfing capital of the Philippines.",
+      "featured_order": 1,
+      "alt_text": "Siargao, Surigao del Norte",
+      "credit_name": "Jarno Colijn",
+      "credit_url": "https://unsplash.com/@jarnocolijn?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/siargao.webp"
+    },
+    {
+      "slug": "banaue",
+      "name": "Banaue",
+      "region": "Ifugao",
+      "country": "Philippines",
+      "description": "A UNESCO heritage site, this highland destination showcases breathtaking landscapes and rich history.",
+      "featured_order": 2,
+      "alt_text": "Banaue, Ifugao",
+      "credit_name": "Doan Tuan",
+      "credit_url": "https://unsplash.com/@danny_pham93?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/banaue.webp"
+    },
+    {
+      "slug": "palawan",
+      "name": "Palawan",
+      "region": "MIMAROPA",
+      "country": "Philippines",
+      "description": "Palawan is a tropical paradise with crystal-clear waters and diverse marine life.",
+      "featured_order": 3,
+      "alt_text": "Palawan, MIMAROPA",
+      "credit_name": "Cris Tagupa",
+      "credit_url": "https://unsplash.com/@cjtagupa?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/palawan.webp"
+    },
+    {
+      "slug": "mount-fuji",
+      "name": "Mount Fuji",
+      "region": "Honshu",
+      "country": "Japan",
+      "description": "Japans iconic snow-capped peak, a sacred site and a favorite for climbers and photographers.",
+      "featured_order": 4,
+      "alt_text": "Mount Fuji, Honshu",
+      "credit_name": "Filiz Elaerts",
+      "credit_url": "https://unsplash.com/@filizelaerts?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/mount-fuji.webp"
+    },
+    {
+      "slug": "chocolate-hills",
+      "name": "Chocolate Hills",
+      "region": "Bohol",
+      "country": "Philippines",
+      "description": "Consists of over 1,000 cone-shaped hills that turn brown during the dry season.",
+      "featured_order": 5,
+      "alt_text": "Chocolate Hills, Bohol",
+      "credit_name": "Geio Tischler",
+      "credit_url": "https://unsplash.com/@oww?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/chocolate-hills.webp"
+    },
+    {
+      "slug": "louvre-museum",
+      "name": "Louvre Museum",
+      "region": "le-de-France (Paris)",
+      "country": "France",
+      "description": "One of the world's most famous museums, a global center for art and history.",
+      "featured_order": 6,
+      "alt_text": "Louvre Museum, le-de-France (Paris)",
+      "credit_name": "Hongbin",
+      "credit_url": "https://unsplash.com/@hbsun2013?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/louvre-museum.webp"
+    },
+    {
+      "slug": "niagara-falls",
+      "name": "Niagara Falls",
+      "region": "Border of Ontario and New York",
+      "country": "Canada and United States",
+      "description": "Niagara Falls offers breathtaking views and boat tours near the cascading waters.",
+      "featured_order": null,
+      "alt_text": "Niagara Falls, Border of Ontario and New York",
+      "credit_name": "Stephen Crane",
+      "credit_url": "https://unsplash.com/@cranesp?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/niagara-falls.webp"
+    },
+    {
+      "slug": "grand-canyon",
+      "name": "Grand Canyon",
+      "region": "Arizona",
+      "country": "United States",
+      "description": "One of the worlds most spectacular mountain landscapes.",
+      "featured_order": null,
+      "alt_text": "Grand Canyon, Arizona",
+      "credit_name": "Omer Nezih Gerek",
+      "credit_url": "https://unsplash.com/@ongerek?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/grand-canyon.webp"
+    },
+    {
+      "slug": "sydney-opera-house",
+      "name": "Sydney Opera House",
+      "region": "New South Wales",
+      "country": "Australia",
+      "description": "A world-famous architectural marvel.",
+      "featured_order": null,
+      "alt_text": "Sydney Opera House, New South Wales",
+      "credit_name": "Jasper Wilde",
+      "credit_url": "https://unsplash.com/@jasperwilde?utm_source=trailventure&utm_medium=referral",
+      "image": "destinations/sydney-opera-house.webp"
+    }
+  ],
+  "packages": [
+    {
+      "slug": "siargao-island-surf-nature-retreat",
+      "name": "Siargao Island Surf & Nature Retreat",
+      "destination": "siargao",
+      "description": "Escape to the surfing capital of the Philippines and ride the world-famous Cloud 9 waves. Beyond the surf, explore Siargaos stunning lagoons, secret beaches, and palm tree-lined roads. This package includes a guided island-hopping tour, visits to Sugba Lagoon and Magpupungko Rock Pools, and a taste of Siargaos laid-back nightlife. Perfect for both thrill-seekers and nature lovers.",
+      "address": "General Luna, Siargao Island, Surigao del Norte, Philippines",
+      "amenities": [
+        "Surfboard rentals",
+        "Island-hopping tour",
+        "Beachfront accommodation"
+      ],
+      "images": [
+        {
+          "alt_text": "Siargao Island Surf & Nature Retreat: photo 1",
+          "credit_name": "Andreea Petruti",
+          "credit_url": "https://unsplash.com/@roamaniacs?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/siargao-island-surf-nature-retreat-1.webp"
+        },
+        {
+          "alt_text": "Siargao Island Surf & Nature Retreat: photo 2",
+          "credit_name": "Darwin Trinidad",
+          "credit_url": "https://unsplash.com/@darwintrinidad?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/siargao-island-surf-nature-retreat-2.webp"
+        },
+        {
+          "alt_text": "Siargao Island Surf & Nature Retreat: photo 3",
+          "credit_name": "Alejandro Luengo",
+          "credit_url": "https://unsplash.com/@aluengo91?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/siargao-island-surf-nature-retreat-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "Budget Surfers Delight",
+          "description": "Perfect for budget travelers looking to experience Siargaos famous surf spots and island vibes. Includes hostel lodging and guided surf lessons for beginners.",
+          "price": 1200000,
+          "amenities": [
+            "Shared hostel stay",
+            "Beginner surf lessons"
+          ],
+          "itinerary": [
+            {
+              "day": 1,
+              "position": 1,
+              "title": "Cloud 9 Surfing Spot",
+              "location": "General Luna, Siargao",
+              "description": "Experience the world-famous Cloud 9 waves with beginner-friendly surf lessons guided by professional instructors.",
+              "start_time": "08:00:00",
+              "end_time": "11:00:00"
+            },
+            {
+              "day": 1,
+              "position": 2,
+              "title": "Magpupungko Rock Pools",
+              "location": "Pilar, Siargao",
+              "description": "Swim in crystal-clear tidal pools surrounded by stunning rock formations, best visited during low tide.",
+              "start_time": "13:00:00",
+              "end_time": "15:30:00"
+            },
+            {
+              "day": 1,
+              "position": 3,
+              "title": "Siargao Night Market",
+              "location": "General Luna, Siargao",
+              "description": "Enjoy delicious local street food and fresh seafood at Siargaos vibrant night market, a must-visit for budget travelers.",
+              "start_time": "18:00:00",
+              "end_time": "20:00:00"
+            }
+          ]
+        },
+        {
+          "name": "Luxury Beachfront Retreat",
+          "description": "A premium experience for travelers who want a relaxing beachfront stay with personalized island tours and exclusive surfing spots.",
+          "price": 2500000,
+          "amenities": [
+            "Private beachfront villa",
+            "Personal tour guide"
+          ],
+          "itinerary": [
+            {
+              "day": 1,
+              "position": 1,
+              "title": "Sugba Lagoon",
+              "location": "Del Carmen, Siargao",
+              "description": "Paddle through emerald-green waters surrounded by lush mangroves, with options for kayaking, paddleboarding, and diving.",
+              "start_time": "09:00:00",
+              "end_time": "12:00:00"
+            },
+            {
+              "day": 1,
+              "position": 2,
+              "title": "Daku Island Private Beach",
+              "location": "Daku Island, Siargao",
+              "description": "Relax on an exclusive white-sand beach with a private lunch setup featuring fresh seafood and tropical fruits.",
+              "start_time": "13:30:00",
+              "end_time": "16:00:00"
+            },
+            {
+              "day": 1,
+              "position": 3,
+              "title": "Sunset at Pacifico Beach",
+              "location": "Pacifico, Siargao",
+              "description": "Witness a breathtaking sunset at Pacifico Beach, a peaceful and less crowded spot perfect for unwinding.",
+              "start_time": "17:30:00",
+              "end_time": "19:00:00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "banaue-rice-terraces-heritage-tour",
+      "name": "Banaue Rice Terraces Heritage Tour",
+      "destination": "banaue",
+      "description": "Discover the breathtaking beauty of the Banaue Rice Terraces, a UNESCO World Heritage Site and one of the greatest engineering marvels of ancient times. Immerse yourself in the rich culture of the Ifugao people as you explore the centuries-old terraces carved into the mountains. Visit the Batad and Bangaan viewpoints for panoramic views of the lush green landscape. Enjoy a cultural experience by staying in an Ifugao hut and witnessing traditional dances. Hike through the scenic trails and take in the fresh mountain air for an unforgettable nature retreat.",
+      "address": "Banaue, Ifugao, Philippines",
+      "amenities": [],
+      "images": [
+        {
+          "alt_text": "Banaue Rice Terraces Heritage Tour: photo 1",
+          "credit_name": "Arphy",
+          "credit_url": "https://unsplash.com/@ar__?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/banaue-rice-terraces-heritage-tour-1.webp"
+        },
+        {
+          "alt_text": "Banaue Rice Terraces Heritage Tour: photo 2",
+          "credit_name": "Omri D. Cohen",
+          "credit_url": "https://unsplash.com/@omridcohen?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/banaue-rice-terraces-heritage-tour-2.webp"
+        },
+        {
+          "alt_text": "Banaue Rice Terraces Heritage Tour: photo 3",
+          "credit_name": "Xiaoyang Ou",
+          "credit_url": "https://unsplash.com/@odamao?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/banaue-rice-terraces-heritage-tour-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "Cultural Explorer",
+          "description": "Immerse yourself in the culture of the Ifugao people while staying in a traditional hut and participating in local customs.",
+          "price": 850000,
+          "amenities": [],
+          "itinerary": []
+        },
+        {
+          "name": "Comfort Trekker",
+          "description": "Enjoy the beauty of Banaue with the comfort of modern accommodations and a personal guide for an in-depth trekking experience.",
+          "price": 1500000,
+          "amenities": [],
+          "itinerary": []
+        }
+      ]
+    },
+    {
+      "slug": "palawan-island-paradise",
+      "name": "Palawan Island Paradise",
+      "destination": "palawan",
+      "description": "Palawan, known as the \"Last Frontier of the Philippines,\" is home to pristine beaches, crystal-clear lagoons, and breathtaking limestone cliffs. Explore the Underground River, a UNESCO World Heritage Site, and witness its stunning rock formations. Take a boat tour to El Nido's enchanting islands, where hidden lagoons and white-sand beaches await. Snorkel in the rich marine biodiversity of Corons Twin Lagoon and Kayangan Lake. Indulge in fresh seafood and relax in luxurious beach resorts for the ultimate island getaway.",
+      "address": "Palawan, Philippines",
+      "amenities": [],
+      "images": [
+        {
+          "alt_text": "Palawan Island Paradise: photo 1",
+          "credit_name": "Roman Lezhnin",
+          "credit_url": "https://unsplash.com/@i_am_5_percent?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/palawan-island-paradise-1.webp"
+        },
+        {
+          "alt_text": "Palawan Island Paradise: photo 2",
+          "credit_name": "Mario von Rotz",
+          "credit_url": "https://unsplash.com/@mariovr?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/palawan-island-paradise-2.webp"
+        },
+        {
+          "alt_text": "Palawan Island Paradise: photo 3",
+          "credit_name": "Jules Bassoleil",
+          "credit_url": "https://unsplash.com/@julesbss?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/palawan-island-paradise-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "Backpackers Island Escape",
+          "description": "An affordable package designed for backpackers who want to explore Palawans stunning islands on a budget.",
+          "price": 1300000,
+          "amenities": [],
+          "itinerary": []
+        },
+        {
+          "name": "Luxury Seaside Getaway",
+          "description": "A luxurious stay in a top-rated beachfront resort with a private island-hopping experience for a truly unforgettable escape.",
+          "price": 3000000,
+          "amenities": [],
+          "itinerary": []
+        }
+      ]
+    },
+    {
+      "slug": "mount-fuji-climbing-expedition",
+      "name": "Mount Fuji Climbing Expedition",
+      "destination": "mount-fuji",
+      "description": "Embark on an unforgettable journey to Japans iconic Mount Fuji, the countrys highest and most picturesque peak. Experience the thrill of hiking along the Yoshida Trail and witness breathtaking sunrise views from the summit. Visit the Fuji Five Lakes region, where serene landscapes provide a perfect escape. Enjoy a relaxing dip in a traditional Japanese onsen (hot spring) after a long day of trekking. Capture postcard-perfect moments at Chureito Pagoda with Mount Fuji in the background.",
+      "address": "Mount Fuji, Honshu, Japan",
+      "amenities": [],
+      "images": [
+        {
+          "alt_text": "Mount Fuji Climbing Expedition: photo 1",
+          "credit_name": "Tommy Silver",
+          "credit_url": "https://unsplash.com/@tommysvr?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/mount-fuji-climbing-expedition-1.webp"
+        },
+        {
+          "alt_text": "Mount Fuji Climbing Expedition: photo 2",
+          "credit_name": "Max Bender",
+          "credit_url": "https://unsplash.com/@maxwbender?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/mount-fuji-climbing-expedition-2.webp"
+        },
+        {
+          "alt_text": "Mount Fuji Climbing Expedition: photo 3",
+          "credit_name": "Sora Sagano",
+          "credit_url": "https://unsplash.com/@sorasagano?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/mount-fuji-climbing-expedition-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "Hikers Challenge",
+          "description": "Designed for adventure seekers looking to conquer Mount Fuji with the guidance of expert mountaineers.",
+          "price": 2200000,
+          "amenities": [],
+          "itinerary": []
+        },
+        {
+          "name": "Mount Fuji Climbing Expedition",
+          "description": "A relaxed and scenic journey to Mount Fuji with personalized assistance and a comfortable stay in a luxury hot spring resort.",
+          "price": 3500000,
+          "amenities": [],
+          "itinerary": []
+        }
+      ]
+    },
+    {
+      "slug": "bohols-chocolate-hills-adventure",
+      "name": "Bohols Chocolate Hills Adventure",
+      "destination": "chocolate-hills",
+      "description": "Witness one of the Philippines most unique natural wonders, the Chocolate Hills, a collection of over 1,200 cone-shaped hills. Explore the scenic viewpoints and marvel at the breathtaking panoramic landscape. Enjoy an exciting ATV ride through the Chocolate Hills Adventure Park. Cruise along the Loboc River while dining on delicious Filipino cuisine. Meet the worlds smallest primate, the tarsier, at a local sanctuary.",
+      "address": "Bohol, Philippines",
+      "amenities": [],
+      "images": [
+        {
+          "alt_text": "Bohols Chocolate Hills Adventure: photo 1",
+          "credit_name": "Jakob Owens",
+          "credit_url": "https://unsplash.com/@jakobowens1?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/bohols-chocolate-hills-adventure-1.webp"
+        },
+        {
+          "alt_text": "Bohols Chocolate Hills Adventure: photo 2",
+          "credit_name": "Bo Zhang",
+          "credit_url": "https://unsplash.com/@bozh_ntu?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/bohols-chocolate-hills-adventure-2.webp"
+        },
+        {
+          "alt_text": "Bohols Chocolate Hills Adventure: photo 3",
+          "credit_name": "Aldrin Brosas",
+          "credit_url": "https://unsplash.com/@aldrinooow?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/bohols-chocolate-hills-adventure-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "Thrill Seekers Ride",
+          "description": "Perfect for adventure lovers who want to explore the Chocolate Hills up close with an extended ATV ride and an exciting zip-line experience.",
+          "price": 950000,
+          "amenities": [],
+          "itinerary": []
+        },
+        {
+          "name": "Nature & Culture Escape",
+          "description": "A relaxed yet immersive experience that combines Bohols stunning natural landscapes with cultural insights and local wildlife encounters.",
+          "price": 1500000,
+          "amenities": [],
+          "itinerary": []
+        }
+      ]
+    },
+    {
+      "slug": "niagara-falls-majestic-getaway",
+      "name": "Niagara Falls Majestic Getaway",
+      "destination": "niagara-falls",
+      "description": "Experience the thundering beauty of Niagara Falls, one of the most famous waterfalls in the world. Take a boat ride on the Maid of the Mist and feel the refreshing spray of the falls up close. Stroll along the Niagara Parkway for stunning views of Horseshoe Falls, American Falls, and Bridal Veil Falls. Visit the nearby Clifton Hill district for entertainment, dining, and attractions. End your trip with a scenic helicopter ride for a birds-eye view of the spectacular cascades.",
+      "address": "Niagara Falls, Ontario, Canada",
+      "amenities": [],
+      "images": [
+        {
+          "alt_text": "Niagara Falls Majestic Getaway: photo 1",
+          "credit_name": "Kalen Emsley",
+          "credit_url": "https://unsplash.com/@kalenemsley?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/niagara-falls-majestic-getaway-1.webp"
+        },
+        {
+          "alt_text": "Niagara Falls Majestic Getaway: photo 2",
+          "credit_name": "Edward Koorey",
+          "credit_url": "https://unsplash.com/@edwardkoorey?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/niagara-falls-majestic-getaway-2.webp"
+        },
+        {
+          "alt_text": "Niagara Falls Majestic Getaway: photo 3",
+          "credit_name": "Sergey Pesterev",
+          "credit_url": "https://unsplash.com/@sickle?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/niagara-falls-majestic-getaway-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "Falls Explorer Package",
+          "description": "Experience the raw power of Niagara Falls up close with a thrilling boat tour and stunning panoramic views from the observation deck.",
+          "price": 4500000,
+          "amenities": [],
+          "itinerary": []
+        },
+        {
+          "name": "Luxury Falls Retreat",
+          "description": "A premium experience with breathtaking aerial views of the falls, a luxurious hotel stay, and exclusive guided tours.",
+          "price": 8500000,
+          "amenities": [],
+          "itinerary": []
+        }
+      ]
+    },
+    {
+      "slug": "sydney-opera-house-city-escape",
+      "name": "Sydney Opera House & City Escape",
+      "destination": "sydney-opera-house",
+      "description": "Discover the vibrant city of Sydney, home to the iconic Sydney Opera House and the picturesque Sydney Harbour. Take a guided tour inside the Opera House and learn about its fascinating history and architecture. Stroll along the Sydney Harbour Bridge for stunning views of the city skyline. Explore the beautiful Bondi Beach and take a scenic coastal walk. Enjoy a sunset dinner cruise along the harbour for a magical end to your trip.",
+      "address": "Sydney, Australia",
+      "amenities": [],
+      "images": [
+        {
+          "alt_text": "Sydney Opera House & City Escape: photo 1",
+          "credit_name": "Caleb",
+          "credit_url": "https://unsplash.com/@calebrussell?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/sydney-opera-house-city-escape-1.webp"
+        },
+        {
+          "alt_text": "Sydney Opera House & City Escape: photo 2",
+          "credit_name": "Tyler Duston",
+          "credit_url": "https://unsplash.com/@dustont12?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/sydney-opera-house-city-escape-2.webp"
+        },
+        {
+          "alt_text": "Sydney Opera House & City Escape: photo 3",
+          "credit_name": "Dean Bennett",
+          "credit_url": "https://unsplash.com/@deanbennett?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/sydney-opera-house-city-escape-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "City Explorer",
+          "description": "A budget-friendly way to experience the best of Sydney, including access to public transport and top attractions.",
+          "price": 3000000,
+          "amenities": [],
+          "itinerary": []
+        },
+        {
+          "name": "Luxury Harbour Experience",
+          "description": "A high-end experience featuring a stay in a luxury hotel and a sunset cruise with fine dining and spectacular views of Sydney Harbour.",
+          "price": 6000000,
+          "amenities": [],
+          "itinerary": []
+        }
+      ]
+    },
+    {
+      "slug": "grand-canyon-adventure-trek",
+      "name": "Grand Canyon Adventure Trek",
+      "destination": "grand-canyon",
+      "description": "Witness the awe-inspiring beauty of the Grand Canyon, one of the Seven Natural Wonders of the World. Hike along the South Rim and explore breathtaking viewpoints like Mather Point and Desert View. Experience a thrilling whitewater rafting trip along the Colorado River. Take a helicopter tour for a stunning aerial perspective of the canyons vast landscapes. Enjoy a night under the stars at a scenic camping site for an unforgettable adventure.",
+      "address": "Grand Canyon National Park, Arizona, USA",
+      "amenities": [],
+      "images": [
+        {
+          "alt_text": "Grand Canyon Adventure Trek: photo 1",
+          "credit_name": "Sonaal Bangera",
+          "credit_url": "https://unsplash.com/@sonaal?utm_source=trailventure&utm_medium=referral",
+          "position": 0,
+          "image": "packages/grand-canyon-adventure-trek-1.webp"
+        },
+        {
+          "alt_text": "Grand Canyon Adventure Trek: photo 2",
+          "credit_name": "Jennifer Rogalla",
+          "credit_url": "https://unsplash.com/@vioiola?utm_source=trailventure&utm_medium=referral",
+          "position": 1,
+          "image": "packages/grand-canyon-adventure-trek-2.webp"
+        },
+        {
+          "alt_text": "Grand Canyon Adventure Trek: photo 3",
+          "credit_name": "Stig-Ove Pettersen",
+          "credit_url": "https://unsplash.com/@stiigern?utm_source=trailventure&utm_medium=referral",
+          "position": 2,
+          "image": "packages/grand-canyon-adventure-trek-3.webp"
+        }
+      ],
+      "tiers": [
+        {
+          "name": "Adventurers Camp",
+          "description": "Ideal for those who love outdoor adventures, featuring an immersive camping and guided trekking experience.",
+          "price": 4000000,
+          "amenities": [],
+          "itinerary": []
+        },
+        {
+          "name": "Deluxe Canyon Retreat",
+          "description": "Experience the Grand Canyon in comfort with a luxurious stay and a breathtaking helicopter tour over the canyon.",
+          "price": 7000000,
+          "amenities": [],
+          "itinerary": []
+        }
+      ]
+    }
+  ]
+}

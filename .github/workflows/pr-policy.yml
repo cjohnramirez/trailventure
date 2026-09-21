@@ -1,0 +1,51 @@
+name: PR policy
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [dev, main]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            refactor
+            perf
+            chore
+            docs
+            test
+            ci
+            build
+            release
+          requireScope: false
+
+  branch-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce feature -> dev -> main
+        env:
+          HEAD: ${{ github.head_ref }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          echo "PR: $HEAD -> $BASE"
+          if [ "$BASE" = "main" ]; then
+            if [ "$HEAD" != "dev" ] && [[ "$HEAD" != hotfix/* ]]; then
+              echo "::error::Only dev (release) or hotfix/* branches may target main."
+              exit 1
+            fi
+          elif [ "$BASE" = "dev" ]; then
+            if [ "$HEAD" != "main" ] && ! [[ "$HEAD" =~ ^(feat|fix|refactor|perf|chore|docs|test|ci|build)/[a-z0-9._-]+$ ]]; then
+              echo "::error::Branches targeting dev must be named <type>/<kebab-name>, e.g. feat/booking-quote."
+              exit 1
+            fi
+          fi

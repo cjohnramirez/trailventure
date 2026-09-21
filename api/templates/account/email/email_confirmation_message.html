@@ -1,0 +1,11 @@
+{% extends "account/email/base_message.html" %}
+{% block content %}
+{% if code %}
+<p style="margin:0 0 16px;">Enter this code to verify your email address:</p>
+<p style="margin:0 0 16px;font-size:32px;font-weight:700;letter-spacing:8px;font-family:'Courier New',monospace;background:#f4f4f5;border-radius:12px;padding:16px;text-align:center;">{{ code }}</p>
+<p style="margin:0 0 16px;">The code expires in 15 minutes.</p>
+{% else %}
+<p style="margin:0 0 16px;"><a href="{{ activate_url }}" style="color:#0f766e;">Confirm your email address</a></p>
+{% endif %}
+<p style="margin:0;color:#65656c;">If you didn't create a TrailVenture account, you can ignore this email.</p>
+{% endblock content %}
