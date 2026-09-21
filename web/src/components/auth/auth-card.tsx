@@ -1,4 +1,5 @@
-import Image from "next/image";
+import { CatalogImage } from "@/components/app/catalog-image";
+import { SITE_PHOTOS } from "@/lib/site-photos";
 import Link from "next/link";
 
 import { PhotoCredit } from "@/components/app/photo-credit";
@@ -16,8 +17,8 @@ export function AuthCard({ title, description, children, footer }: AuthCardProps
     <div className="grid w-full max-w-4xl overflow-hidden rounded-2xl border bg-card p-3 md:grid-cols-2">
       {/* The original hides the photo on phones. */}
       <div className="relative hidden min-h-144 overflow-hidden rounded-xl md:block">
-        <Image
-          src="/images/site/auth.webp"
+        <CatalogImage
+          src={SITE_PHOTOS.auth}
           alt="A hiker walking a mountain trail toward distant peaks"
           fill
           sizes="(min-width: 768px) 28rem, 0px"

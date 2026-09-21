@@ -1,5 +1,6 @@
 import { CalendarIcon, SearchIcon, ShieldIcon, UserIcon, type LucideIcon } from "lucide-react";
-import Image from "next/image";
+import { CatalogImage } from "@/components/app/catalog-image";
+import { SITE_PHOTOS } from "@/lib/site-photos";
 
 import { PhotoCredit } from "@/components/app/photo-credit";
 import { SectionHeading } from "@/components/app/section-heading";
@@ -55,8 +56,8 @@ export function ChooseUs() {
       <ul className="mx-auto grid max-w-[75rem] gap-4 md:grid-cols-3">
         <FeatureCard feature={features[0]} />
         <li className="relative hidden min-h-[28rem] overflow-hidden rounded-2xl border md:row-span-2 md:block">
-          <Image
-            src="/images/site/hiker.webp"
+          <CatalogImage
+            src={SITE_PHOTOS.hiker}
             alt="Two hikers on a grassy ridge pointing out across the mountains"
             fill
             sizes="(min-width: 768px) 24rem, 0px"

@@ -1,4 +1,5 @@
-import Image from "next/image";
+import { CatalogImage } from "@/components/app/catalog-image";
+import { SITE_PHOTOS } from "@/lib/site-photos";
 
 import { PhotoCredit } from "@/components/app/photo-credit";
 import { HERO_SEARCH_ID } from "@/components/layout/site-header";
@@ -12,8 +13,8 @@ export function Hero({ destinations }: { destinations: DestinationOption[] }) {
       className="relative flex h-[calc(100dvh-5.5rem)] min-h-[34rem] flex-col px-4 pb-10 sm:px-8 sm:pb-16"
     >
       <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-2xl border">
-        <Image
-          src="/images/hero-section.jpg"
+        <CatalogImage
+          src={SITE_PHOTOS.hero}
           alt="An aerial view of the coastal town of El Nido in the Philippines"
           fill
           priority
