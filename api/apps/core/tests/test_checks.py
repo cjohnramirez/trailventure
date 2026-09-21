@@ -46,3 +46,21 @@ def test_celery_is_told_how_to_verify_a_tls_redis_certificate(url, expected):
     from config.settings.base import _celery_redis_url
 
     assert _celery_redis_url(url) == expected
+
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        ("a.example,b.example", ["a.example", "b.example"]),
+        ("a.example, b.example", ["a.example", "b.example"]),
+        ("  a.example ,  b.example  ", ["a.example", "b.example"]),
+        ("a.example,,b.example", ["a.example", "b.example"]),
+    ],
+)
+def test_host_lists_ignore_the_spaces_people_type_after_commas(monkeypatch, raw, expected):
+    """A host with a leading space matches nothing, and Django's error does not say why."""
+    from config.settings.base import _hosts
+
+    monkeypatch.setenv("SOME_HOSTS", raw)
+
+    assert _hosts("SOME_HOSTS") == expected
