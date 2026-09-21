@@ -93,4 +93,5 @@ cd web && E2E_FULL_STACK=1 npm run e2e
 ## Contributing and deployment
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): branch flow, commit style, checks.
-- [docs/deployment-railway.md](docs/deployment-railway.md): production setup on Railway.
+- [docs/deployment-free.md](docs/deployment-free.md): the live deployment, on Northflank and Upstash free tiers.
+- [docs/deployment-railway.md](docs/deployment-railway.md): the paid alternative, all on Railway.

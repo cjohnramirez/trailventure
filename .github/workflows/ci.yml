@@ -81,6 +81,8 @@ jobs:
           DJANGO_SECRET_KEY: ci-deploy-check-key-that-is-long-and-random-enough-0123456789abcdef
           DJANGO_ALLOWED_HOSTS: trailventure.example
           DJANGO_SECURE_HSTS_PRELOAD: "true"
+          # A real deployment must set this; core.E001 rejects placeholder domains.
+          DEFAULT_FROM_EMAIL: TrailVenture <no-reply@trailventure.ph>
         run: uv run python manage.py check --deploy --fail-level WARNING --settings=config.settings.prod
       - name: OpenAPI schema is valid
         run: uv run python manage.py spectacular --validate --fail-on-warn --file /tmp/schema.yml --settings=config.settings.test
