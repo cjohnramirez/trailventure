@@ -34,10 +34,13 @@ function GoogleLogo() {
 
 /**
  * "Continue with Google". allauth's provider redirect must be a real (non-XHR) form POST.
- * Hidden when the server has no Google credentials configured.
+ *
+ * When the server has no Google credentials the button is shown disabled rather than removed,
+ * so the page doesn't silently differ between environments and a visitor can see the option
+ * exists. The demo host's domain is not one Google accepts as a redirect target.
  */
 export function GoogleButton({ next }: { next: string }) {
-  const { data: providers } = useQuery({
+  const { data: providers, isPending: loadingProviders } = useQuery({
     queryKey: ["auth-providers"],
     queryFn: allauth.providers,
     staleTime: Infinity,
@@ -46,7 +49,34 @@ export function GoogleButton({ next }: { next: string }) {
   const formRef = React.useRef<HTMLFormElement>(null);
   const csrfRef = React.useRef<HTMLInputElement>(null);
 
-  if (!providers?.some((provider) => provider.id === "google")) return null;
+  // Nothing is drawn until the answer is known, so the button never flickers between states.
+  if (loadingProviders) return null;
+
+  if (!providers?.some((provider) => provider.id === "google")) {
+    return (
+      <>
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full"
+          disabled
+          aria-describedby="google-unavailable"
+        >
+          <GoogleLogo />
+          Continue with Google
+        </Button>
+        <p id="google-unavailable" className="text-center type-caption text-muted-foreground">
+          Unavailable on this demo. Sign in with your email instead.
+        </p>
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <Separator className="flex-1" />
+          or
+          <Separator className="flex-1" />
+        </div>
+      </>
+    );
+  }
 
   const start = async () => {
     setPending(true);

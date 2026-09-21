@@ -125,9 +125,14 @@ Link the Postgres secret group and set `DJANGO_SECRET_KEY`; it needs nothing els
 
 1. **Seed the catalog.** As a job, for the same reason: `python manage.py seed_catalog`. It uploads
    the photos to Cloudinary and is safe to re-run.
-2. **Google OAuth.** Add `https://<web public domain>/accounts/google/login/callback/` to the
-   client's authorized redirect URIs, and publish the consent screen — an unverified app only works
-   for accounts listed as testers.
+2. **Google OAuth — not available on a `*.code.run` domain.** Google only accepts a redirect URI
+   whose domain is a registered public suffix. `code.run` is not on the Public Suffix List (unlike
+   `vercel.app` or `onrender.com`), so it resolves to Northflank's own domain and the console
+   rejects it with *"must use a domain that is a valid top private domain"*. Leave
+   `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` unset and the sign-in button does not
+   render; email and password work as normal. Attaching a custom domain makes it work, and then
+   the redirect URI is `https://<your domain>/accounts/google/login/callback/`, with the consent
+   screen published or your address added as a test user.
 3. **Stripe webhook.** Create an endpoint at
    `https://<web public domain>/api/v1/payments/stripe/webhook/` subscribed to
    `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
