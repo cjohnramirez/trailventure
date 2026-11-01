@@ -64,7 +64,7 @@ jobs:
       DJANGO_SECRET_KEY: ci-only-insecure-key
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.1.0
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -148,7 +148,7 @@ jobs:
       E2E_FULL_STACK: "1"
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.1.0
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
       - name: Install API dependencies
@@ -226,7 +226,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.1.0
+      - uses: astral-sh/setup-uv@v10.3.3
       - name: Python dependency audit
         working-directory: api
         run: uv export --locked --no-dev --no-hashes --format requirements-txt > /tmp/requirements.txt && uvx pip-audit --strict -r /tmp/requirements.txt
